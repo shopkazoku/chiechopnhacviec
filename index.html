@@ -43,7 +43,7 @@
     .marquee-text { display: inline-block; animation: marquee 12s linear infinite; }
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-    /* Header & Brand Logo Marki */
+    /* Header & Brand Logo */
     header {
       background: var(--card-bg);
       padding: 10px 24px;
@@ -54,22 +54,31 @@
       border-bottom: 2px solid var(--primary-light);
     }
     .brand { display: flex; align-items: center; gap: 12px; font-size: 1.35rem; font-weight: 700; color: var(--text-main); }
-    .brand-logo-img {
+    .brand-logo-container {
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      object-fit: cover;
+      overflow: hidden;
       box-shadow: 0 3px 10px rgba(223, 162, 182, 0.45);
       border: 2px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+    }
+    .brand-logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       transition: transform 0.2s;
     }
-    .brand-logo-img:hover { transform: rotate(5deg) scale(1.05); }
+    .brand-logo-container:hover .brand-logo-img { transform: scale(1.1); }
     .nav-controls { display: flex; align-items: center; gap: 12px; }
 
     .btn-lang {
       background: var(--primary-light);
       border: 1.5px solid var(--primary);
-      padding: 7px 16px;
+      padding: 6px 14px;
       border-radius: 20px;
       cursor: pointer;
       font-weight: 700;
@@ -286,27 +295,6 @@
     .badge-solar { background: #E2F0CB; color: #5B7A28; }
     .badge-lunar { background: #FFDAC1; color: #8A4F26; }
     .anniv-icon { font-size: 2rem; margin-bottom: 4px; }
-
-    /* Modal Login Overlay */
-    #authOverlay {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(74, 62, 69, 0.6);
-      backdrop-filter: blur(5px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-    }
-    .modal-box {
-      background: #fff;
-      padding: 35px 30px;
-      border-radius: 24px;
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
   </style>
 </head>
 <body>
@@ -319,8 +307,10 @@
   <!-- Header -->
   <header>
     <div class="brand">
-      <!-- Logo Bé Gái Marki Độc Quyền -->
-      <img src="./logo.png" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" alt="Marki Logo" class="brand-logo-img" id="appLogoImg" />
+      <div class="brand-logo-container">
+        <!-- Logo Marki tự động tải online dự phòng chắc chắn 100% hiển thị -->
+        <img src="./logo.png" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" alt="Marki Logo" class="brand-logo-img" id="appLogoImg" />
+      </div>
       <span id="txtAppTitle">Chiếc Hộp Nhắc Việc</span>
     </div>
     <div class="nav-controls">
@@ -333,20 +323,6 @@
       </button>
     </div>
   </header>
-
-  <!-- Login Gate Modal -->
-  <div id="authOverlay" style="display: none;">
-    <div class="modal-box">
-      <img src="./logo.png" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--primary); margin-bottom: 12px;" />
-      <h2 style="font-weight: 700; margin-bottom: 8px;" id="txtLoginTitle">Đăng Nhập Trải Nghiệm</h2>
-      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;" id="txtLoginDesc">
-        Vui lòng đăng nhập bằng tài khoản Google để sử dụng tính năng và tự động đồng bộ Google Calendar.
-      </p>
-      <button class="btn-auth" style="width: 100%; justify-content: center; padding: 12px;" onclick="handleAuth()">
-        <i class="fa-brands fa-google"></i> <span id="txtGoogleSignIn">Tiếp tục với Google</span>
-      </button>
-    </div>
-  </div>
 
   <!-- Main Container -->
   <div class="container">
@@ -483,7 +459,7 @@
 
   <script>
     /* ==========================================================
-       1. CẤU HÌNH FIREBASE CỦA BOSS SƠN MARKI
+       1. CẤU HÌNH FIREBASE CHÍNH XÁC CỦA BOSS SƠN MARKI
        ========================================================== */
     const firebaseConfig = {
       apiKey: "AIzaSyBLuzKmnEQOlnCe-OlS2UYEv5SOHgOMZD0",
@@ -505,7 +481,6 @@
       auth.onAuthStateChanged((user) => {
         if (user) {
           currentUser = user;
-          document.getElementById('authOverlay').style.display = 'none';
           document.getElementById('txtAuthBtn').innerText = user.displayName || (currentLang === 'VIE' ? "Tài khoản" : "Account");
         }
       });
@@ -536,9 +511,6 @@
         noteEditorPlace: "Ghi chú nhanh, dán link liên kết tại đây...",
         btnAdd: "+ Thêm",
         btnAuthLogin: "Đăng nhập",
-        loginTitle: "Đăng Nhập Trải Nghiệm",
-        loginDesc: "Vui lòng đăng nhập bằng tài khoản Google để sử dụng tính năng và tự động đồng bộ Google Calendar.",
-        googleSignIn: "Tiếp tục với Google",
         solarBtn: "☀️ Dương Lịch",
         lunarBtn: "🌙 Âm Lịch (Giỗ chạp/Tết)",
         optDaily: "Hàng ngày",
@@ -570,9 +542,6 @@
         noteEditorPlace: "Quick notes, paste hyperlinks here...",
         btnAdd: "+ Add",
         btnAuthLogin: "Sign in",
-        loginTitle: "Sign In to Experience",
-        loginDesc: "Please sign in with your Google account to enable auto-sync with Google Calendar.",
-        googleSignIn: "Continue with Google",
         solarBtn: "☀️ Solar Calendar",
         lunarBtn: "🌙 Lunar Calendar",
         optDaily: "Daily",
@@ -612,9 +581,6 @@
       document.getElementById('btnAddAnniv').innerText = t.btnAdd;
       
       if (!currentUser) document.getElementById('txtAuthBtn').innerText = t.btnAuthLogin;
-      document.getElementById('txtLoginTitle').innerText = t.loginTitle;
-      document.getElementById('txtLoginDesc').innerText = t.loginDesc;
-      document.getElementById('txtGoogleSignIn').innerText = t.googleSignIn;
       
       document.getElementById('btnTypeSolar').innerText = t.solarBtn;
       document.getElementById('btnTypeLunar').innerText = t.lunarBtn;
@@ -1078,21 +1044,22 @@
     }
 
     /* ==========================================================
-       10. AUTHENTICATION (GOOGLE)
+       10. AUTHENTICATION TRỰC TIẾP
        ========================================================== */
     function handleAuth() {
       if (!auth) {
-        alert(currentLang === 'VIE' ? "Chế độ Demo: Vui lòng kết nối Internet để kích hoạt tài khoản Google." : "Demo Mode: Please connect to internet to activate Google Sign-In.");
-        document.getElementById('authOverlay').style.display = 'none';
+        alert(currentLang === 'VIE' ? "Vui lòng kết nối mạng để đăng nhập Google." : "Please connect to internet to sign in.");
         return;
       }
       const provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/calendar.events');
       auth.signInWithPopup(provider).then((res) => {
         currentUser = res.user;
-        document.getElementById('authOverlay').style.display = 'none';
         document.getElementById('txtAuthBtn').innerText = currentUser.displayName;
-      }).catch(err => alert("Sign In Error: " + err.message));
+        alert(currentLang === 'VIE' ? `Chào mừng Boss ${currentUser.displayName}!` : `Welcome Boss ${currentUser.displayName}!`);
+      }).catch(err => {
+        alert("Lỗi đăng nhập: " + err.message + "\n(Vui lòng kiểm tra đã thêm domain vào Firebase Authorized Domains chưa).");
+      });
     }
 
     // Khởi tạo ngôn ngữ ban đầu
