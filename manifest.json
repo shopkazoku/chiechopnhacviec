@@ -1,0 +1,21 @@
+{
+  "name": "Chiếc Hộp Nhắc Việc",
+  "short_name": "TaskBox",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FDF6F8",
+  "theme_color": "#F2C1D1",
+  "description": "Ứng dụng nhắc việc hàng ngày, hàng tuần đồng bộ Google Calendar",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/9068/9068678.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/9068/9068678.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

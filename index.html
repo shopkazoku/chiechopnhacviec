@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chiếc Hộp Nhắc Việc - Task Box</title>
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#F2C1D1" />
+  <!-- FontAwesome & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary: #F2C1D1; /* Pantone 13-2802 TCX Fairy Tale */
+      --primary-dark: #DFA2B6;
+      --primary-light: #FDF2F5;
+      --bg-color: #FAF5F7;
+      --card-bg: #FFFFFF;
+      --text-main: #4A3E45;
+      --text-muted: #8E7C85;
+      --border-color: #F0DEE4;
+      --shadow: 0 8px 24px rgba(242, 193, 209, 0.22);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding-bottom: 50px; }
+
+    /* Top Marquee Banner */
+    #topBanner {
+      display: none;
+      background: linear-gradient(90deg, #F2C1D1, #FFAAA6);
+      color: #fff;
+      font-weight: 700;
+      padding: 10px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .marquee-text { display: inline-block; animation: marquee 12s linear infinite; }
+    @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+    /* Header */
+    header {
+      background: var(--card-bg);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 12px rgba(242, 193, 209, 0.15);
+      border-bottom: 2px solid var(--primary-light);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-size: 1.35rem; font-weight: 700; color: var(--text-main); }
+    .brand i { color: var(--primary-dark); font-size: 1.6rem; }
+    .nav-controls { display: flex; align-items: center; gap: 15px; }
+
+    .btn-lang {
+      background: var(--primary-light);
+      border: 1px solid var(--primary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-main);
+      transition: all 0.2s;
+    }
+    .btn-lang:hover { background: var(--primary); color: #fff; }
+
+    .btn-auth {
+      background: linear-gradient(135deg, #F2C1D1, #DFA2B6);
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 25px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(223, 162, 182, 0.4);
+      transition: transform 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-auth:hover { transform: translateY(-2px); }
+
+    /* Container & Layout */
+    .container { max-width: 1280px; margin: 25px auto; padding: 0 20px; }
+    .grid-layout { display: grid; grid-template-columns: 360px 1fr; gap: 24px; }
+    @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
+
+    /* Card Box */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      margin-bottom: 24px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1.5px dashed var(--primary-light);
+    }
+    .card-header h2 { font-size: 1.15rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+    .card-header h2 i { color: var(--primary-dark); }
+
+    /* Section 1: Clock & Calendar */
+    .clock-display {
+      text-align: center;
+      background: linear-gradient(135deg, #FDF2F5, #FFF9FA);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--primary-light);
+    }
+    .digital-clock { font-size: 2.2rem; font-weight: 700; color: var(--primary-dark); letter-spacing: 2px; }
+    .clock-sub { font-size: 0.95rem; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+
+    .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .cal-nav button { background: var(--primary-light); border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; color: var(--text-main); }
+    .cal-nav span { font-weight: 700; font-size: 1.05rem; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+    .cal-day-name { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); padding-bottom: 6px; }
+    .cal-cell {
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      position: relative;
+      background: #FFFBFD;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    .cal-cell:hover { background: var(--primary-light); }
+    .cal-cell.today { border-color: var(--primary-dark); background: var(--primary-light); }
+    .cal-cell .solar { font-weight: 700; }
+    .cal-cell .lunar { font-size: 0.68rem; color: var(--text-muted); }
+    .cal-dots { display: flex; gap: 2px; position: absolute; bottom: 3px; }
+    .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
+
+    /* Section 2: Rich Notes */
+    .note-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .tool-btn {
+      background: var(--primary-light);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }
+    .tool-btn:hover { background: var(--primary); color: #fff; }
+    .note-editor {
+      min-height: 130px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+      outline: none;
+      font-size: 0.95rem;
+      background: #FFFCFD;
+    }
+
+    /* Section 3: Tasks */
+    .palette { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+    .color-swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.15s;
+    }
+    .color-swatch.active { border-color: #333; transform: scale(1.2); }
+
+    .form-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    .input-box {
+      flex: 1;
+      min-width: 130px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border-color);
+      outline: none;
+      font-size: 0.9rem;
+      background: #FFFBFD;
+    }
+    .btn-add {
+      background: var(--primary);
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-add:hover { background: var(--primary-dark); }
+
+    .task-list { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: #FFFDFE;
+      border-left: 6px solid var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border-top: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .task-left { display: flex; align-items: center; gap: 12px; }
+    .task-title { font-weight: 700; font-size: 0.95rem; }
+    .task-meta { font-size: 0.8rem; color: var(--text-muted); }
+    .btn-del { color: #FFAAA6; cursor: pointer; border: none; background: none; font-size: 1rem; }
+    .btn-del:hover { color: #FF6B6B; }
+
+    /* Section 4: Anniversary */
+    .cal-type-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      background: var(--primary-light);
+      padding: 4px;
+      border-radius: 12px;
+      width: fit-content;
+    }
+    .cal-type-btn {
+      border: none;
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-main);
+      transition: all 0.2s;
+    }
+    .cal-type-btn.active {
+      background: #fff;
+      color: var(--primary-dark);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .anniv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-top: 12px; }
+    .anniv-card {
+      background: linear-gradient(135deg, #FFF9FB, #FFF2F6);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      position: relative;
+    }
+    .anniv-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+      margin-bottom: 4px;
+    }
+    .badge-solar { background: #E2F0CB; color: #5B7A28; }
+    .badge-lunar { background: #FFDAC1; color: #8A4F26; }
+    .anniv-icon { font-size: 2rem; margin-bottom: 4px; }
+
+    /* Modal Login Overlay */
+    #authOverlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(74, 62, 69, 0.6);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    .modal-box {
+      background: #fff;
+      padding: 35px 30px;
+      border-radius: 24px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Marquee Bar -->
+  <div id="topBanner">
+    <span class="marquee-text" id="marqueeMsg">🔔 Nhắc nhở: Bạn có công việc sắp đến hạn!</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <i class="fa-solid fa-cube"></i>
+      <span id="txtAppTitle">Chiếc Hộp Nhắc Việc</span>
+    </div>
+    <div class="nav-controls">
+      <button class="btn-lang" id="btnLang" onclick="toggleLanguage()">
+        <span id="langFlag">🇻🇳</span> <span id="langLabel">VIE</span>
+      </button>
+      <button class="btn-auth" id="btnAuth" onclick="handleAuth()">
+        <i class="fa-brands fa-google"></i> <span id="txtAuthBtn">Đăng nhập</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Login Gate Modal -->
+  <div id="authOverlay" style="display: none;">
+    <div class="modal-box">
+      <i class="fa-solid fa-lock" style="font-size: 3rem; color: var(--primary-dark); margin-bottom: 15px;"></i>
+      <h2 style="font-weight: 700; margin-bottom: 10px;" id="txtLoginTitle">Đăng Nhập Trải Nghiệm</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;" id="txtLoginDesc">
+        Vui lòng đăng nhập bằng tài khoản Google để sử dụng tính năng và tự động đồng bộ Google Calendar.
+      </p>
+      <button class="btn-auth" style="width: 100%; justify-content: center; padding: 12px;" onclick="handleAuth()">
+        <i class="fa-brands fa-google"></i> <span id="txtGoogleSignIn">Tiếp tục với Google</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <div class="grid-layout">
+
+      <!-- LEFT COLUMN -->
+      <div class="left-col">
+        <!-- PHẦN 1: THỜI GIAN & LỊCH ÂM DƯƠNG -->
+        <div class="card">
+          <div class="card-header">
+            <h2 id="txtSecTime"><i class="fa-regular fa-clock"></i> Thời Gian</h2>
+          </div>
+          <div class="clock-display">
+            <div class="digital-clock" id="digitalClock">00:00:00</div>
+            <div class="clock-sub" id="fullDateDisplay">Thứ Bảy, 15/08/2026</div>
+          </div>
+          <div class="cal-nav">
+            <button onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <span id="calMonthYear">Tháng 8 / 2026</span>
+            <button onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+          <div class="cal-grid" id="calGridHeader"></div>
+          <div class="cal-grid" id="calGridBody"></div>
+        </div>
+
+        <!-- PHẦN 2: GHI CHÚ NHANH -->
+        <div class="card">
+          <div class="card-header">
+            <h2 id="txtSecNotes"><i class="fa-regular fa-pen-to-square"></i> Ghi Chú</h2>
+          </div>
+          <div class="note-toolbar">
+            <button class="tool-btn" onclick="formatText('bold')"><i class="fa-solid fa-bold"></i></button>
+            <button class="tool-btn" onclick="formatText('italic')"><i class="fa-solid fa-italic"></i></button>
+            <button class="tool-btn" onclick="formatText('underline')"><i class="fa-solid fa-underline"></i></button>
+            <input type="color" onchange="formatText('foreColor', this.value)" style="border:none; width:30px; height:30px; cursor:pointer;" />
+            <button class="tool-btn" onclick="addLink()"><i class="fa-solid fa-link"></i></button>
+          </div>
+          <div class="note-editor" id="noteEditor" contenteditable="true" placeholder="Ghi chú nhanh, dán link tại đây..."></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="right-col">
+        <!-- PHẦN 3: NHẮC VIỆC -->
+        <div class="card">
+          <div class="card-header">
+            <h2 id="txtSecTasks"><i class="fa-solid fa-list-check"></i> Nhắc Việc</h2>
+          </div>
+
+          <!-- Bảng màu Pastel -->
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);" id="txtColorLabel">Chọn mã màu Label:</label>
+          <div class="palette" id="colorPalette"></div>
+
+          <!-- Tab chuyển loại việc -->
+          <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+            <button class="btn-lang" id="tabPeriodic" style="background: var(--primary); color: #fff;" onclick="switchTaskTab('periodic')">Lịch Định Kì</button>
+            <button class="btn-lang" id="tabOnetime" onclick="switchTaskTab('onetime')">Việc Phát Sinh</button>
+          </div>
+
+          <!-- Form Định Kì -->
+          <div id="formPeriodic">
+            <div class="form-group">
+              <input type="text" class="input-box" id="pTaskTitle" placeholder="Tên công việc (vd: Tập thể dục, Luyện thanh...)" />
+              <input type="time" class="input-box" id="pTaskTime" />
+              <select class="input-box" id="pTaskRepeat">
+                <option value="daily">Hàng ngày</option>
+                <option value="weekly">Hàng tuần</option>
+                <option value="monthly">Hàng tháng</option>
+                <option value="yearly">Hàng năm</option>
+              </select>
+              <button class="btn-add" onclick="addPeriodicTask()">+ Thêm</button>
+            </div>
+            <div class="task-list" id="pTaskList"></div>
+          </div>
+
+          <!-- Form Phát Sinh -->
+          <div id="formOnetime" style="display: none;">
+            <div class="form-group">
+              <input type="text" class="input-box" id="oTaskTitle" placeholder="Tên việc phát sinh..." />
+              <input type="datetime-local" class="input-box" id="oTaskDateTime" />
+              <button class="btn-add" onclick="addOnetimeTask()">+ Thêm</button>
+            </div>
+            <div class="task-list" id="oTaskList"></div>
+          </div>
+        </div>
+
+        <!-- PHẦN 4: NGÀY KỶ NIỆM (ÂM & DƯƠNG) -->
+        <div class="card">
+          <div class="card-header">
+            <h2 id="txtSecAnniv"><i class="fa-solid fa-cake-candles"></i> Ngày Kỷ Niệm (Âm & Dương)</h2>
+          </div>
+
+          <!-- Nút chọn loại lịch kỷ niệm -->
+          <div class="cal-type-toggle">
+            <button class="cal-type-btn active" id="btnTypeSolar" onclick="setAnnivCalType('solar')">☀️ Dương Lịch</button>
+            <button class="cal-type-btn" id="btnTypeLunar" onclick="setAnnivCalType('lunar')">🌙 Âm Lịch (Giỗ chạp/Tết)</button>
+          </div>
+
+          <div class="form-group">
+            <input type="text" class="input-box" id="annivTitle" placeholder="Kỷ niệm ngày cưới, Giỗ cụ, Tết..." />
+            <select class="input-box" id="annivIcon" style="max-width: 90px; font-size: 1.1rem;">
+              <option value="🎂">🎂</option>
+              <option value="💐">💐</option>
+              <option value="💍">💍</option>
+              <option value="🏮">🏮</option>
+              <option value="🙏">🙏</option>
+              <option value="🎉">🎉</option>
+              <option value="✈️">✈️</option>
+            </select>
+            
+            <!-- Ngày Dương lịch -->
+            <input type="date" class="input-box" id="annivSolarDate" />
+            
+            <!-- Ngày Âm lịch -->
+            <div id="lunarDateInputs" style="display: none; gap: 8px; flex: 1;">
+              <input type="number" class="input-box" id="annivLunarDay" placeholder="Ngày Âm (1-30)" min="1" max="30" />
+              <input type="number" class="input-box" id="annivLunarMonth" placeholder="Tháng Âm (1-12)" min="1" max="12" />
+            </div>
+
+            <input type="time" class="input-box" id="annivTime" value="08:00" />
+            <button class="btn-add" onclick="addAnniversary()">+ Thêm</button>
+          </div>
+          <div class="anniv-grid" id="annivList"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    /* ==========================================================
+       1. CẤU HÌNH FIREBASE CHÍNH XÁC CỦA BOSS SƠN MARKI
+       ========================================================== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyBLuzKmnEQOlnCe-OlS2UYEv5SOHgOMZD0",
+      authDomain: "chiechopnhacviec.firebaseapp.com",
+      projectId: "chiechopnhacviec",
+      storageBucket: "chiechopnhacviec.firebasestorage.app",
+      messagingSenderId: "472329359469",
+      appId: "1:472329359469:web:0de85f939cbcdce02a2f64",
+      measurementId: "G-18NTDJXLEH"
+    };
+
+    let currentUser = null;
+    let auth, db;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      auth = firebase.auth();
+      db = firebase.firestore();
+
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          currentUser = user;
+          document.getElementById('authOverlay').style.display = 'none';
+          document.getElementById('txtAuthBtn').innerText = user.displayName || "Tài khoản";
+        }
+      });
+    } catch(e) {
+      console.warn("Lỗi khởi tạo Firebase:", e);
+    }
+
+    /* ==========================================================
+       2. THUẬT TOÁN ÂM - DƯƠNG LỊCH THIÊN VĂN CHUẨN XÁC
+       ========================================================== */
+    function INT(d) { return Math.floor(d); }
+    function jdFromDate(dd, mm, yy) {
+      let a = INT((14 - mm) / 12);
+      let y = yy + 4800 - a;
+      let m = mm + 12 * a - 3;
+      let jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
+      return jd;
+    }
+    function jdToDate(jd) {
+      let a = jd + 32044;
+      let b = INT((4 * a + 3) / 146097);
+      let c = a - INT((146097 * b) / 4);
+      let d = INT((4 * c + 3) / 1461);
+      let e = c - INT((1461 * d) / 4);
+      let m = INT((5 * e + 2) / 153);
+      let day = e - INT((153 * m + 2) / 5) + 1;
+      let month = m + 3 - 12 * INT(m / 10);
+      let year = 100 * b + d - 4800 + INT(m / 10);
+      return [day, month, year];
+    }
+    function getNewMoonDay(k, timeZone) {
+      let T = k / 1236.85;
+      let T2 = T * T;
+      let T3 = T2 * T;
+      let dr = Math.PI / 180;
+      let Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
+      Jd1 += 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
+      let M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
+      let Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
+      let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
+      let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
+      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * Mpr);
+      C1 = C1 - 0.0004 * Math.sin(3 * dr * Mpr);
+      C1 = C1 + 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
+      C1 = C1 - 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
+      C1 = C1 - 0.0004 * Math.sin((2 * F - M) * dr) - 0.0006 * Math.sin((2 * F + Mpr) * dr);
+      C1 = C1 + 0.001 * Math.sin((2 * F - Mpr) * dr) + 0.0005 * Math.sin((2 * Mpr + M) * dr);
+      let JdNew = Jd1 + C1;
+      return INT(JdNew + 0.5 + timeZone / 24);
+    }
+    function convertSolar2Lunar(dd, mm, yy, timeZone = 7) {
+      let dayNumber = jdFromDate(dd, mm, yy);
+      let k = INT((dayNumber - 2415021.0769986) / 29.53058868);
+      let monthStart = getNewMoonDay(k + 1, timeZone);
+      if (monthStart > dayNumber) monthStart = getNewMoonDay(k, timeZone);
+      let a11 = getNewMoonDay(INT((jdFromDate(31, 12, yy) - 2415021.0769986) / 29.53058868), timeZone);
+      let b11 = a11;
+      let lunarYear = (monthStart >= a11) ? yy : yy - 1;
+      let lunarDay = dayNumber - monthStart + 1;
+      let diff = INT((monthStart - b11) / 29);
+      let lunarMonth = diff + 11;
+      if (lunarMonth > 12) lunarMonth = lunarMonth - 12;
+      return [lunarDay, lunarMonth, lunarYear];
+    }
+    function convertLunar2Solar(lunarDay, lunarMonth, lunarYear, timeZone = 7) {
+      let k = INT((jdFromDate(1, 1, lunarYear) - 2415021.0769986) / 29.53058868) - 2;
+      let monthStart = 0;
+      for (let i = 0; i < 20; i++) {
+        let nm = getNewMoonDay(k + i, timeZone);
+        let [d, m, y] = jdToDate(nm);
+        let [ld, lm, ly] = convertSolar2Lunar(d, m, y, timeZone);
+        if (lm === lunarMonth && ly === lunarYear) {
+          monthStart = nm;
+          break;
+        }
+      }
+      if (monthStart === 0) monthStart = jdFromDate(lunarDay, lunarMonth, lunarYear);
+      let targetJd = monthStart + lunarDay - 1;
+      return jdToDate(targetJd);
+    }
+
+    /* ==========================================================
+       3. BẢNG MÀU PASTEL & THEME
+       ========================================================== */
+    const pastelColors = [
+      "#F2C1D1", "#F6A6B2", "#FFAAA6", "#FFD3B6", "#D4F0F0",
+      "#CCE2CB", "#BFFCC6", "#C7CEEA", "#E2F0CB", "#FFDAC1",
+      "#E8DFF5", "#FCE1E4", "#DAEAF6", "#E8E7D5", "#D8E2DC",
+      "#FFE5D9", "#ECE4DB", "#C9E4DE"
+    ];
+    let selectedColor = pastelColors[0];
+
+    function renderColorPalette() {
+      const p = document.getElementById('colorPalette');
+      p.innerHTML = '';
+      pastelColors.forEach(c => {
+        const d = document.createElement('div');
+        d.className = `color-swatch ${c === selectedColor ? 'active' : ''}`;
+        d.style.backgroundColor = c;
+        d.onclick = () => {
+          selectedColor = c;
+          renderColorPalette();
+        };
+        p.appendChild(d);
+      });
+    }
+    renderColorPalette();
+
+    /* ==========================================================
+       4. ÂM THANH CHUÔNG GIÓ 2 HỒI
+       ========================================================== */
+    function playWindChime() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        const chimeFreqs = [1760, 2093, 2637, 3135];
+
+        function strikeChime(delay, freq) {
+          setTimeout(() => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.2);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 1.2);
+          }, delay);
+        }
+
+        strikeChime(0, chimeFreqs[0]);
+        strikeChime(150, chimeFreqs[1]);
+        strikeChime(600, chimeFreqs[2]);
+        strikeChime(750, chimeFreqs[3]);
+      } catch (e) {
+        console.log("Audio Error:", e);
+      }
+    }
+
+    /* ==========================================================
+       5. ĐỒNG HỒ & LỊCH HIỂN THỊ
+       ========================================================== */
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('vi-VN', { hour12: false });
+      document.getElementById('digitalClock').innerText = timeStr;
+      
+      const dayNames = currentLang === 'VIE' 
+        ? ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy']
+        : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      
+      const [ld, lm] = convertSolar2Lunar(now.getDate(), now.getMonth() + 1, now.getFullYear());
+      document.getElementById('fullDateDisplay').innerText = 
+        `${dayNames[now.getDay()]}, ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth()+1).padStart(2, '0')}/${now.getFullYear()} (Âm: ${ld}/${lm})`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    let viewYear = new Date().getFullYear();
+    let viewMonth = new Date().getMonth();
+
+    function renderCalendar() {
+      const header = document.getElementById('calGridHeader');
+      const body = document.getElementById('calGridBody');
+      const monthNamesVie = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+      const monthNamesEng = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      
+      document.getElementById('calMonthYear').innerText = 
+        `${currentLang === 'VIE' ? monthNamesVie[viewMonth] : monthNamesEng[viewMonth]} / ${viewYear}`;
+
+      const daysOfWeek = currentLang === 'VIE' ? ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'] : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+      header.innerHTML = daysOfWeek.map(d => `<div class="cal-day-name">${d}</div>`).join('');
+
+      const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+      const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
+      
+      let html = '';
+      for (let i = 0; i < firstDay; i++) {
+        html += `<div class="cal-cell" style="opacity:0.3;"></div>`;
+      }
+
+      const today = new Date();
+      for (let day = 1; day <= totalDays; day++) {
+        const isToday = (today.getDate() === day && today.getMonth() === viewMonth && today.getFullYear() === viewYear);
+        const [lDay, lMonth] = convertSolar2Lunar(day, viewMonth + 1, viewYear);
+        
+        html += `
+          <div class="cal-cell ${isToday ? 'today' : ''}">
+            <span class="solar">${day}</span>
+            <span class="lunar">${lDay === 1 ? `${lDay}/${lMonth}` : lDay}</span>
+            <div class="cal-dots">
+              <span class="cal-dot" style="background:${selectedColor}"></span>
+            </div>
+          </div>
+        `;
+      }
+      body.innerHTML = html;
+    }
+
+    function changeMonth(delta) {
+      viewMonth += delta;
+      if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+      if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+      renderCalendar();
+    }
+    renderCalendar();
+
+    /* ==========================================================
+       6. GHI CHÚ
+       ========================================================== */
+    function formatText(cmd, val = null) { document.execCommand(cmd, false, val); }
+    function addLink() {
+      const url = prompt("Nhập đường dẫn liên kết (Link):", "https://");
+      if (url) formatText('createLink', url);
+    }
+
+    /* ==========================================================
+       7. QUẢN LÝ TÁC VỤ & KỶ NIỆM (ÂM / DƯƠNG)
+       ========================================================== */
+    let periodicTasks = JSON.parse(localStorage.getItem('periodicTasks') || '[]');
+    let onetimeTasks = JSON.parse(localStorage.getItem('onetimeTasks') || '[]');
+    let anniversaries = JSON.parse(localStorage.getItem('anniversaries') || '[]');
+    let currentAnnivCalType = 'solar';
+
+    function setAnnivCalType(type) {
+      currentAnnivCalType = type;
+      if (type === 'solar') {
+        document.getElementById('btnTypeSolar').className = 'cal-type-btn active';
+        document.getElementById('btnTypeLunar').className = 'cal-type-btn';
+        document.getElementById('annivSolarDate').style.display = 'block';
+        document.getElementById('lunarDateInputs').style.display = 'none';
+      } else {
+        document.getElementById('btnTypeSolar').className = 'cal-type-btn';
+        document.getElementById('btnTypeLunar').className = 'cal-type-btn active';
+        document.getElementById('annivSolarDate').style.display = 'none';
+        document.getElementById('lunarDateInputs').style.display = 'flex';
+      }
+    }
+
+    function switchTaskTab(type) {
+      if (type === 'periodic') {
+        document.getElementById('formPeriodic').style.display = 'block';
+        document.getElementById('formOnetime').style.display = 'none';
+        document.getElementById('tabPeriodic').style.background = 'var(--primary)';
+        document.getElementById('tabPeriodic').style.color = '#fff';
+        document.getElementById('tabOnetime').style.background = 'var(--primary-light)';
+        document.getElementById('tabOnetime').style.color = 'var(--text-main)';
+      } else {
+        document.getElementById('formPeriodic').style.display = 'none';
+        document.getElementById('formOnetime').style.display = 'block';
+        document.getElementById('tabOnetime').style.background = 'var(--primary)';
+        document.getElementById('tabOnetime').style.color = '#fff';
+        document.getElementById('tabPeriodic').style.background = 'var(--primary-light)';
+        document.getElementById('tabPeriodic').style.color = 'var(--text-main)';
+      }
+    }
+
+    function addPeriodicTask() {
+      const title = document.getElementById('pTaskTitle').value;
+      const time = document.getElementById('pTaskTime').value;
+      const repeat = document.getElementById('pTaskRepeat').value;
+      if (!title || !time) return alert("Vui lòng nhập tên việc và thời gian!");
+
+      periodicTasks.push({ id: Date.now(), title, time, repeat, color: selectedColor });
+      saveAndRender();
+      document.getElementById('pTaskTitle').value = '';
+    }
+
+    function addOnetimeTask() {
+      const title = document.getElementById('oTaskTitle').value;
+      const datetime = document.getElementById('oTaskDateTime').value;
+      if (!title || !datetime) return alert("Vui lòng nhập tên việc và deadline!");
+
+      onetimeTasks.push({ id: Date.now(), title, datetime, done: false, color: selectedColor, createdAt: Date.now() });
+      saveAndRender();
+      document.getElementById('oTaskTitle').value = '';
+    }
+
+    function toggleOnetimeTask(id) {
+      onetimeTasks = onetimeTasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+      saveAndRender();
+    }
+
+    function addAnniversary() {
+      const title = document.getElementById('annivTitle').value;
+      const icon = document.getElementById('annivIcon').value;
+      const time = document.getElementById('annivTime').value;
+      if (!title) return alert("Vui lòng nhập tiêu đề kỷ niệm!");
+
+      let annivObj = { id: Date.now(), title, icon, time, calType: currentAnnivCalType };
+
+      if (currentAnnivCalType === 'solar') {
+        const date = document.getElementById('annivSolarDate').value;
+        if (!date) return alert("Vui lòng chọn ngày Dương lịch!");
+        annivObj.solarDate = date;
+      } else {
+        const lDay = parseInt(document.getElementById('annivLunarDay').value);
+        const lMonth = parseInt(document.getElementById('annivLunarMonth').value);
+        if (!lDay || !lMonth || lDay < 1 || lDay > 30 || lMonth < 1 || lMonth > 12) {
+          return alert("Vui lòng nhập ngày Âm (1-30) và tháng Âm (1-12) hợp lệ!");
+        }
+        annivObj.lunarDay = lDay;
+        annivObj.lunarMonth = lMonth;
+      }
+
+      anniversaries.push(annivObj);
+      saveAndRender();
+      document.getElementById('annivTitle').value = '';
+    }
+
+    function deleteTask(type, id) {
+      if (type === 'periodic') periodicTasks = periodicTasks.filter(t => t.id !== id);
+      if (type === 'onetime') onetimeTasks = onetimeTasks.filter(t => t.id !== id);
+      if (type === 'anniv') anniversaries = anniversaries.filter(t => t.id !== id);
+      saveAndRender();
+    }
+
+    function autoCleanup7Days() {
+      const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+      onetimeTasks = onetimeTasks.filter(t => new Date(t.datetime).getTime() > sevenDaysAgo);
+    }
+
+    function saveAndRender() {
+      autoCleanup7Days();
+      localStorage.setItem('periodicTasks', JSON.stringify(periodicTasks));
+      localStorage.setItem('onetimeTasks', JSON.stringify(onetimeTasks));
+      localStorage.setItem('anniversaries', JSON.stringify(anniversaries));
+
+      // Render Periodic Tasks
+      document.getElementById('pTaskList').innerHTML = periodicTasks.map(t => `
+        <div class="task-item" style="border-left-color: ${t.color}">
+          <div class="task-left">
+            <i class="fa-solid fa-rotate" style="color: ${t.color}"></i>
+            <div>
+              <div class="task-title">${t.title}</div>
+              <div class="task-meta">${t.time} • Lặp: ${t.repeat}</div>
+            </div>
+          </div>
+          <button class="btn-del" onclick="deleteTask('periodic', ${t.id})"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      `).join('');
+
+      // Render Onetime Tasks
+      document.getElementById('oTaskList').innerHTML = onetimeTasks.map(t => `
+        <div class="task-item" style="border-left-color: ${t.color}; opacity: ${t.done ? 0.6 : 1}">
+          <div class="task-left">
+            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleOnetimeTask(${t.id})" style="width:18px; height:18px; cursor:pointer;" />
+            <div>
+              <div class="task-title" style="text-decoration: ${t.done ? 'line-through' : 'none'}">${t.title}</div>
+              <div class="task-meta">${t.datetime.replace('T', ' ')}</div>
+            </div>
+          </div>
+          <button class="btn-del" onclick="deleteTask('onetime', ${t.id})"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      `).join('');
+
+      // Render Anniversaries (Âm & Dương)
+      const currentYear = new Date().getFullYear();
+      document.getElementById('annivList').innerHTML = anniversaries.map(a => {
+        let dateText = '';
+        let badgeHtml = '';
+        if (a.calType === 'solar') {
+          badgeHtml = `<span class="anniv-badge badge-solar">☀️ Dương Lịch</span>`;
+          dateText = `${a.solarDate} (${a.time})`;
+        } else {
+          badgeHtml = `<span class="anniv-badge badge-lunar">🌙 Âm Lịch</span>`;
+          const [sd, sm, sy] = convertLunar2Solar(a.lunarDay, a.lunarMonth, currentYear);
+          dateText = `Âm: ${a.lunarDay}/${a.lunarMonth} ➔ Dương: ${sd}/${sm}/${sy} (${a.time})`;
+        }
+
+        return `
+          <div class="anniv-card">
+            ${badgeHtml}
+            <div class="anniv-icon">${a.icon}</div>
+            <div style="font-weight:700;">${a.title}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">${dateText}</div>
+            <button class="btn-del" style="position:absolute; top:8px; right:8px;" onclick="deleteTask('anniv', ${a.id})"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+      }).join('');
+    }
+    saveAndRender();
+
+    /* ==========================================================
+       8. CƠ CHẾ DEADLINE & CHUÔNG GIÓ
+       ========================================================== */
+    function checkDeadlines() {
+      const now = new Date();
+      const curHourMin = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      const curISO = now.toISOString().slice(0, 16);
+      const [curLunarDay, curLunarMonth] = convertSolar2Lunar(now.getDate(), now.getMonth() + 1, now.getFullYear());
+
+      // Check Periodic
+      periodicTasks.forEach(t => {
+        if (t.time === curHourMin && now.getSeconds() === 0) triggerAlarm(t.title);
+      });
+
+      // Check Onetime
+      onetimeTasks.forEach(t => {
+        if (!t.done && t.datetime === curISO && now.getSeconds() === 0) triggerAlarm(t.title);
+      });
+
+      // Check Anniversaries
+      anniversaries.forEach(a => {
+        if (a.time === curHourMin && now.getSeconds() === 0) {
+          if (a.calType === 'solar' && a.solarDate === now.toISOString().slice(0, 10)) {
+            triggerAlarm(`Kỷ niệm: ${a.title}`);
+          } else if (a.calType === 'lunar' && a.lunarDay === curLunarDay && a.lunarMonth === curLunarMonth) {
+            triggerAlarm(`Kỷ niệm (Âm lịch): ${a.title}`);
+          }
+        }
+      });
+    }
+    setInterval(checkDeadlines, 1000);
+
+    function triggerAlarm(taskTitle) {
+      playWindChime();
+
+      const banner = document.getElementById('topBanner');
+      document.getElementById('marqueeMsg').innerText = `🔔 TỚI HẠN: ${taskTitle} - Vui lòng hoàn thành ngay!`;
+      banner.style.display = 'block';
+      setTimeout(() => { banner.style.display = 'none'; }, 20000);
+
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("Chiếc Hộp Nhắc Việc", {
+          body: `Đã đến giờ: ${taskTitle}`,
+          icon: "https://cdn-icons-png.flaticon.com/512/9068/9068678.png"
+        });
+      }
+    }
+
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+
+    /* ==========================================================
+       9. ĐA NGÔN NGỮ & AUTHENTICATION
+       ========================================================== */
+    let currentLang = 'VIE';
+    function toggleLanguage() {
+      currentLang = currentLang === 'VIE' ? 'ENG' : 'VIE';
+      document.getElementById('langFlag').innerText = currentLang === 'VIE' ? '🇻🇳' : '🇬🇧';
+      document.getElementById('langLabel').innerText = currentLang;
+
+      if (currentLang === 'ENG') {
+        document.getElementById('txtAppTitle').innerText = "Task Box Reminder";
+        document.getElementById('txtSecTime').innerHTML = '<i class="fa-regular fa-clock"></i> Time & Calendar';
+        document.getElementById('txtSecNotes').innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Quick Notes';
+        document.getElementById('txtSecTasks').innerHTML = '<i class="fa-solid fa-list-check"></i> Task Manager';
+        document.getElementById('txtSecAnniv').innerHTML = '<i class="fa-solid fa-cake-candles"></i> Anniversaries';
+        document.getElementById('tabPeriodic').innerText = "Recurring Tasks";
+        document.getElementById('tabOnetime').innerText = "Ad-hoc Tasks";
+        document.getElementById('txtColorLabel').innerText = "Pick Label Color:";
+      } else {
+        document.getElementById('txtAppTitle').innerText = "Chiếc Hộp Nhắc Việc";
+        document.getElementById('txtSecTime').innerHTML = '<i class="fa-regular fa-clock"></i> Thời Gian';
+        document.getElementById('txtSecNotes').innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Ghi Chú';
+        document.getElementById('txtSecTasks').innerHTML = '<i class="fa-solid fa-list-check"></i> Nhắc Việc';
+        document.getElementById('txtSecAnniv').innerHTML = '<i class="fa-solid fa-cake-candles"></i> Ngày Kỷ Niệm (Âm & Dương)';
+        document.getElementById('tabPeriodic').innerText = "Lịch Định Kì";
+        document.getElementById('tabOnetime').innerText = "Việc Phát Sinh";
+        document.getElementById('txtColorLabel').innerText = "Chọn mã màu Label:";
+      }
+      renderCalendar();
+      updateClock();
+    }
+
+    function handleAuth() {
+      if (!auth) {
+        alert("Chế độ Demo: Vui lòng kết nối Internet để kích hoạt tài khoản Google.");
+        document.getElementById('authOverlay').style.display = 'none';
+        return;
+      }
+      const provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('https://www.googleapis.com/auth/calendar.events');
+      auth.signInWithPopup(provider).then((res) => {
+        currentUser = res.user;
+        document.getElementById('authOverlay').style.display = 'none';
+        document.getElementById('txtAuthBtn').innerText = currentUser.displayName;
+      }).catch(err => alert("Lỗi đăng nhập: " + err.message));
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+  </script>
+</body>
+</html>
