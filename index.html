@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chiếc Hộp Nhắc Việc - Task Box</title>
+  <title>Chiếc Hộp Nhắc Việc - Task Box Marki</title>
   <link rel="manifest" href="./manifest.json" />
   <meta name="theme-color" content="#F2C1D1" />
   <!-- FontAwesome & Google Fonts -->
@@ -43,10 +43,10 @@
     .marquee-text { display: inline-block; animation: marquee 12s linear infinite; }
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-    /* Header */
+    /* Header & Brand Logo Marki */
     header {
       background: var(--card-bg);
-      padding: 15px 30px;
+      padding: 10px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -54,13 +54,22 @@
       border-bottom: 2px solid var(--primary-light);
     }
     .brand { display: flex; align-items: center; gap: 12px; font-size: 1.35rem; font-weight: 700; color: var(--text-main); }
-    .brand i { color: var(--primary-dark); font-size: 1.6rem; }
-    .nav-controls { display: flex; align-items: center; gap: 15px; }
+    .brand-logo-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 3px 10px rgba(223, 162, 182, 0.45);
+      border: 2px solid var(--primary);
+      transition: transform 0.2s;
+    }
+    .brand-logo-img:hover { transform: rotate(5deg) scale(1.05); }
+    .nav-controls { display: flex; align-items: center; gap: 12px; }
 
     .btn-lang {
       background: var(--primary-light);
-      border: 1px solid var(--primary);
-      padding: 6px 14px;
+      border: 1.5px solid var(--primary);
+      padding: 7px 16px;
       border-radius: 20px;
       cursor: pointer;
       font-weight: 700;
@@ -69,8 +78,9 @@
       gap: 6px;
       color: var(--text-main);
       transition: all 0.2s;
+      user-select: none;
     }
-    .btn-lang:hover { background: var(--primary); color: #fff; }
+    .btn-lang:hover { background: var(--primary); color: #fff; transform: scale(1.03); }
 
     .btn-auth {
       background: linear-gradient(135deg, #F2C1D1, #DFA2B6);
@@ -309,10 +319,12 @@
   <!-- Header -->
   <header>
     <div class="brand">
-      <i class="fa-solid fa-cube"></i>
+      <!-- Logo Bé Gái Marki Độc Quyền -->
+      <img src="./logo.png" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" alt="Marki Logo" class="brand-logo-img" id="appLogoImg" />
       <span id="txtAppTitle">Chiếc Hộp Nhắc Việc</span>
     </div>
     <div class="nav-controls">
+      <!-- Nút Chuyển Đổi VIE / ENG -->
       <button class="btn-lang" id="btnLang" onclick="toggleLanguage()">
         <span id="langFlag">🇻🇳</span> <span id="langLabel">VIE</span>
       </button>
@@ -325,8 +337,8 @@
   <!-- Login Gate Modal -->
   <div id="authOverlay" style="display: none;">
     <div class="modal-box">
-      <i class="fa-solid fa-lock" style="font-size: 3rem; color: var(--primary-dark); margin-bottom: 15px;"></i>
-      <h2 style="font-weight: 700; margin-bottom: 10px;" id="txtLoginTitle">Đăng Nhập Trải Nghiệm</h2>
+      <img src="./logo.png" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--primary); margin-bottom: 12px;" />
+      <h2 style="font-weight: 700; margin-bottom: 8px;" id="txtLoginTitle">Đăng Nhập Trải Nghiệm</h2>
       <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;" id="txtLoginDesc">
         Vui lòng đăng nhập bằng tài khoản Google để sử dụng tính năng và tự động đồng bộ Google Calendar.
       </p>
@@ -372,7 +384,7 @@
             <input type="color" onchange="formatText('foreColor', this.value)" style="border:none; width:30px; height:30px; cursor:pointer;" />
             <button class="tool-btn" onclick="addLink()"><i class="fa-solid fa-link"></i></button>
           </div>
-          <div class="note-editor" id="noteEditor" contenteditable="true" placeholder="Ghi chú nhanh, dán link tại đây..."></div>
+          <div class="note-editor" id="noteEditor" contenteditable="true"></div>
         </div>
       </div>
 
@@ -397,15 +409,15 @@
           <!-- Form Định Kì -->
           <div id="formPeriodic">
             <div class="form-group">
-              <input type="text" class="input-box" id="pTaskTitle" placeholder="Tên công việc (vd: Tập thể dục, Luyện thanh...)" />
+              <input type="text" class="input-box" id="pTaskTitle" />
               <input type="time" class="input-box" id="pTaskTime" />
               <select class="input-box" id="pTaskRepeat">
-                <option value="daily">Hàng ngày</option>
-                <option value="weekly">Hàng tuần</option>
-                <option value="monthly">Hàng tháng</option>
-                <option value="yearly">Hàng năm</option>
+                <option value="daily" id="optDaily">Hàng ngày</option>
+                <option value="weekly" id="optWeekly">Hàng tuần</option>
+                <option value="monthly" id="optMonthly">Hàng tháng</option>
+                <option value="yearly" id="optYearly">Hàng năm</option>
               </select>
-              <button class="btn-add" onclick="addPeriodicTask()">+ Thêm</button>
+              <button class="btn-add" id="btnAddPeriodic" onclick="addPeriodicTask()">+ Thêm</button>
             </div>
             <div class="task-list" id="pTaskList"></div>
           </div>
@@ -413,9 +425,9 @@
           <!-- Form Phát Sinh -->
           <div id="formOnetime" style="display: none;">
             <div class="form-group">
-              <input type="text" class="input-box" id="oTaskTitle" placeholder="Tên việc phát sinh..." />
+              <input type="text" class="input-box" id="oTaskTitle" />
               <input type="datetime-local" class="input-box" id="oTaskDateTime" />
-              <button class="btn-add" onclick="addOnetimeTask()">+ Thêm</button>
+              <button class="btn-add" id="btnAddOnetime" onclick="addOnetimeTask()">+ Thêm</button>
             </div>
             <div class="task-list" id="oTaskList"></div>
           </div>
@@ -434,7 +446,7 @@
           </div>
 
           <div class="form-group">
-            <input type="text" class="input-box" id="annivTitle" placeholder="Kỷ niệm ngày cưới, Giỗ cụ, Tết..." />
+            <input type="text" class="input-box" id="annivTitle" />
             <select class="input-box" id="annivIcon" style="max-width: 90px; font-size: 1.1rem;">
               <option value="🎂">🎂</option>
               <option value="💐">💐</option>
@@ -450,12 +462,12 @@
             
             <!-- Ngày Âm lịch -->
             <div id="lunarDateInputs" style="display: none; gap: 8px; flex: 1;">
-              <input type="number" class="input-box" id="annivLunarDay" placeholder="Ngày Âm (1-30)" min="1" max="30" />
-              <input type="number" class="input-box" id="annivLunarMonth" placeholder="Tháng Âm (1-12)" min="1" max="12" />
+              <input type="number" class="input-box" id="annivLunarDay" min="1" max="30" />
+              <input type="number" class="input-box" id="annivLunarMonth" min="1" max="12" />
             </div>
 
             <input type="time" class="input-box" id="annivTime" value="08:00" />
-            <button class="btn-add" onclick="addAnniversary()">+ Thêm</button>
+            <button class="btn-add" id="btnAddAnniv" onclick="addAnniversary()">+ Thêm</button>
           </div>
           <div class="anniv-grid" id="annivList"></div>
         </div>
@@ -471,7 +483,7 @@
 
   <script>
     /* ==========================================================
-       1. CẤU HÌNH FIREBASE CHÍNH XÁC CỦA BOSS SƠN MARKI
+       1. CẤU HÌNH FIREBASE CỦA BOSS SƠN MARKI
        ========================================================== */
     const firebaseConfig = {
       apiKey: "AIzaSyBLuzKmnEQOlnCe-OlS2UYEv5SOHgOMZD0",
@@ -494,23 +506,146 @@
         if (user) {
           currentUser = user;
           document.getElementById('authOverlay').style.display = 'none';
-          document.getElementById('txtAuthBtn').innerText = user.displayName || "Tài khoản";
+          document.getElementById('txtAuthBtn').innerText = user.displayName || (currentLang === 'VIE' ? "Tài khoản" : "Account");
         }
       });
     } catch(e) {
-      console.warn("Lỗi khởi tạo Firebase:", e);
+      console.warn("Firebase Init Mode:", e);
     }
 
     /* ==========================================================
-       2. THUẬT TOÁN ÂM - DƯƠNG LỊCH THIÊN VĂN CHUẨN XÁC
+       2. TỪ ĐIỂN ĐA NGÔN NGỮ HOÀN HẢO (VIE / ENG)
+       ========================================================== */
+    let currentLang = 'VIE';
+
+    const translations = {
+      VIE: {
+        appTitle: "Chiếc Hộp Nhắc Việc",
+        secTime: '<i class="fa-regular fa-clock"></i> Thời Gian',
+        secNotes: '<i class="fa-regular fa-pen-to-square"></i> Ghi Chú',
+        secTasks: '<i class="fa-solid fa-list-check"></i> Nhắc Việc',
+        secAnniv: '<i class="fa-solid fa-cake-candles"></i> Ngày Kỷ Niệm (Âm & Dương)',
+        tabPeriodic: "Lịch Định Kì",
+        tabOnetime: "Việc Phát Sinh",
+        colorLabel: "Chọn mã màu Label:",
+        pTaskTitlePlace: "Tên công việc (vd: Tập thể dục, Luyện thanh...)",
+        oTaskTitlePlace: "Tên việc phát sinh...",
+        annivTitlePlace: "Kỷ niệm ngày cưới, Giỗ cụ, Tết...",
+        annivLunarDayPlace: "Ngày Âm (1-30)",
+        annivLunarMonthPlace: "Tháng Âm (1-12)",
+        noteEditorPlace: "Ghi chú nhanh, dán link liên kết tại đây...",
+        btnAdd: "+ Thêm",
+        btnAuthLogin: "Đăng nhập",
+        loginTitle: "Đăng Nhập Trải Nghiệm",
+        loginDesc: "Vui lòng đăng nhập bằng tài khoản Google để sử dụng tính năng và tự động đồng bộ Google Calendar.",
+        googleSignIn: "Tiếp tục với Google",
+        solarBtn: "☀️ Dương Lịch",
+        lunarBtn: "🌙 Âm Lịch (Giỗ chạp/Tết)",
+        optDaily: "Hàng ngày",
+        optWeekly: "Hàng tuần",
+        optMonthly: "Hàng tháng",
+        optYearly: "Hàng năm",
+        alertInputTask: "Vui lòng nhập tên công việc và thời gian!",
+        alertInputOnetime: "Vui lòng nhập tên việc và deadline!",
+        alertInputAnniv: "Vui lòng nhập tiêu đề kỷ niệm!",
+        alertSolarDate: "Vui lòng chọn ngày Dương lịch!",
+        alertLunarDate: "Vui lòng nhập ngày Âm (1-30) và tháng Âm (1-12) hợp lệ!",
+        dueMsg: "🔔 TỚI HẠN:",
+        dueSub: "Vui lòng hoàn thành ngay!"
+      },
+      ENG: {
+        appTitle: "Task Box Reminder",
+        secTime: '<i class="fa-regular fa-clock"></i> Time & Calendar',
+        secNotes: '<i class="fa-regular fa-pen-to-square"></i> Quick Notes',
+        secTasks: '<i class="fa-solid fa-list-check"></i> Task Manager',
+        secAnniv: '<i class="fa-solid fa-cake-candles"></i> Anniversaries (Solar & Lunar)',
+        tabPeriodic: "Recurring Tasks",
+        tabOnetime: "Ad-hoc Tasks",
+        colorLabel: "Pick Label Color:",
+        pTaskTitlePlace: "Task name (e.g. Exercise, Vocal training...)",
+        oTaskTitlePlace: "Ad-hoc task name...",
+        annivTitlePlace: "Wedding anniversary, Ancestor day, Tet...",
+        annivLunarDayPlace: "Lunar Day (1-30)",
+        annivLunarMonthPlace: "Lunar Month (1-12)",
+        noteEditorPlace: "Quick notes, paste hyperlinks here...",
+        btnAdd: "+ Add",
+        btnAuthLogin: "Sign in",
+        loginTitle: "Sign In to Experience",
+        loginDesc: "Please sign in with your Google account to enable auto-sync with Google Calendar.",
+        googleSignIn: "Continue with Google",
+        solarBtn: "☀️ Solar Calendar",
+        lunarBtn: "🌙 Lunar Calendar",
+        optDaily: "Daily",
+        optWeekly: "Weekly",
+        optMonthly: "Monthly",
+        optYearly: "Yearly",
+        alertInputTask: "Please enter task title and time!",
+        alertInputOnetime: "Please enter task title and deadline!",
+        alertInputAnniv: "Please enter anniversary title!",
+        alertSolarDate: "Please choose a valid Solar date!",
+        alertLunarDate: "Please enter valid Lunar day (1-30) and month (1-12)!",
+        dueMsg: "🔔 DUE TIME:",
+        dueSub: "Please complete it now!"
+      }
+    };
+
+    function applyLanguage(lang) {
+      const t = translations[lang];
+      document.getElementById('txtAppTitle').innerText = t.appTitle;
+      document.getElementById('txtSecTime').innerHTML = t.secTime;
+      document.getElementById('txtSecNotes').innerHTML = t.secNotes;
+      document.getElementById('txtSecTasks').innerHTML = t.secTasks;
+      document.getElementById('txtSecAnniv').innerHTML = t.secAnniv;
+      document.getElementById('tabPeriodic').innerText = t.tabPeriodic;
+      document.getElementById('tabOnetime').innerText = t.tabOnetime;
+      document.getElementById('txtColorLabel').innerText = t.colorLabel;
+      
+      document.getElementById('pTaskTitle').placeholder = t.pTaskTitlePlace;
+      document.getElementById('oTaskTitle').placeholder = t.oTaskTitlePlace;
+      document.getElementById('annivTitle').placeholder = t.annivTitlePlace;
+      document.getElementById('annivLunarDay').placeholder = t.annivLunarDayPlace;
+      document.getElementById('annivLunarMonth').placeholder = t.annivLunarMonthPlace;
+      document.getElementById('noteEditor').setAttribute('placeholder', t.noteEditorPlace);
+      
+      document.getElementById('btnAddPeriodic').innerText = t.btnAdd;
+      document.getElementById('btnAddOnetime').innerText = t.btnAdd;
+      document.getElementById('btnAddAnniv').innerText = t.btnAdd;
+      
+      if (!currentUser) document.getElementById('txtAuthBtn').innerText = t.btnAuthLogin;
+      document.getElementById('txtLoginTitle').innerText = t.loginTitle;
+      document.getElementById('txtLoginDesc').innerText = t.loginDesc;
+      document.getElementById('txtGoogleSignIn').innerText = t.googleSignIn;
+      
+      document.getElementById('btnTypeSolar').innerText = t.solarBtn;
+      document.getElementById('btnTypeLunar').innerText = t.lunarBtn;
+      
+      document.getElementById('optDaily').innerText = t.optDaily;
+      document.getElementById('optWeekly').innerText = t.optWeekly;
+      document.getElementById('optMonthly').innerText = t.optMonthly;
+      document.getElementById('optYearly').innerText = t.optYearly;
+
+      document.getElementById('langFlag').innerText = lang === 'VIE' ? '🇻🇳' : '🇬🇧';
+      document.getElementById('langLabel').innerText = lang;
+
+      renderCalendar();
+      updateClock();
+      saveAndRender();
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'VIE' ? 'ENG' : 'VIE';
+      applyLanguage(currentLang);
+    }
+
+    /* ==========================================================
+       3. THUẬT TOÁN ÂM - DƯƠNG LỊCH HỒ NGỌC ĐỨC CHUẨN XÁC
        ========================================================== */
     function INT(d) { return Math.floor(d); }
     function jdFromDate(dd, mm, yy) {
       let a = INT((14 - mm) / 12);
       let y = yy + 4800 - a;
       let m = mm + 12 * a - 3;
-      let jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
-      return jd;
+      return dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
     }
     function jdToDate(jd) {
       let a = jd + 32044;
@@ -576,7 +711,7 @@
     }
 
     /* ==========================================================
-       3. BẢNG MÀU PASTEL & THEME
+       4. BẢNG MÀU PASTEL & THEME
        ========================================================== */
     const pastelColors = [
       "#F2C1D1", "#F6A6B2", "#FFAAA6", "#FFD3B6", "#D4F0F0",
@@ -603,7 +738,7 @@
     renderColorPalette();
 
     /* ==========================================================
-       4. ÂM THANH CHUÔNG GIÓ 2 HỒI
+       5. ÂM THANH CHUÔNG GIÓ 2 HỒI (WEB AUDIO SYNTHESIS)
        ========================================================== */
     function playWindChime() {
       try {
@@ -636,20 +771,22 @@
     }
 
     /* ==========================================================
-       5. ĐỒNG HỒ & LỊCH HIỂN THỊ
+       6. ĐỒNG HỒ & LỊCH HIỂN THỊ
        ========================================================== */
     function updateClock() {
       const now = new Date();
       const timeStr = now.toLocaleTimeString('vi-VN', { hour12: false });
       document.getElementById('digitalClock').innerText = timeStr;
       
-      const dayNames = currentLang === 'VIE' 
-        ? ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy']
-        : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dayNamesVie = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+      const dayNamesEng = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const curDayName = currentLang === 'VIE' ? dayNamesVie[now.getDay()] : dayNamesEng[now.getDay()];
       
       const [ld, lm] = convertSolar2Lunar(now.getDate(), now.getMonth() + 1, now.getFullYear());
+      const lunarTxt = currentLang === 'VIE' ? `Âm: ${ld}/${lm}` : `Lunar: ${ld}/${lm}`;
+      
       document.getElementById('fullDateDisplay').innerText = 
-        `${dayNames[now.getDay()]}, ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth()+1).padStart(2, '0')}/${now.getFullYear()} (Âm: ${ld}/${lm})`;
+        `${curDayName}, ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth()+1).padStart(2, '0')}/${now.getFullYear()} (${lunarTxt})`;
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -701,19 +838,19 @@
       if (viewMonth > 11) { viewMonth = 0; viewYear++; }
       renderCalendar();
     }
-    renderCalendar();
 
     /* ==========================================================
-       6. GHI CHÚ
+       7. GHI CHÚ
        ========================================================== */
     function formatText(cmd, val = null) { document.execCommand(cmd, false, val); }
     function addLink() {
-      const url = prompt("Nhập đường dẫn liên kết (Link):", "https://");
+      const promptTxt = currentLang === 'VIE' ? "Nhập đường dẫn liên kết (Link):" : "Enter Hyperlink URL:";
+      const url = prompt(promptTxt, "https://");
       if (url) formatText('createLink', url);
     }
 
     /* ==========================================================
-       7. QUẢN LÝ TÁC VỤ & KỶ NIỆM (ÂM / DƯƠNG)
+       8. QUẢN LÝ NHẮC VIỆC & KỶ NIỆM (ÂM / DƯƠNG)
        ========================================================== */
     let periodicTasks = JSON.parse(localStorage.getItem('periodicTasks') || '[]');
     let onetimeTasks = JSON.parse(localStorage.getItem('onetimeTasks') || '[]');
@@ -757,7 +894,7 @@
       const title = document.getElementById('pTaskTitle').value;
       const time = document.getElementById('pTaskTime').value;
       const repeat = document.getElementById('pTaskRepeat').value;
-      if (!title || !time) return alert("Vui lòng nhập tên việc và thời gian!");
+      if (!title || !time) return alert(translations[currentLang].alertInputTask);
 
       periodicTasks.push({ id: Date.now(), title, time, repeat, color: selectedColor });
       saveAndRender();
@@ -767,7 +904,7 @@
     function addOnetimeTask() {
       const title = document.getElementById('oTaskTitle').value;
       const datetime = document.getElementById('oTaskDateTime').value;
-      if (!title || !datetime) return alert("Vui lòng nhập tên việc và deadline!");
+      if (!title || !datetime) return alert(translations[currentLang].alertInputOnetime);
 
       onetimeTasks.push({ id: Date.now(), title, datetime, done: false, color: selectedColor, createdAt: Date.now() });
       saveAndRender();
@@ -783,19 +920,19 @@
       const title = document.getElementById('annivTitle').value;
       const icon = document.getElementById('annivIcon').value;
       const time = document.getElementById('annivTime').value;
-      if (!title) return alert("Vui lòng nhập tiêu đề kỷ niệm!");
+      if (!title) return alert(translations[currentLang].alertInputAnniv);
 
       let annivObj = { id: Date.now(), title, icon, time, calType: currentAnnivCalType };
 
       if (currentAnnivCalType === 'solar') {
         const date = document.getElementById('annivSolarDate').value;
-        if (!date) return alert("Vui lòng chọn ngày Dương lịch!");
+        if (!date) return alert(translations[currentLang].alertSolarDate);
         annivObj.solarDate = date;
       } else {
         const lDay = parseInt(document.getElementById('annivLunarDay').value);
         const lMonth = parseInt(document.getElementById('annivLunarMonth').value);
         if (!lDay || !lMonth || lDay < 1 || lDay > 30 || lMonth < 1 || lMonth > 12) {
-          return alert("Vui lòng nhập ngày Âm (1-30) và tháng Âm (1-12) hợp lệ!");
+          return alert(translations[currentLang].alertLunarDate);
         }
         annivObj.lunarDay = lDay;
         annivObj.lunarMonth = lMonth;
@@ -824,6 +961,13 @@
       localStorage.setItem('onetimeTasks', JSON.stringify(onetimeTasks));
       localStorage.setItem('anniversaries', JSON.stringify(anniversaries));
 
+      const repeatLabels = {
+        daily: currentLang === 'VIE' ? "Hàng ngày" : "Daily",
+        weekly: currentLang === 'VIE' ? "Hàng tuần" : "Weekly",
+        monthly: currentLang === 'VIE' ? "Hàng tháng" : "Monthly",
+        yearly: currentLang === 'VIE' ? "Hàng năm" : "Yearly"
+      };
+
       // Render Periodic Tasks
       document.getElementById('pTaskList').innerHTML = periodicTasks.map(t => `
         <div class="task-item" style="border-left-color: ${t.color}">
@@ -831,7 +975,7 @@
             <i class="fa-solid fa-rotate" style="color: ${t.color}"></i>
             <div>
               <div class="task-title">${t.title}</div>
-              <div class="task-meta">${t.time} • Lặp: ${t.repeat}</div>
+              <div class="task-meta">${t.time} • ${repeatLabels[t.repeat] || t.repeat}</div>
             </div>
           </div>
           <button class="btn-del" onclick="deleteTask('periodic', ${t.id})"><i class="fa-solid fa-trash"></i></button>
@@ -858,12 +1002,14 @@
         let dateText = '';
         let badgeHtml = '';
         if (a.calType === 'solar') {
-          badgeHtml = `<span class="anniv-badge badge-solar">☀️ Dương Lịch</span>`;
+          badgeHtml = `<span class="anniv-badge badge-solar">${currentLang === 'VIE' ? '☀️ Dương Lịch' : '☀️ Solar'}</span>`;
           dateText = `${a.solarDate} (${a.time})`;
         } else {
-          badgeHtml = `<span class="anniv-badge badge-lunar">🌙 Âm Lịch</span>`;
+          badgeHtml = `<span class="anniv-badge badge-lunar">${currentLang === 'VIE' ? '🌙 Âm Lịch' : '🌙 Lunar'}</span>`;
           const [sd, sm, sy] = convertLunar2Solar(a.lunarDay, a.lunarMonth, currentYear);
-          dateText = `Âm: ${a.lunarDay}/${a.lunarMonth} ➔ Dương: ${sd}/${sm}/${sy} (${a.time})`;
+          const lunarPrefix = currentLang === 'VIE' ? 'Âm:' : 'Lunar:';
+          const solarPrefix = currentLang === 'VIE' ? 'Dương:' : 'Solar:';
+          dateText = `${lunarPrefix} ${a.lunarDay}/${a.lunarMonth} ➔ ${solarPrefix} ${sd}/${sm}/${sy} (${a.time})`;
         }
 
         return `
@@ -877,10 +1023,9 @@
         `;
       }).join('');
     }
-    saveAndRender();
 
     /* ==========================================================
-       8. CƠ CHẾ DEADLINE & CHUÔNG GIÓ
+       9. CƠ CHẾ DEADLINE & CHUÔNG GIÓ
        ========================================================== */
     function checkDeadlines() {
       const now = new Date();
@@ -902,9 +1047,9 @@
       anniversaries.forEach(a => {
         if (a.time === curHourMin && now.getSeconds() === 0) {
           if (a.calType === 'solar' && a.solarDate === now.toISOString().slice(0, 10)) {
-            triggerAlarm(`Kỷ niệm: ${a.title}`);
+            triggerAlarm(`Anniversary: ${a.title}`);
           } else if (a.calType === 'lunar' && a.lunarDay === curLunarDay && a.lunarMonth === curLunarMonth) {
-            triggerAlarm(`Kỷ niệm (Âm lịch): ${a.title}`);
+            triggerAlarm(`Lunar Anniversary: ${a.title}`);
           }
         }
       });
@@ -915,14 +1060,15 @@
       playWindChime();
 
       const banner = document.getElementById('topBanner');
-      document.getElementById('marqueeMsg').innerText = `🔔 TỚI HẠN: ${taskTitle} - Vui lòng hoàn thành ngay!`;
+      const t = translations[currentLang];
+      document.getElementById('marqueeMsg').innerText = `${t.dueMsg} ${taskTitle} - ${t.dueSub}`;
       banner.style.display = 'block';
       setTimeout(() => { banner.style.display = 'none'; }, 20000);
 
       if ("Notification" in window && Notification.permission === "granted") {
-        new Notification("Chiếc Hộp Nhắc Việc", {
-          body: `Đã đến giờ: ${taskTitle}`,
-          icon: "https://cdn-icons-png.flaticon.com/512/9068/9068678.png"
+        new Notification(translations[currentLang].appTitle, {
+          body: `${taskTitle}`,
+          icon: "./logo.png"
         });
       }
     }
@@ -932,40 +1078,11 @@
     }
 
     /* ==========================================================
-       9. ĐA NGÔN NGỮ & AUTHENTICATION
+       10. AUTHENTICATION (GOOGLE)
        ========================================================== */
-    let currentLang = 'VIE';
-    function toggleLanguage() {
-      currentLang = currentLang === 'VIE' ? 'ENG' : 'VIE';
-      document.getElementById('langFlag').innerText = currentLang === 'VIE' ? '🇻🇳' : '🇬🇧';
-      document.getElementById('langLabel').innerText = currentLang;
-
-      if (currentLang === 'ENG') {
-        document.getElementById('txtAppTitle').innerText = "Task Box Reminder";
-        document.getElementById('txtSecTime').innerHTML = '<i class="fa-regular fa-clock"></i> Time & Calendar';
-        document.getElementById('txtSecNotes').innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Quick Notes';
-        document.getElementById('txtSecTasks').innerHTML = '<i class="fa-solid fa-list-check"></i> Task Manager';
-        document.getElementById('txtSecAnniv').innerHTML = '<i class="fa-solid fa-cake-candles"></i> Anniversaries';
-        document.getElementById('tabPeriodic').innerText = "Recurring Tasks";
-        document.getElementById('tabOnetime').innerText = "Ad-hoc Tasks";
-        document.getElementById('txtColorLabel').innerText = "Pick Label Color:";
-      } else {
-        document.getElementById('txtAppTitle').innerText = "Chiếc Hộp Nhắc Việc";
-        document.getElementById('txtSecTime').innerHTML = '<i class="fa-regular fa-clock"></i> Thời Gian';
-        document.getElementById('txtSecNotes').innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Ghi Chú';
-        document.getElementById('txtSecTasks').innerHTML = '<i class="fa-solid fa-list-check"></i> Nhắc Việc';
-        document.getElementById('txtSecAnniv').innerHTML = '<i class="fa-solid fa-cake-candles"></i> Ngày Kỷ Niệm (Âm & Dương)';
-        document.getElementById('tabPeriodic').innerText = "Lịch Định Kì";
-        document.getElementById('tabOnetime').innerText = "Việc Phát Sinh";
-        document.getElementById('txtColorLabel').innerText = "Chọn mã màu Label:";
-      }
-      renderCalendar();
-      updateClock();
-    }
-
     function handleAuth() {
       if (!auth) {
-        alert("Chế độ Demo: Vui lòng kết nối Internet để kích hoạt tài khoản Google.");
+        alert(currentLang === 'VIE' ? "Chế độ Demo: Vui lòng kết nối Internet để kích hoạt tài khoản Google." : "Demo Mode: Please connect to internet to activate Google Sign-In.");
         document.getElementById('authOverlay').style.display = 'none';
         return;
       }
@@ -975,8 +1092,11 @@
         currentUser = res.user;
         document.getElementById('authOverlay').style.display = 'none';
         document.getElementById('txtAuthBtn').innerText = currentUser.displayName;
-      }).catch(err => alert("Lỗi đăng nhập: " + err.message));
+      }).catch(err => alert("Sign In Error: " + err.message));
     }
+
+    // Khởi tạo ngôn ngữ ban đầu
+    applyLanguage('VIE');
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
