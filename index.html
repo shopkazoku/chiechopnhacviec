@@ -259,6 +259,19 @@
     .btn-del { color: #FFAAA6; cursor: pointer; border: none; background: none; font-size: 1rem; }
     .btn-del:hover { color: #FF6B6B; }
 
+    /* Badges cho người giao việc */
+    .role-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-right: 6px;
+      background: #FDF2F5;
+      border: 1px solid var(--primary);
+      color: #DFA2B6;
+    }
+
     /* Pomodoro Widget Style */
     .pomodoro-box {
       background: linear-gradient(135deg, #FFF6F9, #FFF0F5);
@@ -411,7 +424,7 @@
   <header>
     <div class="brand">
       <div class="brand-logo-container">
-        <!-- Logo Marki trực tiếp từ GitHub CDN -->
+        <!-- Logo Marki với CDN GitHub trực tiếp -->
         <img 
           src="https://raw.githubusercontent.com/shopkazoku/chiechopnhacviec/main/logo.png" 
           onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" 
@@ -423,7 +436,7 @@
       <span id="txtAppTitle">Chiếc Hộp Nhắc Việc</span>
     </div>
     <div class="nav-controls">
-      <!-- Nút Thử Chuông Gió 3 Hồi Trực Tiếp -->
+      <!-- Nút Thử Chuông Gió 3 Hồi -->
       <button class="btn-test-sound" onclick="testAudioDirectly()">
         <i class="fa-solid fa-volume-high"></i> <span id="txtTestChime">Thử chuông gió</span>
       </button>
@@ -497,7 +510,7 @@
 
       <!-- RIGHT COLUMN -->
       <div class="right-col">
-        <!-- PHẦN 3: NHẮC VIỆC & POMODORO -->
+        <!-- PHẦN 3: NHẮC VIỆC & POMODORO & GIA ĐÌNH -->
         <div class="card">
           <div class="card-header">
             <h2 id="txtSecTasks"><i class="fa-solid fa-list-check"></i> Nhắc Việc</h2>
@@ -542,12 +555,26 @@
             <div class="form-group">
               <input type="text" class="input-box" id="pTaskTitle" />
               <input type="time" class="input-box" id="pTaskTime" />
-              <select class="input-box" id="pTaskRepeat">
+              <select class="input-box" id="pTaskRepeat" style="max-width: 140px;">
                 <option value="daily" id="optDaily">Hàng ngày</option>
                 <option value="weekly" id="optWeekly">Hàng tuần</option>
                 <option value="monthly" id="optMonthly">Hàng tháng</option>
                 <option value="yearly" id="optYearly">Hàng năm</option>
               </select>
+            </div>
+            
+            <!-- Tùy chọn giao việc gia đình/nhóm -->
+            <div class="form-group" style="margin-top: -4px;">
+              <select class="input-box" id="pTaskRole" style="max-width: 180px; font-weight: 600;">
+                <option value="👨 Bố">👨 Bố giao</option>
+                <option value="👩 Mẹ">👩 Mẹ giao</option>
+                <option value="👴 Ông">👴 Ông giao</option>
+                <option value="👵 Bà">👵 Bà giao</option>
+                <option value="💼 Sếp">💼 Sếp giao</option>
+                <option value="🤝 Bạn bè">🤝 Bạn bè hẹn</option>
+                <option value="👤 Cá nhân" selected>👤 Việc của tôi</option>
+              </select>
+              <input type="email" class="input-box" id="pTaskAssignEmail" placeholder="Nhập Gmail người nhận (để gửi nhắc việc cho con/nhân viên)..." />
               <button class="btn-add" id="btnAddPeriodic" onclick="addPeriodicTask()">+ Thêm</button>
             </div>
             <div class="task-list" id="pTaskList"></div>
@@ -558,6 +585,19 @@
             <div class="form-group">
               <input type="text" class="input-box" id="oTaskTitle" />
               <input type="datetime-local" class="input-box" id="oTaskDateTime" />
+            </div>
+            <!-- Tùy chọn giao việc gia đình/nhóm cho việc phát sinh -->
+            <div class="form-group" style="margin-top: -4px;">
+              <select class="input-box" id="oTaskRole" style="max-width: 180px; font-weight: 600;">
+                <option value="👨 Bố">👨 Bố giao</option>
+                <option value="👩 Mẹ">👩 Mẹ giao</option>
+                <option value="👴 Ông">👴 Ông giao</option>
+                <option value="👵 Bà">👵 Bà giao</option>
+                <option value="💼 Sếp">💼 Sếp giao</option>
+                <option value="🤝 Bạn bè">🤝 Bạn bè hẹn</option>
+                <option value="👤 Cá nhân" selected>👤 Việc của tôi</option>
+              </select>
+              <input type="email" class="input-box" id="oTaskAssignEmail" placeholder="Nhập Gmail người nhận (để gửi nhắc việc cho con/nhân viên)..." />
               <button class="btn-add" id="btnAddOnetime" onclick="addOnetimeTask()">+ Thêm</button>
             </div>
             <div class="task-list" id="oTaskList"></div>
@@ -641,7 +681,7 @@
     };
 
     let currentUser = null;
-    let auth, db;
+    let auth = null, db = null;
     try {
       firebase.initializeApp(firebaseConfig);
       auth = firebase.auth();
@@ -651,6 +691,9 @@
         if (user) {
           currentUser = user;
           document.getElementById('txtAuthBtn').innerText = user.displayName || (currentLang === 'VIE' ? "Tài khoản" : "Account");
+          listenToCloudTasks(); // Lắng nghe việc do người khác giao tới email này
+        } else {
+          currentUser = null;
         }
       });
     } catch(e) {
@@ -707,8 +750,7 @@
         // HỒI 3 (Ngân vang lan tỏa trải dài)
         strikeChime(1350, 2093, 1.8, 0.30); // C7
         strikeChime(1500, 2637, 2.0, 0.32); // E7
-        strikeChime(1650, 4186, 2.4, 0.35); // C8 (Chuông gió ngân dài)
-
+        strikeChime(1650, 4186, 2.4, 0.35); // C8
       } catch (e) {
         console.log("Audio Error:", e);
       }
@@ -740,8 +782,8 @@
         pomoStartLbl: "Giờ bắt đầu:",
         btnPomoStart: "Bắt đầu",
         btnPomoPause: "Tạm dừng",
-        pTaskTitlePlace: "Tên công việc (vd: Tập thể dục, Luyện thanh...)",
-        oTaskTitlePlace: "Tên việc phát sinh...",
+        pTaskTitlePlace: "Tên công việc (vd: Tập thể dục, Học tiếng Anh...)",
+        oTaskTitlePlace: "Tên việc phát sinh (vd: Mua tài liệu, Gặp gỡ...)",
         annivTitlePlace: "Kỷ niệm ngày cưới, Giỗ cụ, Tết...",
         annivLunarDayPlace: "Ngày Âm (1-30)",
         annivLunarMonthPlace: "Tháng Âm (1-12)",
@@ -784,8 +826,8 @@
         pomoStartLbl: "Start Time:",
         btnPomoStart: "Start",
         btnPomoPause: "Pause",
-        pTaskTitlePlace: "Task name (e.g. Exercise, Vocal training...)",
-        oTaskTitlePlace: "Ad-hoc task name...",
+        pTaskTitlePlace: "Task name (e.g. Exercise, English lesson...)",
+        oTaskTitlePlace: "Ad-hoc task name (e.g. Buy books, Meeting...)",
         annivTitlePlace: "Wedding anniversary, Ancestor day, Tet...",
         annivLunarDayPlace: "Lunar Day (1-30)",
         annivLunarMonthPlace: "Lunar Month (1-12)",
@@ -906,7 +948,7 @@
       let Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
       let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
       let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
-      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * M);
+      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * Mpr);
       C1 = C1 - 0.0004 * Math.sin(3 * dr * Mpr);
       C1 = C1 + 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
       C1 = C1 - 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
@@ -1115,7 +1157,7 @@
     }
 
     /* ==========================================================
-       9. QUẢN LÝ NHẮC VIỆC & KỶ NIỆM (ÂM/DƯƠNG LẶP HÀNG NĂM)
+       9. QUẢN LÝ NHẮC VIỆC GIA ĐÌNH & ĐỒNG BỘ CLOUD FIRESTORE
        ========================================================== */
     let periodicTasks = JSON.parse(localStorage.getItem('periodicTasks') || '[]');
     let onetimeTasks = JSON.parse(localStorage.getItem('onetimeTasks') || '[]');
@@ -1162,27 +1204,108 @@
       const title = document.getElementById('pTaskTitle').value;
       const time = document.getElementById('pTaskTime').value;
       const repeat = document.getElementById('pTaskRepeat').value;
+      const role = document.getElementById('pTaskRole').value;
+      const assignEmail = document.getElementById('pTaskAssignEmail').value.trim().toLowerCase();
       if (!title || !time) return alert(translations[currentLang].alertInputTask);
 
-      periodicTasks.push({ id: Date.now(), title, time, repeat, color: selectedColor });
+      const taskObj = { 
+        id: Date.now(), 
+        title, 
+        time, 
+        repeat, 
+        color: selectedColor,
+        role: role || '👤 Cá nhân',
+        assignEmail: assignEmail || '',
+        creatorEmail: currentUser ? currentUser.email : ''
+      };
+
+      periodicTasks.push(taskObj);
       saveAndRender();
+
+      // Nếu có nhập email người nhận, đồng bộ lên Cloud Firestore
+      if (assignEmail && db) {
+        db.collection('tasks').add({ ...taskObj, type: 'periodic', createdAt: Date.now() })
+          .then(() => alert(`Đã gửi giao việc "${title}" tới ${assignEmail} thành công!`))
+          .catch(e => console.warn("Firestore error:", e));
+      }
+
       document.getElementById('pTaskTitle').value = '';
+      document.getElementById('pTaskAssignEmail').value = '';
     }
 
     function addOnetimeTask() {
       getAudioContext();
       const title = document.getElementById('oTaskTitle').value;
       const datetime = document.getElementById('oTaskDateTime').value;
+      const role = document.getElementById('oTaskRole').value;
+      const assignEmail = document.getElementById('oTaskAssignEmail').value.trim().toLowerCase();
       if (!title || !datetime) return alert(translations[currentLang].alertInputOnetime);
 
-      onetimeTasks.push({ id: Date.now(), title, datetime, done: false, color: selectedColor, createdAt: Date.now() });
+      const taskObj = { 
+        id: Date.now(), 
+        title, 
+        datetime, 
+        done: false, 
+        color: selectedColor, 
+        createdAt: Date.now(),
+        role: role || '👤 Cá nhân',
+        assignEmail: assignEmail || '',
+        creatorEmail: currentUser ? currentUser.email : ''
+      };
+
+      onetimeTasks.push(taskObj);
       saveAndRender();
+
+      if (assignEmail && db) {
+        db.collection('tasks').add({ ...taskObj, type: 'onetime' })
+          .then(() => alert(`Đã gửi giao việc "${title}" tới ${assignEmail} thành công!`))
+          .catch(e => console.warn("Firestore error:", e));
+      }
+
       document.getElementById('oTaskTitle').value = '';
+      document.getElementById('oTaskAssignEmail').value = '';
     }
 
     function toggleOnetimeTask(id) {
-      onetimeTasks = onetimeTasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+      onetimeTasks = onetimeTasks.map(t => {
+        if (t.id === id) {
+          const newDone = !t.done;
+          if (t.cloudDocId && db) {
+            db.collection('tasks').doc(t.cloudDocId).update({ done: newDone });
+          }
+          return { ...t, done: newDone };
+        }
+        return t;
+      });
       saveAndRender();
+    }
+
+    // Lắng nghe các việc người khác giao cho email đang đăng nhập
+    function listenToCloudTasks() {
+      if (!db || !currentUser || !currentUser.email) return;
+      db.collection('tasks').where('assignEmail', '==', currentUser.email.toLowerCase())
+        .onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            const data = change.doc.data();
+            data.cloudDocId = change.doc.id;
+
+            if (change.type === 'added') {
+              if (data.type === 'periodic' && !periodicTasks.some(t => t.id === data.id)) {
+                periodicTasks.push(data);
+              } else if (data.type === 'onetime' && !onetimeTasks.some(t => t.id === data.id)) {
+                onetimeTasks.push(data);
+              }
+            } else if (change.type === 'modified') {
+              if (data.type === 'onetime') {
+                onetimeTasks = onetimeTasks.map(t => t.id === data.id ? { ...t, done: data.done } : t);
+              }
+            } else if (change.type === 'removed') {
+              periodicTasks = periodicTasks.filter(t => t.id !== data.id);
+              onetimeTasks = onetimeTasks.filter(t => t.id !== data.id);
+            }
+          });
+          saveAndRender();
+        });
     }
 
     function addAnniversary() {
@@ -1215,8 +1338,16 @@
     }
 
     function deleteTask(type, id) {
-      if (type === 'periodic') periodicTasks = periodicTasks.filter(t => t.id !== id);
-      if (type === 'onetime') onetimeTasks = onetimeTasks.filter(t => t.id !== id);
+      if (type === 'periodic') {
+        const t = periodicTasks.find(x => x.id === id);
+        if (t && t.cloudDocId && db) db.collection('tasks').doc(t.cloudDocId).delete();
+        periodicTasks = periodicTasks.filter(x => x.id !== id);
+      }
+      if (type === 'onetime') {
+        const t = onetimeTasks.find(x => x.id === id);
+        if (t && t.cloudDocId && db) db.collection('tasks').doc(t.cloudDocId).delete();
+        onetimeTasks = onetimeTasks.filter(x => x.id !== id);
+      }
       if (type === 'anniv') anniversaries = anniversaries.filter(t => t.id !== id);
       saveAndRender();
     }
@@ -1245,8 +1376,14 @@
           <div class="task-left">
             <i class="fa-solid fa-rotate" style="color: ${t.color}"></i>
             <div>
-              <div class="task-title">${t.title}</div>
-              <div class="task-meta">${t.time} • ${repeatLabels[t.repeat] || t.repeat}</div>
+              <div class="task-title">
+                ${t.role && t.role !== '👤 Cá nhân' ? `<span class="role-badge">${t.role}</span>` : ''}
+                ${t.title}
+              </div>
+              <div class="task-meta">
+                ${t.time} • ${repeatLabels[t.repeat] || t.repeat}
+                ${t.assignEmail ? ` • ✉️ Giao tới: ${t.assignEmail}` : ''}
+              </div>
             </div>
           </div>
           <button class="btn-del" onclick="deleteTask('periodic', ${t.id})"><i class="fa-solid fa-trash"></i></button>
@@ -1259,8 +1396,14 @@
           <div class="task-left">
             <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleOnetimeTask(${t.id})" style="width:18px; height:18px; cursor:pointer;" />
             <div>
-              <div class="task-title" style="text-decoration: ${t.done ? 'line-through' : 'none'}">${t.title}</div>
-              <div class="task-meta">${t.datetime.replace('T', ' ')}</div>
+              <div class="task-title" style="text-decoration: ${t.done ? 'line-through' : 'none'}">
+                ${t.role && t.role !== '👤 Cá nhân' ? `<span class="role-badge">${t.role}</span>` : ''}
+                ${t.title}
+              </div>
+              <div class="task-meta">
+                ${t.datetime.replace('T', ' ')}
+                ${t.assignEmail ? ` • ✉️ Giao tới: ${t.assignEmail}` : ''}
+              </div>
             </div>
           </div>
           <button class="btn-del" onclick="deleteTask('onetime', ${t.id})"><i class="fa-solid fa-trash"></i></button>
@@ -1315,7 +1458,8 @@
       periodicTasks.forEach(t => {
         if (t.time === curHourMin) {
           lastAlertMinute = alertKey;
-          triggerAlarm(t.title);
+          const displayTitle = t.role && t.role !== '👤 Cá nhân' ? `[${t.role}] ${t.title}` : t.title;
+          triggerAlarm(displayTitle);
         }
       });
 
@@ -1323,7 +1467,8 @@
       onetimeTasks.forEach(t => {
         if (!t.done && t.datetime === curISO) {
           lastAlertMinute = alertKey;
-          triggerAlarm(t.title, t.id);
+          const displayTitle = t.role && t.role !== '👤 Cá nhân' ? `[${t.role}] ${t.title}` : t.title;
+          triggerAlarm(displayTitle, t.id);
         }
       });
 
@@ -1350,7 +1495,7 @@
 
     function triggerAlarm(taskTitle, taskId = null) {
       currentActiveAlertTaskId = taskId;
-      playWindChime(); // Kích hoạt 3 hồi chuông gió ngân vang
+      playWindChime();
 
       // 1. Hiện Pop-up cảnh báo nổi bật giữa màn hình
       triggerAlertModal(taskTitle);
@@ -1402,6 +1547,7 @@
         currentUser = res.user;
         document.getElementById('txtAuthBtn').innerText = currentUser.displayName;
         alert(currentLang === 'VIE' ? `Chào mừng Boss ${currentUser.displayName}!` : `Welcome Boss ${currentUser.displayName}!`);
+        listenToCloudTasks();
       }).catch(err => {
         alert("Lỗi đăng nhập: " + err.message);
       });
