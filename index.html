@@ -423,7 +423,7 @@
       <span id="txtAppTitle">Chiếc Hộp Nhắc Việc</span>
     </div>
     <div class="nav-controls">
-      <!-- Nút Thử Chuông Gió 2 Hồi Trực Tiếp -->
+      <!-- Nút Thử Chuông Gió 3 Hồi Trực Tiếp -->
       <button class="btn-test-sound" onclick="testAudioDirectly()">
         <i class="fa-solid fa-volume-high"></i> <span id="txtTestChime">Thử chuông gió</span>
       </button>
@@ -658,7 +658,7 @@
     }
 
     /* ==========================================================
-       2. HỆ THỐNG MỞ KHÓA ÂM THANH CHUÔNG GIÓ (AUDIO UNLOCKER)
+       2. HỆ THỐNG ÂM THANH 3 HỒI CHUÔNG GIÓ MARKI PRO
        ========================================================== */
     let globalAudioCtx = null;
 
@@ -673,37 +673,42 @@
       return globalAudioCtx;
     }
 
-    // Tự động mở khóa âm thanh ngay khi người dùng chạm/bấm bất kỳ đâu
     document.addEventListener('click', () => { getAudioContext(); }, { once: false });
     document.addEventListener('touchstart', () => { getAudioContext(); }, { once: false });
 
     function playWindChime() {
       try {
         const ctx = getAudioContext();
-        const chimeFreqs = [1760, 2093, 2637, 3135];
 
-        function strikeChime(delayMs, freq) {
+        function strikeChime(delayMs, freq, duration = 1.4, volume = 0.3) {
           setTimeout(() => {
             const nowTime = ctx.currentTime;
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.type = 'sine';
             osc.frequency.setValueAtTime(freq, nowTime);
-            gain.gain.setValueAtTime(0.3, nowTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, nowTime + 1.2);
+            gain.gain.setValueAtTime(volume, nowTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, nowTime + duration);
             osc.connect(gain);
             gain.connect(ctx.destination);
             osc.start(nowTime);
-            osc.stop(nowTime + 1.2);
+            osc.stop(nowTime + duration);
           }, delayMs);
         }
 
-        // Hồi 1
-        strikeChime(0, chimeFreqs[0]);
-        strikeChime(150, chimeFreqs[1]);
-        // Hồi 2
-        strikeChime(600, chimeFreqs[2]);
-        strikeChime(750, chimeFreqs[3]);
+        // HỒI 1 (Khởi động thanh thoát)
+        strikeChime(0, 1760, 1.2, 0.28);   // A6
+        strikeChime(150, 2093, 1.3, 0.30); // C7
+
+        // HỒI 2 (Cao trào nổi bật)
+        strikeChime(650, 2637, 1.4, 0.32); // E7
+        strikeChime(820, 3135, 1.5, 0.34); // G7
+
+        // HỒI 3 (Ngân vang lan tỏa trải dài)
+        strikeChime(1350, 2093, 1.8, 0.30); // C7
+        strikeChime(1500, 2637, 2.0, 0.32); // E7
+        strikeChime(1650, 4186, 2.4, 0.35); // C8 (Chuông gió ngân dài)
+
       } catch (e) {
         console.log("Audio Error:", e);
       }
@@ -711,7 +716,7 @@
 
     function testAudioDirectly() {
       playWindChime();
-      triggerAlertModal(currentLang === 'VIE' ? "Kiểm tra chuông gió 2 hồi thành công! 🔔" : "Wind chime test successful! 🔔");
+      triggerAlertModal(currentLang === 'VIE' ? "Kiểm tra 3 hồi chuông gió thành công! 🔔" : "3-Burst Wind Chime test successful! 🔔");
     }
 
     /* ==========================================================
@@ -901,7 +906,7 @@
       let Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
       let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
       let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
-      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * Mpr);
+      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * M);
       C1 = C1 - 0.0004 * Math.sin(3 * dr * Mpr);
       C1 = C1 + 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
       C1 = C1 - 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
@@ -1059,7 +1064,7 @@
       const isChecked = document.getElementById('togglePomodoro').checked;
       document.getElementById('pomoControlArea').style.display = isChecked ? 'flex' : 'none';
       if (isChecked) {
-        getAudioContext(); // Mở khóa âm thanh
+        getAudioContext();
         const now = new Date();
         document.getElementById('pomoStartTime').value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
       } else {
@@ -1294,7 +1299,7 @@
     }
 
     /* ==========================================================
-       10. CƠ CHẾ POP-UP CẢNH BÁO TOÀN MÀN HÌNH & CHUÔNG GIÓ CHUẨN XÁC
+       10. CƠ CHẾ POP-UP CẢNH BÁO TOÀN MÀN HÌNH & 3 HỒI CHUÔNG GIÓ
        ========================================================== */
     function checkDeadlines() {
       const now = new Date();
@@ -1303,7 +1308,6 @@
       const curMonthDay = `${String(now.getMonth() + 1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
       const [curLunarDay, curLunarMonth] = convertSolar2Lunar(now.getDate(), now.getMonth() + 1, now.getFullYear());
 
-      // Tránh lặp lại cảnh báo liên tục trong cùng 1 phút
       const alertKey = `${curISO}`;
       if (lastAlertMinute === alertKey) return;
 
@@ -1346,7 +1350,7 @@
 
     function triggerAlarm(taskTitle, taskId = null) {
       currentActiveAlertTaskId = taskId;
-      playWindChime();
+      playWindChime(); // Kích hoạt 3 hồi chuông gió ngân vang
 
       // 1. Hiện Pop-up cảnh báo nổi bật giữa màn hình
       triggerAlertModal(taskTitle);
