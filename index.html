@@ -25,7 +25,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding-bottom: 50px; }
+    body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding-bottom: 30px; }
 
     /* Top Marquee Banner */
     #topBanner {
@@ -64,17 +64,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #fff;
+      background: #FFF0F5;
+      flex-shrink: 0;
     }
-    .brand-logo-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.2s;
-    }
+    .brand-logo-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s; }
     .brand-logo-container:hover .brand-logo-img { transform: scale(1.1); }
+    
     .nav-controls { display: flex; align-items: center; gap: 12px; }
-
     .btn-lang {
       background: var(--primary-light);
       border: 1.5px solid var(--primary);
@@ -87,7 +83,6 @@
       gap: 6px;
       color: var(--text-main);
       transition: all 0.2s;
-      user-select: none;
     }
     .btn-lang:hover { background: var(--primary); color: #fff; transform: scale(1.03); }
 
@@ -248,6 +243,32 @@
     .btn-del { color: #FFAAA6; cursor: pointer; border: none; background: none; font-size: 1rem; }
     .btn-del:hover { color: #FF6B6B; }
 
+    /* Pomodoro Widget Style */
+    .pomodoro-box {
+      background: linear-gradient(135deg, #FFF6F9, #FFF0F5);
+      border: 1.5px dashed var(--primary);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    .pomo-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .pomo-title { font-weight: 700; font-size: 0.95rem; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+    .pomo-desc { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
+    .pomo-controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .pomo-timer-val { font-size: 1.6rem; font-weight: 700; color: var(--primary-dark); letter-spacing: 1px; }
+    .pomo-btn {
+      background: var(--primary);
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .pomo-btn:hover { background: var(--primary-dark); }
+
     /* Section 4: Anniversary */
     .cal-type-toggle {
       display: flex;
@@ -274,8 +295,7 @@
       color: var(--primary-dark);
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
-
-    .anniv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-top: 12px; }
+    .anniv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-top: 12px; }
     .anniv-card {
       background: linear-gradient(135deg, #FFF9FB, #FFF2F6);
       border: 1px solid var(--border-color);
@@ -294,7 +314,74 @@
     }
     .badge-solar { background: #E2F0CB; color: #5B7A28; }
     .badge-lunar { background: #FFDAC1; color: #8A4F26; }
+    .badge-repeat { background: #DAEAF6; color: #36658C; }
     .anniv-icon { font-size: 2rem; margin-bottom: 4px; }
+
+    /* Fullscreen Pop-up Alert Modal */
+    #deadlineModal {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(74, 62, 69, 0.65);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      animation: popFadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popFadeIn { 0% { opacity: 0; transform: scale(0.85); } 100% { opacity: 1; transform: scale(1); } }
+    .modal-alert-box {
+      background: #fff;
+      padding: 30px 24px;
+      border-radius: 26px;
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 16px 40px rgba(223, 162, 182, 0.5);
+      border: 2px solid var(--primary);
+    }
+    .alert-chime-icon {
+      font-size: 3.5rem;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+      animation: chimeRing 1.5s ease-in-out infinite;
+    }
+    @keyframes chimeRing {
+      0%, 100% { transform: rotate(0); }
+      20%, 60% { transform: rotate(15deg); }
+      40%, 80% { transform: rotate(-15deg); }
+    }
+
+    /* Bottom Signature Footer */
+    footer {
+      max-width: 1280px;
+      margin: 20px auto 10px auto;
+      padding: 15px 20px;
+      text-align: center;
+      background: var(--card-bg);
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 15px rgba(242, 193, 209, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .footer-text {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: 0.5px;
+    }
+    .clover-icon {
+      font-size: 1.35rem;
+      display: inline-block;
+      animation: cloverPulse 2s ease-in-out infinite;
+    }
+    @keyframes cloverPulse {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.2) rotate(10deg); }
+    }
   </style>
 </head>
 <body>
@@ -308,8 +395,14 @@
   <header>
     <div class="brand">
       <div class="brand-logo-container">
-        <!-- Logo Marki tự động tải online dự phòng chắc chắn 100% hiển thị -->
-        <img src="./logo.png" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" alt="Marki Logo" class="brand-logo-img" id="appLogoImg" />
+        <!-- Logo Marki với CDN GitHub chuẩn xác -->
+        <img 
+          src="https://raw.githubusercontent.com/shopkazoku/chiechopnhacviec/main/logo.png" 
+          onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" 
+          alt="Marki Logo" 
+          class="brand-logo-img" 
+          id="appLogoImg" 
+        />
       </div>
       <span id="txtAppTitle">Chiếc Hộp Nhắc Việc</span>
     </div>
@@ -323,6 +416,24 @@
       </button>
     </div>
   </header>
+
+  <!-- Pop-up Cảnh Báo Toàn Màn Hình Khi Đến Hạn -->
+  <div id="deadlineModal" style="display: none;">
+    <div class="modal-alert-box">
+      <div class="alert-chime-icon"><i class="fa-solid fa-bell"></i></div>
+      <h2 style="font-weight: 700; color: #DFA2B6; margin-bottom: 8px;" id="txtModalAlertTitle">🔔 TỚI HẠN CÔNG VIỆC!</h2>
+      <p style="font-size: 1.15rem; font-weight: 700; color: #4A3E45; margin-bottom: 12px;" id="modalTaskName">Tên công việc</p>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 22px;" id="txtModalAlertDesc">Đã đến thời gian hoàn thành. Hãy tập trung xử lý ngay nhé!</p>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-auth" style="flex:1; justify-content: center; background: #CCE2CB; color: #2B5B2B;" onclick="closeModalAlert(true)">
+          <i class="fa-solid fa-check"></i> <span id="btnModalDone">Hoàn thành ngay</span>
+        </button>
+        <button class="btn-auth" style="flex:1; justify-content: center;" onclick="closeModalAlert(false)">
+          <span id="btnModalDismiss">Đã hiểu</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Main Container -->
   <div class="container">
@@ -366,10 +477,34 @@
 
       <!-- RIGHT COLUMN -->
       <div class="right-col">
-        <!-- PHẦN 3: NHẮC VIỆC -->
+        <!-- PHẦN 3: NHẮC VIỆC & POMODORO -->
         <div class="card">
           <div class="card-header">
             <h2 id="txtSecTasks"><i class="fa-solid fa-list-check"></i> Nhắc Việc</h2>
+          </div>
+
+          <!-- Tiện ích Pomodoro 30 Phút -->
+          <div class="pomodoro-box">
+            <div class="pomo-header">
+              <div class="pomo-title">
+                <input type="checkbox" id="togglePomodoro" onchange="handlePomoToggle()" style="width: 18px; height: 18px; cursor: pointer;" />
+                <span id="txtPomoTitle">⏱️ Chế độ Tập Trung Pomodoro (30 Phút/Phiên)</span>
+              </div>
+              <span class="pomo-timer-val" id="pomoTimerDisplay">25:00</span>
+            </div>
+            <div class="pomo-desc" id="txtPomoDesc">
+              Mỗi phiên gồm 30 phút nhắc việc: 25 phút làm việc tích cực và 5 phút nghỉ ngơi thư giãn. Các việc chọn sẽ tự động tạo thành block 30 phút.
+            </div>
+            <div class="pomo-controls" id="pomoControlArea" style="display: none;">
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <label style="font-size: 0.8rem; font-weight: 700;" id="txtPomoStartLbl">Giờ bắt đầu:</label>
+                <input type="time" class="input-box" id="pomoStartTime" style="padding: 4px 8px; min-width: 90px;" />
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="pomo-btn" id="btnPomoStart" onclick="startPomodoro()"><i class="fa-solid fa-play"></i> Bắt đầu</button>
+                <button class="pomo-btn" style="background:#FFAAA6;" onclick="resetPomodoro()"><i class="fa-solid fa-rotate"></i> Reset</button>
+              </div>
+            </div>
           </div>
 
           <!-- Bảng màu Pastel -->
@@ -409,7 +544,7 @@
           </div>
         </div>
 
-        <!-- PHẦN 4: NGÀY KỶ NIỆM (ÂM & DƯƠNG) -->
+        <!-- PHẦN 4: NGÀY KỶ NIỆM (ÂM & DƯƠNG - LẶP HÀNG NĂM) -->
         <div class="card">
           <div class="card-header">
             <h2 id="txtSecAnniv"><i class="fa-solid fa-cake-candles"></i> Ngày Kỷ Niệm (Âm & Dương)</h2>
@@ -443,6 +578,13 @@
             </div>
 
             <input type="time" class="input-box" id="annivTime" value="08:00" />
+            
+            <!-- Tùy chọn lặp hàng năm -->
+            <select class="input-box" id="annivRepeat" style="max-width: 140px;">
+              <option value="yearly" id="optAnnivYearly">🔁 Hàng năm</option>
+              <option value="once" id="optAnnivOnce">1️⃣ Một lần</option>
+            </select>
+
             <button class="btn-add" id="btnAddAnniv" onclick="addAnniversary()">+ Thêm</button>
           </div>
           <div class="anniv-grid" id="annivList"></div>
@@ -451,6 +593,13 @@
 
     </div>
   </div>
+
+  <!-- Bottom Signature Footer -->
+  <footer>
+    <span class="clover-icon">🍀</span>
+    <span class="footer-text" id="txtFooterMsg">Have a nice day (Sơn Marki)</span>
+    <span class="clover-icon">🍀</span>
+  </footer>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -489,7 +638,7 @@
     }
 
     /* ==========================================================
-       2. TỪ ĐIỂN ĐA NGÔN NGỮ HOÀN HẢO (VIE / ENG)
+       2. TỪ ĐIỂN ĐA NGÔN NGỮ HOÀN CHỈNH (VIE / ENG)
        ========================================================== */
     let currentLang = 'VIE';
 
@@ -503,6 +652,11 @@
         tabPeriodic: "Lịch Định Kì",
         tabOnetime: "Việc Phát Sinh",
         colorLabel: "Chọn mã màu Label:",
+        pomoTitle: "⏱️ Chế độ Tập Trung Pomodoro (30 Phút/Phiên)",
+        pomoDesc: "Mỗi phiên gồm 30 phút nhắc việc: 25 phút làm việc tích cực và 5 phút nghỉ ngơi thư giãn. Các việc chọn sẽ tự động tạo thành block 30 phút.",
+        pomoStartLbl: "Giờ bắt đầu:",
+        btnPomoStart: "Bắt đầu",
+        btnPomoPause: "Tạm dừng",
         pTaskTitlePlace: "Tên công việc (vd: Tập thể dục, Luyện thanh...)",
         oTaskTitlePlace: "Tên việc phát sinh...",
         annivTitlePlace: "Kỷ niệm ngày cưới, Giỗ cụ, Tết...",
@@ -517,6 +671,13 @@
         optWeekly: "Hàng tuần",
         optMonthly: "Hàng tháng",
         optYearly: "Hàng năm",
+        optAnnivYearly: "🔁 Hàng năm",
+        optAnnivOnce: "1️⃣ Một lần",
+        modalAlertTitle: "🔔 TỚI HẠN CÔNG VIỆC!",
+        modalAlertDesc: "Đã đến thời gian hoàn thành. Hãy tập trung xử lý ngay nhé!",
+        btnModalDone: "Hoàn thành ngay",
+        btnModalDismiss: "Đã hiểu",
+        footerMsg: "Have a nice day (Sơn Marki)",
         alertInputTask: "Vui lòng nhập tên công việc và thời gian!",
         alertInputOnetime: "Vui lòng nhập tên việc và deadline!",
         alertInputAnniv: "Vui lòng nhập tiêu đề kỷ niệm!",
@@ -534,6 +695,11 @@
         tabPeriodic: "Recurring Tasks",
         tabOnetime: "Ad-hoc Tasks",
         colorLabel: "Pick Label Color:",
+        pomoTitle: "⏱️ Pomodoro Focus Mode (30 Min/Session)",
+        pomoDesc: "Each session has a 30-min block: 25 mins active focus & 5 mins rest. Tasks will automatically form 30-minute blocks.",
+        pomoStartLbl: "Start Time:",
+        btnPomoStart: "Start",
+        btnPomoPause: "Pause",
         pTaskTitlePlace: "Task name (e.g. Exercise, Vocal training...)",
         oTaskTitlePlace: "Ad-hoc task name...",
         annivTitlePlace: "Wedding anniversary, Ancestor day, Tet...",
@@ -548,6 +714,13 @@
         optWeekly: "Weekly",
         optMonthly: "Monthly",
         optYearly: "Yearly",
+        optAnnivYearly: "🔁 Yearly",
+        optAnnivOnce: "1️⃣ Once",
+        modalAlertTitle: "🔔 TASK DEADLINE DUE!",
+        modalAlertDesc: "It is time to complete your task. Focus on it now!",
+        btnModalDone: "Done Now",
+        btnModalDismiss: "Understood",
+        footerMsg: "Have a nice day (Sơn Marki)",
         alertInputTask: "Please enter task title and time!",
         alertInputOnetime: "Please enter task title and deadline!",
         alertInputAnniv: "Please enter anniversary title!",
@@ -569,6 +742,10 @@
       document.getElementById('tabOnetime').innerText = t.tabOnetime;
       document.getElementById('txtColorLabel').innerText = t.colorLabel;
       
+      document.getElementById('txtPomoTitle').innerText = t.pomoTitle;
+      document.getElementById('txtPomoDesc').innerText = t.pomoDesc;
+      document.getElementById('txtPomoStartLbl').innerText = t.pomoStartLbl;
+      
       document.getElementById('pTaskTitle').placeholder = t.pTaskTitlePlace;
       document.getElementById('oTaskTitle').placeholder = t.oTaskTitlePlace;
       document.getElementById('annivTitle').placeholder = t.annivTitlePlace;
@@ -589,6 +766,14 @@
       document.getElementById('optWeekly').innerText = t.optWeekly;
       document.getElementById('optMonthly').innerText = t.optMonthly;
       document.getElementById('optYearly').innerText = t.optYearly;
+      document.getElementById('optAnnivYearly').innerText = t.optAnnivYearly;
+      document.getElementById('optAnnivOnce').innerText = t.optAnnivOnce;
+
+      document.getElementById('txtModalAlertTitle').innerText = t.modalAlertTitle;
+      document.getElementById('txtModalAlertDesc').innerText = t.modalAlertDesc;
+      document.getElementById('btnModalDone').innerText = t.btnModalDone;
+      document.getElementById('btnModalDismiss').innerText = t.btnModalDismiss;
+      document.getElementById('txtFooterMsg').innerText = t.footerMsg;
 
       document.getElementById('langFlag').innerText = lang === 'VIE' ? '🇻🇳' : '🇬🇧';
       document.getElementById('langLabel').innerText = lang;
@@ -718,7 +903,7 @@
             const gain = ctx.createGain();
             osc.type = 'sine';
             osc.frequency.setValueAtTime(freq, ctx.currentTime);
-            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.setValueAtTime(0.25, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.2);
             osc.connect(gain);
             gain.connect(ctx.destination);
@@ -816,12 +1001,73 @@
     }
 
     /* ==========================================================
-       8. QUẢN LÝ NHẮC VIỆC & KỶ NIỆM (ÂM / DƯƠNG)
+       8. TIỆN ÍCH POMODORO 30 PHÚT (25M WORK + 5M REST)
+       ========================================================== */
+    let pomoInterval = null;
+    let pomoSecondsLeft = 25 * 60;
+    let isPomoRunning = false;
+    let pomoMode = 'work';
+
+    function handlePomoToggle() {
+      const isChecked = document.getElementById('togglePomodoro').checked;
+      document.getElementById('pomoControlArea').style.display = isChecked ? 'flex' : 'none';
+      if (isChecked) {
+        const now = new Date();
+        document.getElementById('pomoStartTime').value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      } else {
+        resetPomodoro();
+      }
+    }
+
+    function startPomodoro() {
+      if (isPomoRunning) {
+        clearInterval(pomoInterval);
+        isPomoRunning = false;
+        document.getElementById('btnPomoStart').innerHTML = `<i class="fa-solid fa-play"></i> ${translations[currentLang].btnPomoStart}`;
+        return;
+      }
+
+      isPomoRunning = true;
+      document.getElementById('btnPomoStart').innerHTML = `<i class="fa-solid fa-pause"></i> ${translations[currentLang].btnPomoPause}`;
+      
+      pomoInterval = setInterval(() => {
+        pomoSecondsLeft--;
+        const mins = Math.floor(pomoSecondsLeft / 60);
+        const secs = pomoSecondsLeft % 60;
+        document.getElementById('pomoTimerDisplay').innerText = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+        if (pomoSecondsLeft <= 0) {
+          playWindChime();
+          if (pomoMode === 'work') {
+            pomoMode = 'rest';
+            pomoSecondsLeft = 5 * 60;
+            triggerAlertModal("Pomodoro: Hết 25 phút tập trung! Hãy nghỉ ngơi 5 phút.");
+          } else {
+            pomoMode = 'work';
+            pomoSecondsLeft = 25 * 60;
+            triggerAlertModal("Pomodoro: Hết 5 phút nghỉ! Bắt đầu phiên làm việc mới.");
+          }
+        }
+      }, 1000);
+    }
+
+    function resetPomodoro() {
+      clearInterval(pomoInterval);
+      isPomoRunning = false;
+      pomoMode = 'work';
+      pomoSecondsLeft = 25 * 60;
+      document.getElementById('pomoTimerDisplay').innerText = "25:00";
+      document.getElementById('btnPomoStart').innerHTML = `<i class="fa-solid fa-play"></i> ${translations[currentLang].btnPomoStart}`;
+    }
+
+    /* ==========================================================
+       9. QUẢN LÝ NHẮC VIỆC & KỶ NIỆM (ÂM/DƯƠNG LẶP HÀNG NĂM)
        ========================================================== */
     let periodicTasks = JSON.parse(localStorage.getItem('periodicTasks') || '[]');
     let onetimeTasks = JSON.parse(localStorage.getItem('onetimeTasks') || '[]');
     let anniversaries = JSON.parse(localStorage.getItem('anniversaries') || '[]');
     let currentAnnivCalType = 'solar';
+    let currentActiveAlertTaskId = null;
 
     function setAnnivCalType(type) {
       currentAnnivCalType = type;
@@ -886,9 +1132,10 @@
       const title = document.getElementById('annivTitle').value;
       const icon = document.getElementById('annivIcon').value;
       const time = document.getElementById('annivTime').value;
+      const repeat = document.getElementById('annivRepeat').value;
       if (!title) return alert(translations[currentLang].alertInputAnniv);
 
-      let annivObj = { id: Date.now(), title, icon, time, calType: currentAnnivCalType };
+      let annivObj = { id: Date.now(), title, icon, time, repeat, calType: currentAnnivCalType };
 
       if (currentAnnivCalType === 'solar') {
         const date = document.getElementById('annivSolarDate').value;
@@ -962,16 +1209,19 @@
         </div>
       `).join('');
 
-      // Render Anniversaries (Âm & Dương)
+      // Render Anniversaries (Âm & Dương + Lặp Hàng Năm)
       const currentYear = new Date().getFullYear();
       document.getElementById('annivList').innerHTML = anniversaries.map(a => {
         let dateText = '';
         let badgeHtml = '';
+        const isYearly = (a.repeat === 'yearly');
+        const repeatBadge = isYearly ? `<span class="anniv-badge badge-repeat">🔁 ${currentLang === 'VIE' ? 'Hàng năm' : 'Yearly'}</span>` : '';
+
         if (a.calType === 'solar') {
-          badgeHtml = `<span class="anniv-badge badge-solar">${currentLang === 'VIE' ? '☀️ Dương Lịch' : '☀️ Solar'}</span>`;
+          badgeHtml = `<span class="anniv-badge badge-solar">${currentLang === 'VIE' ? '☀️ Dương Lịch' : '☀️ Solar'}</span> ${repeatBadge}`;
           dateText = `${a.solarDate} (${a.time})`;
         } else {
-          badgeHtml = `<span class="anniv-badge badge-lunar">${currentLang === 'VIE' ? '🌙 Âm Lịch' : '🌙 Lunar'}</span>`;
+          badgeHtml = `<span class="anniv-badge badge-lunar">${currentLang === 'VIE' ? '🌙 Âm Lịch' : '🌙 Lunar'}</span> ${repeatBadge}`;
           const [sd, sm, sy] = convertLunar2Solar(a.lunarDay, a.lunarMonth, currentYear);
           const lunarPrefix = currentLang === 'VIE' ? 'Âm:' : 'Lunar:';
           const solarPrefix = currentLang === 'VIE' ? 'Dương:' : 'Solar:';
@@ -991,12 +1241,13 @@
     }
 
     /* ==========================================================
-       9. CƠ CHẾ DEADLINE & CHUÔNG GIÓ
+       10. CƠ CHẾ POP-UP CẢNH BÁO TOÀN MÀN HÌNH & CHUÔNG GIÓ
        ========================================================== */
     function checkDeadlines() {
       const now = new Date();
       const curHourMin = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
       const curISO = now.toISOString().slice(0, 16);
+      const curMonthDay = `${String(now.getMonth() + 1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
       const [curLunarDay, curLunarMonth] = convertSolar2Lunar(now.getDate(), now.getMonth() + 1, now.getFullYear());
 
       // Check Periodic
@@ -1006,37 +1257,60 @@
 
       // Check Onetime
       onetimeTasks.forEach(t => {
-        if (!t.done && t.datetime === curISO && now.getSeconds() === 0) triggerAlarm(t.title);
+        if (!t.done && t.datetime === curISO && now.getSeconds() === 0) triggerAlarm(t.title, t.id);
       });
 
-      // Check Anniversaries
+      // Check Anniversaries (Hỗ trợ lặp lại hàng năm cả Âm & Dương)
       anniversaries.forEach(a => {
         if (a.time === curHourMin && now.getSeconds() === 0) {
-          if (a.calType === 'solar' && a.solarDate === now.toISOString().slice(0, 10)) {
-            triggerAlarm(`Anniversary: ${a.title}`);
-          } else if (a.calType === 'lunar' && a.lunarDay === curLunarDay && a.lunarMonth === curLunarMonth) {
-            triggerAlarm(`Lunar Anniversary: ${a.title}`);
+          if (a.calType === 'solar') {
+            const solarMD = a.solarDate ? a.solarDate.slice(5) : '';
+            const isMatch = (a.repeat === 'yearly') ? (solarMD === curMonthDay) : (a.solarDate === now.toISOString().slice(0, 10));
+            if (isMatch) triggerAlarm(`Kỷ niệm: ${a.title}`);
+          } else if (a.calType === 'lunar') {
+            if (a.lunarDay === curLunarDay && a.lunarMonth === curLunarMonth) {
+              triggerAlarm(`Kỷ niệm (Âm lịch): ${a.title}`);
+            }
           }
         }
       });
     }
     setInterval(checkDeadlines, 1000);
 
-    function triggerAlarm(taskTitle) {
+    function triggerAlarm(taskTitle, taskId = null) {
+      currentActiveAlertTaskId = taskId;
       playWindChime();
 
+      // 1. Hiện Pop-up cảnh báo nổi bật giữa màn hình (PC & Mobile)
+      triggerAlertModal(taskTitle);
+
+      // 2. Banner Marquee chạy trên đầu
       const banner = document.getElementById('topBanner');
       const t = translations[currentLang];
       document.getElementById('marqueeMsg').innerText = `${t.dueMsg} ${taskTitle} - ${t.dueSub}`;
       banner.style.display = 'block';
-      setTimeout(() => { banner.style.display = 'none'; }, 20000);
+      setTimeout(() => { banner.style.display = 'none'; }, 25000);
 
+      // 3. Thông báo đẩy hệ thống
       if ("Notification" in window && Notification.permission === "granted") {
         new Notification(translations[currentLang].appTitle, {
           body: `${taskTitle}`,
-          icon: "./logo.png"
+          icon: "https://raw.githubusercontent.com/shopkazoku/chiechopnhacviec/main/logo.png"
         });
       }
+    }
+
+    function triggerAlertModal(taskName) {
+      document.getElementById('modalTaskName').innerText = taskName;
+      document.getElementById('deadlineModal').style.display = 'flex';
+    }
+
+    function closeModalAlert(isCompleted) {
+      document.getElementById('deadlineModal').style.display = 'none';
+      if (isCompleted && currentActiveAlertTaskId) {
+        toggleOnetimeTask(currentActiveAlertTaskId);
+      }
+      currentActiveAlertTaskId = null;
     }
 
     if ("Notification" in window && Notification.permission !== "granted") {
@@ -1044,7 +1318,7 @@
     }
 
     /* ==========================================================
-       10. AUTHENTICATION TRỰC TIẾP
+       11. AUTHENTICATION TRỰC TIẾP
        ========================================================== */
     function handleAuth() {
       if (!auth) {
@@ -1052,13 +1326,12 @@
         return;
       }
       const provider = new firebase.auth.GoogleAuthProvider();
-      provider.addScope('https://www.googleapis.com/auth/calendar.events');
       auth.signInWithPopup(provider).then((res) => {
         currentUser = res.user;
         document.getElementById('txtAuthBtn').innerText = currentUser.displayName;
         alert(currentLang === 'VIE' ? `Chào mừng Boss ${currentUser.displayName}!` : `Welcome Boss ${currentUser.displayName}!`);
       }).catch(err => {
-        alert("Lỗi đăng nhập: " + err.message + "\n(Vui lòng kiểm tra đã thêm domain vào Firebase Authorized Domains chưa).");
+        alert("Lỗi đăng nhập: " + err.message);
       });
     }
 
