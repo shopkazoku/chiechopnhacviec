@@ -259,7 +259,7 @@
     .btn-del { color: #FFAAA6; cursor: pointer; border: none; background: none; font-size: 1rem; }
     .btn-del:hover { color: #FF6B6B; }
 
-    /* Badges cho người giao việc */
+    /* Badges cho nhóm giao việc */
     .role-badge {
       display: inline-block;
       font-size: 0.75rem;
@@ -364,7 +364,7 @@
       padding: 30px 24px;
       border-radius: 26px;
       text-align: center;
-      max-width: 420px;
+      max-width: 440px;
       width: 90%;
       box-shadow: 0 16px 40px rgba(223, 162, 182, 0.5);
       border: 2px solid var(--primary);
@@ -424,7 +424,7 @@
   <header>
     <div class="brand">
       <div class="brand-logo-container">
-        <!-- Logo Marki với CDN GitHub trực tiếp -->
+        <!-- Logo Marki trực tiếp từ GitHub CDN -->
         <img 
           src="https://raw.githubusercontent.com/shopkazoku/chiechopnhacviec/main/logo.png" 
           onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" 
@@ -450,12 +450,13 @@
     </div>
   </header>
 
-  <!-- Pop-up Cảnh Báo Toàn Màn Hình Khi Đến Hạn -->
+  <!-- Pop-up Cảnh Báo Toàn Màn Hình Khi Đến Hạn (Hiển thị song song cả 2 máy) -->
   <div id="deadlineModal" style="display: none;">
     <div class="modal-alert-box">
       <div class="alert-chime-icon"><i class="fa-solid fa-bell"></i></div>
       <h2 style="font-weight: 700; color: #DFA2B6; margin-bottom: 8px;" id="txtModalAlertTitle">🔔 TỚI HẠN CÔNG VIỆC!</h2>
-      <p style="font-size: 1.15rem; font-weight: 700; color: #4A3E45; margin-bottom: 12px;" id="modalTaskName">Tên công việc</p>
+      <p style="font-size: 1.15rem; font-weight: 700; color: #4A3E45; margin-bottom: 8px;" id="modalTaskName">Tên công việc</p>
+      <p style="font-size: 0.85rem; font-weight: 600; color: #DFA2B6; margin-bottom: 12px;" id="modalTaskSyncInfo"></p>
       <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 22px;" id="txtModalAlertDesc">Đã đến thời gian hoàn thành. Hãy tập trung xử lý ngay nhé!</p>
       <div style="display: flex; gap: 10px;">
         <button class="btn-auth" style="flex:1; justify-content: center; background: #CCE2CB; color: #2B5B2B;" onclick="closeModalAlert(true)">
@@ -510,7 +511,7 @@
 
       <!-- RIGHT COLUMN -->
       <div class="right-col">
-        <!-- PHẦN 3: NHẮC VIỆC & POMODORO & GIA ĐÌNH -->
+        <!-- PHẦN 3: NHẮC VIỆC & POMODORO & 4 NHÓM GIAO VIỆC -->
         <div class="card">
           <div class="card-header">
             <h2 id="txtSecTasks"><i class="fa-solid fa-list-check"></i> Nhắc Việc</h2>
@@ -563,18 +564,16 @@
               </select>
             </div>
             
-            <!-- Tùy chọn giao việc gia đình/nhóm -->
+            <!-- 4 Nhóm Giao Việc: Gia đình, Công việc, Bạn bè, Học tập -->
             <div class="form-group" style="margin-top: -4px;">
               <select class="input-box" id="pTaskRole" style="max-width: 180px; font-weight: 600;">
-                <option value="👨 Bố">👨 Bố giao</option>
-                <option value="👩 Mẹ">👩 Mẹ giao</option>
-                <option value="👴 Ông">👴 Ông giao</option>
-                <option value="👵 Bà">👵 Bà giao</option>
-                <option value="💼 Sếp">💼 Sếp giao</option>
-                <option value="🤝 Bạn bè">🤝 Bạn bè hẹn</option>
-                <option value="👤 Cá nhân" selected>👤 Việc của tôi</option>
+                <option value="👨‍👩‍👧 Gia đình" id="optRoleFamily_P">👨‍👩‍👧 Gia đình</option>
+                <option value="💼 Công việc" id="optRoleWork_P">💼 Công việc</option>
+                <option value="🤝 Bạn bè" id="optRoleFriends_P">🤝 Bạn bè</option>
+                <option value="📚 Học tập" id="optRoleStudy_P">📚 Học tập</option>
+                <option value="👤 Cá nhân" id="optRolePersonal_P" selected>👤 Cá nhân</option>
               </select>
-              <input type="email" class="input-box" id="pTaskAssignEmail" placeholder="Nhập Gmail người nhận (để gửi nhắc việc cho con/nhân viên)..." />
+              <input type="email" class="input-box" id="pTaskAssignEmail" />
               <button class="btn-add" id="btnAddPeriodic" onclick="addPeriodicTask()">+ Thêm</button>
             </div>
             <div class="task-list" id="pTaskList"></div>
@@ -586,18 +585,16 @@
               <input type="text" class="input-box" id="oTaskTitle" />
               <input type="datetime-local" class="input-box" id="oTaskDateTime" />
             </div>
-            <!-- Tùy chọn giao việc gia đình/nhóm cho việc phát sinh -->
+            <!-- 4 Nhóm Giao Việc: Việc Phát Sinh -->
             <div class="form-group" style="margin-top: -4px;">
               <select class="input-box" id="oTaskRole" style="max-width: 180px; font-weight: 600;">
-                <option value="👨 Bố">👨 Bố giao</option>
-                <option value="👩 Mẹ">👩 Mẹ giao</option>
-                <option value="👴 Ông">👴 Ông giao</option>
-                <option value="👵 Bà">👵 Bà giao</option>
-                <option value="💼 Sếp">💼 Sếp giao</option>
-                <option value="🤝 Bạn bè">🤝 Bạn bè hẹn</option>
-                <option value="👤 Cá nhân" selected>👤 Việc của tôi</option>
+                <option value="👨‍👩‍👧 Gia đình" id="optRoleFamily_O">👨‍👩‍👧 Gia đình</option>
+                <option value="💼 Công việc" id="optRoleWork_O">💼 Công việc</option>
+                <option value="🤝 Bạn bè" id="optRoleFriends_O">🤝 Bạn bè</option>
+                <option value="📚 Học tập" id="optRoleStudy_O">📚 Học tập</option>
+                <option value="👤 Cá nhân" id="optRolePersonal_O" selected>👤 Cá nhân</option>
               </select>
-              <input type="email" class="input-box" id="oTaskAssignEmail" placeholder="Nhập Gmail người nhận (để gửi nhắc việc cho con/nhân viên)..." />
+              <input type="email" class="input-box" id="oTaskAssignEmail" />
               <button class="btn-add" id="btnAddOnetime" onclick="addOnetimeTask()">+ Thêm</button>
             </div>
             <div class="task-list" id="oTaskList"></div>
@@ -691,7 +688,7 @@
         if (user) {
           currentUser = user;
           document.getElementById('txtAuthBtn').innerText = user.displayName || (currentLang === 'VIE' ? "Tài khoản" : "Account");
-          listenToCloudTasks(); // Lắng nghe việc do người khác giao tới email này
+          listenToCloudTasks(); // Lắng nghe và đồng bộ 2 chiều thời gian thực
         } else {
           currentUser = null;
         }
@@ -739,18 +736,18 @@
           }, delayMs);
         }
 
-        // HỒI 1 (Khởi động thanh thoát)
-        strikeChime(0, 1760, 1.2, 0.28);   // A6
-        strikeChime(150, 2093, 1.3, 0.30); // C7
+        // HỒI 1
+        strikeChime(0, 1760, 1.2, 0.28);
+        strikeChime(150, 2093, 1.3, 0.30);
 
-        // HỒI 2 (Cao trào nổi bật)
-        strikeChime(650, 2637, 1.4, 0.32); // E7
-        strikeChime(820, 3135, 1.5, 0.34); // G7
+        // HỒI 2
+        strikeChime(650, 2637, 1.4, 0.32);
+        strikeChime(820, 3135, 1.5, 0.34);
 
-        // HỒI 3 (Ngân vang lan tỏa trải dài)
-        strikeChime(1350, 2093, 1.8, 0.30); // C7
-        strikeChime(1500, 2637, 2.0, 0.32); // E7
-        strikeChime(1650, 4186, 2.4, 0.35); // C8
+        // HỒI 3
+        strikeChime(1350, 2093, 1.8, 0.30);
+        strikeChime(1500, 2637, 2.0, 0.32);
+        strikeChime(1650, 4186, 2.4, 0.35);
       } catch (e) {
         console.log("Audio Error:", e);
       }
@@ -762,7 +759,7 @@
     }
 
     /* ==========================================================
-       3. TỪ ĐIỂN ĐA NGÔN NGỮ HOÀN CHỈNH (VIE / ENG)
+       3. BỘ TỪ ĐIỂN ĐA NGÔN NGỮ HOÀN CHỈNH (VIE / ENG)
        ========================================================== */
     let currentLang = 'VIE';
 
@@ -784,6 +781,7 @@
         btnPomoPause: "Tạm dừng",
         pTaskTitlePlace: "Tên công việc (vd: Tập thể dục, Học tiếng Anh...)",
         oTaskTitlePlace: "Tên việc phát sinh (vd: Mua tài liệu, Gặp gỡ...)",
+        assignEmailPlace: "Nhập Gmail người nhận (để đồng bộ nhắc việc)...",
         annivTitlePlace: "Kỷ niệm ngày cưới, Giỗ cụ, Tết...",
         annivLunarDayPlace: "Ngày Âm (1-30)",
         annivLunarMonthPlace: "Tháng Âm (1-12)",
@@ -798,6 +796,11 @@
         optYearly: "Hàng năm",
         optAnnivYearly: "🔁 Hàng năm",
         optAnnivOnce: "1️⃣ Một lần",
+        optRoleFamily: "👨‍👩‍👧 Gia đình",
+        optRoleWork: "💼 Công việc",
+        optRoleFriends: "🤝 Bạn bè",
+        optRoleStudy: "📚 Học tập",
+        optRolePersonal: "👤 Cá nhân",
         modalAlertTitle: "🔔 TỚI HẠN CÔNG VIỆC!",
         modalAlertDesc: "Đã đến thời gian hoàn thành. Hãy tập trung xử lý ngay nhé!",
         btnModalDone: "Hoàn thành ngay",
@@ -809,7 +812,9 @@
         alertSolarDate: "Vui lòng chọn ngày Dương lịch!",
         alertLunarDate: "Vui lòng nhập ngày Âm (1-30) và tháng Âm (1-12) hợp lệ!",
         dueMsg: "🔔 TỚI HẠN:",
-        dueSub: "Vui lòng hoàn thành ngay!"
+        dueSub: "Vui lòng hoàn thành ngay!",
+        syncAssignTo: "Đang giao tới:",
+        syncAssignBy: "Được giao bởi:"
       },
       ENG: {
         appTitle: "Task Box Reminder",
@@ -828,6 +833,7 @@
         btnPomoPause: "Pause",
         pTaskTitlePlace: "Task name (e.g. Exercise, English lesson...)",
         oTaskTitlePlace: "Ad-hoc task name (e.g. Buy books, Meeting...)",
+        assignEmailPlace: "Enter receiver's Gmail (for sync reminder)...",
         annivTitlePlace: "Wedding anniversary, Ancestor day, Tet...",
         annivLunarDayPlace: "Lunar Day (1-30)",
         annivLunarMonthPlace: "Lunar Month (1-12)",
@@ -842,6 +848,11 @@
         optYearly: "Yearly",
         optAnnivYearly: "🔁 Yearly",
         optAnnivOnce: "1️⃣ Once",
+        optRoleFamily: "👨‍👩‍👧 Family",
+        optRoleWork: "💼 Work",
+        optRoleFriends: "🤝 Friends",
+        optRoleStudy: "📚 Study",
+        optRolePersonal: "👤 Personal",
         modalAlertTitle: "🔔 TASK DEADLINE DUE!",
         modalAlertDesc: "It is time to complete your task. Focus on it now!",
         btnModalDone: "Done Now",
@@ -853,7 +864,9 @@
         alertSolarDate: "Please choose a valid Solar date!",
         alertLunarDate: "Please enter valid Lunar day (1-30) and month (1-12)!",
         dueMsg: "🔔 DUE TIME:",
-        dueSub: "Please complete it now!"
+        dueSub: "Please complete it now!",
+        syncAssignTo: "Assigned to:",
+        syncAssignBy: "Assigned by:"
       }
     };
 
@@ -875,6 +888,9 @@
       
       document.getElementById('pTaskTitle').placeholder = t.pTaskTitlePlace;
       document.getElementById('oTaskTitle').placeholder = t.oTaskTitlePlace;
+      document.getElementById('pTaskAssignEmail').placeholder = t.assignEmailPlace;
+      document.getElementById('oTaskAssignEmail').placeholder = t.assignEmailPlace;
+
       document.getElementById('annivTitle').placeholder = t.annivTitlePlace;
       document.getElementById('annivLunarDay').placeholder = t.annivLunarDayPlace;
       document.getElementById('annivLunarMonth').placeholder = t.annivLunarMonthPlace;
@@ -895,6 +911,19 @@
       document.getElementById('optYearly').innerText = t.optYearly;
       document.getElementById('optAnnivYearly').innerText = t.optAnnivYearly;
       document.getElementById('optAnnivOnce').innerText = t.optAnnivOnce;
+
+      // Dịch 4 nhóm giao việc
+      document.getElementById('optRoleFamily_P').innerText = t.optRoleFamily;
+      document.getElementById('optRoleWork_P').innerText = t.optRoleWork;
+      document.getElementById('optRoleFriends_P').innerText = t.optRoleFriends;
+      document.getElementById('optRoleStudy_P').innerText = t.optRoleStudy;
+      document.getElementById('optRolePersonal_P').innerText = t.optRolePersonal;
+
+      document.getElementById('optRoleFamily_O').innerText = t.optRoleFamily;
+      document.getElementById('optRoleWork_O').innerText = t.optRoleWork;
+      document.getElementById('optRoleFriends_O').innerText = t.optRoleFriends;
+      document.getElementById('optRoleStudy_O').innerText = t.optRoleStudy;
+      document.getElementById('optRolePersonal_O').innerText = t.optRolePersonal;
 
       document.getElementById('txtModalAlertTitle').innerText = t.modalAlertTitle;
       document.getElementById('txtModalAlertDesc').innerText = t.modalAlertDesc;
@@ -948,7 +977,7 @@
       let Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
       let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
       let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
-      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * Mpr);
+      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * M);
       C1 = C1 - 0.0004 * Math.sin(3 * dr * Mpr);
       C1 = C1 + 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
       C1 = C1 - 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
@@ -1157,7 +1186,7 @@
     }
 
     /* ==========================================================
-       9. QUẢN LÝ NHẮC VIỆC GIA ĐÌNH & ĐỒNG BỘ CLOUD FIRESTORE
+       9. QUẢN LÝ NHẮC VIỆC GIA ĐÌNH & ĐỒNG BỘ 2 CHIỀU CLOUD FIRESTORE
        ========================================================== */
     let periodicTasks = JSON.parse(localStorage.getItem('periodicTasks') || '[]');
     let onetimeTasks = JSON.parse(localStorage.getItem('onetimeTasks') || '[]');
@@ -1216,16 +1245,15 @@
         color: selectedColor,
         role: role || '👤 Cá nhân',
         assignEmail: assignEmail || '',
-        creatorEmail: currentUser ? currentUser.email : ''
+        creatorEmail: currentUser ? currentUser.email.toLowerCase() : ''
       };
 
       periodicTasks.push(taskObj);
       saveAndRender();
 
-      // Nếu có nhập email người nhận, đồng bộ lên Cloud Firestore
       if (assignEmail && db) {
         db.collection('tasks').add({ ...taskObj, type: 'periodic', createdAt: Date.now() })
-          .then(() => alert(`Đã gửi giao việc "${title}" tới ${assignEmail} thành công!`))
+          .then(() => alert(currentLang === 'VIE' ? `Đã gửi giao việc "${title}" tới ${assignEmail} thành công!` : `Task "${title}" assigned to ${assignEmail} successfully!`))
           .catch(e => console.warn("Firestore error:", e));
       }
 
@@ -1250,7 +1278,7 @@
         createdAt: Date.now(),
         role: role || '👤 Cá nhân',
         assignEmail: assignEmail || '',
-        creatorEmail: currentUser ? currentUser.email : ''
+        creatorEmail: currentUser ? currentUser.email.toLowerCase() : ''
       };
 
       onetimeTasks.push(taskObj);
@@ -1258,7 +1286,7 @@
 
       if (assignEmail && db) {
         db.collection('tasks').add({ ...taskObj, type: 'onetime' })
-          .then(() => alert(`Đã gửi giao việc "${title}" tới ${assignEmail} thành công!`))
+          .then(() => alert(currentLang === 'VIE' ? `Đã gửi giao việc "${title}" tới ${assignEmail} thành công!` : `Task "${title}" assigned to ${assignEmail} successfully!`))
           .catch(e => console.warn("Firestore error:", e));
       }
 
@@ -1280,10 +1308,13 @@
       saveAndRender();
     }
 
-    // Lắng nghe các việc người khác giao cho email đang đăng nhập
+    // Lắng nghe và đồng bộ 2 chiều thời gian thực trên Firestore
     function listenToCloudTasks() {
       if (!db || !currentUser || !currentUser.email) return;
-      db.collection('tasks').where('assignEmail', '==', currentUser.email.toLowerCase())
+      const myEmail = currentUser.email.toLowerCase();
+
+      // 1. Lắng nghe việc người khác giao cho tôi
+      db.collection('tasks').where('assignEmail', '==', myEmail)
         .onSnapshot((snapshot) => {
           snapshot.docChanges().forEach((change) => {
             const data = change.doc.data();
@@ -1305,6 +1336,18 @@
             }
           });
           saveAndRender();
+        });
+
+      // 2. Lắng nghe trạng thái hoàn thành các việc do chính tôi giao đi
+      db.collection('tasks').where('creatorEmail', '==', myEmail)
+        .onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            const data = change.doc.data();
+            if (change.type === 'modified' && data.type === 'onetime') {
+              onetimeTasks = onetimeTasks.map(t => t.id === data.id ? { ...t, done: data.done } : t);
+              saveAndRender();
+            }
+          });
         });
     }
 
@@ -1371,46 +1414,52 @@
       };
 
       // Render Periodic Tasks
-      document.getElementById('pTaskList').innerHTML = periodicTasks.map(t => `
-        <div class="task-item" style="border-left-color: ${t.color}">
-          <div class="task-left">
-            <i class="fa-solid fa-rotate" style="color: ${t.color}"></i>
-            <div>
-              <div class="task-title">
-                ${t.role && t.role !== '👤 Cá nhân' ? `<span class="role-badge">${t.role}</span>` : ''}
-                ${t.title}
-              </div>
-              <div class="task-meta">
-                ${t.time} • ${repeatLabels[t.repeat] || t.repeat}
-                ${t.assignEmail ? ` • ✉️ Giao tới: ${t.assignEmail}` : ''}
+      document.getElementById('pTaskList').innerHTML = periodicTasks.map(t => {
+        const syncText = t.assignEmail ? (t.creatorEmail && currentUser && t.creatorEmail === currentUser.email.toLowerCase() ? ` • ✉️ ${translations[currentLang].syncAssignTo} ${t.assignEmail}` : ` • ✉️ ${translations[currentLang].syncAssignBy} ${t.creatorEmail}`) : '';
+        return `
+          <div class="task-item" style="border-left-color: ${t.color}">
+            <div class="task-left">
+              <i class="fa-solid fa-rotate" style="color: ${t.color}"></i>
+              <div>
+                <div class="task-title">
+                  ${t.role && !t.role.includes('Cá nhân') && !t.role.includes('Personal') ? `<span class="role-badge">${t.role}</span>` : ''}
+                  ${t.title}
+                </div>
+                <div class="task-meta">
+                  ${t.time} • ${repeatLabels[t.repeat] || t.repeat}
+                  ${syncText}
+                </div>
               </div>
             </div>
+            <button class="btn-del" onclick="deleteTask('periodic', ${t.id})"><i class="fa-solid fa-trash"></i></button>
           </div>
-          <button class="btn-del" onclick="deleteTask('periodic', ${t.id})"><i class="fa-solid fa-trash"></i></button>
-        </div>
-      `).join('');
+        `;
+      }).join('');
 
       // Render Onetime Tasks
-      document.getElementById('oTaskList').innerHTML = onetimeTasks.map(t => `
-        <div class="task-item" style="border-left-color: ${t.color}; opacity: ${t.done ? 0.6 : 1}">
-          <div class="task-left">
-            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleOnetimeTask(${t.id})" style="width:18px; height:18px; cursor:pointer;" />
-            <div>
-              <div class="task-title" style="text-decoration: ${t.done ? 'line-through' : 'none'}">
-                ${t.role && t.role !== '👤 Cá nhân' ? `<span class="role-badge">${t.role}</span>` : ''}
-                ${t.title}
-              </div>
-              <div class="task-meta">
-                ${t.datetime.replace('T', ' ')}
-                ${t.assignEmail ? ` • ✉️ Giao tới: ${t.assignEmail}` : ''}
+      document.getElementById('oTaskList').innerHTML = onetimeTasks.map(t => {
+        const syncText = t.assignEmail ? (t.creatorEmail && currentUser && t.creatorEmail === currentUser.email.toLowerCase() ? ` • ✉️ ${translations[currentLang].syncAssignTo} ${t.assignEmail}` : ` • ✉️ ${translations[currentLang].syncAssignBy} ${t.creatorEmail}`) : '';
+        return `
+          <div class="task-item" style="border-left-color: ${t.color}; opacity: ${t.done ? 0.6 : 1}">
+            <div class="task-left">
+              <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleOnetimeTask(${t.id})" style="width:18px; height:18px; cursor:pointer;" />
+              <div>
+                <div class="task-title" style="text-decoration: ${t.done ? 'line-through' : 'none'}">
+                  ${t.role && !t.role.includes('Cá nhân') && !t.role.includes('Personal') ? `<span class="role-badge">${t.role}</span>` : ''}
+                  ${t.title}
+                </div>
+                <div class="task-meta">
+                  ${t.datetime.replace('T', ' ')}
+                  ${syncText}
+                </div>
               </div>
             </div>
+            <button class="btn-del" onclick="deleteTask('onetime', ${t.id})"><i class="fa-solid fa-trash"></i></button>
           </div>
-          <button class="btn-del" onclick="deleteTask('onetime', ${t.id})"><i class="fa-solid fa-trash"></i></button>
-        </div>
-      `).join('');
+        `;
+      }).join('');
 
-      // Render Anniversaries (Âm & Dương + Lặp Hàng Năm)
+      // Render Anniversaries
       const currentYear = new Date().getFullYear();
       document.getElementById('annivList').innerHTML = anniversaries.map(a => {
         let dateText = '';
@@ -1442,7 +1491,7 @@
     }
 
     /* ==========================================================
-       10. CƠ CHẾ POP-UP CẢNH BÁO TOÀN MÀN HÌNH & 3 HỒI CHUÔNG GIÓ
+       10. CƠ CHẾ POP-UP CẢNH BÁO TOÀN MÀN HÌNH SONG SONG 2 MÁY
        ========================================================== */
     function checkDeadlines() {
       const now = new Date();
@@ -1454,25 +1503,27 @@
       const alertKey = `${curISO}`;
       if (lastAlertMinute === alertKey) return;
 
-      // 1. Kiểm tra việc định kỳ
+      // 1. Việc định kỳ
       periodicTasks.forEach(t => {
         if (t.time === curHourMin) {
           lastAlertMinute = alertKey;
-          const displayTitle = t.role && t.role !== '👤 Cá nhân' ? `[${t.role}] ${t.title}` : t.title;
-          triggerAlarm(displayTitle);
+          const rolePrefix = t.role && !t.role.includes('Cá nhân') && !t.role.includes('Personal') ? `[${t.role}] ` : '';
+          const syncInfo = getSyncAlertInfo(t);
+          triggerAlarm(`${rolePrefix}${t.title}`, null, syncInfo);
         }
       });
 
-      // 2. Kiểm tra việc phát sinh
+      // 2. Việc phát sinh (cảnh báo đồng thời cho cả người giao và người nhận)
       onetimeTasks.forEach(t => {
         if (!t.done && t.datetime === curISO) {
           lastAlertMinute = alertKey;
-          const displayTitle = t.role && t.role !== '👤 Cá nhân' ? `[${t.role}] ${t.title}` : t.title;
-          triggerAlarm(displayTitle, t.id);
+          const rolePrefix = t.role && !t.role.includes('Cá nhân') && !t.role.includes('Personal') ? `[${t.role}] ` : '';
+          const syncInfo = getSyncAlertInfo(t);
+          triggerAlarm(`${rolePrefix}${t.title}`, t.id, syncInfo);
         }
       });
 
-      // 3. Kiểm tra ngày kỷ niệm
+      // 3. Kỷ niệm
       anniversaries.forEach(a => {
         if (a.time === curHourMin) {
           if (a.calType === 'solar') {
@@ -1493,14 +1544,24 @@
     }
     setInterval(checkDeadlines, 1000);
 
-    function triggerAlarm(taskTitle, taskId = null) {
+    function getSyncAlertInfo(t) {
+      if (!t.assignEmail) return "";
+      if (currentUser && t.creatorEmail === currentUser.email.toLowerCase()) {
+        return `✉️ ${translations[currentLang].syncAssignTo} ${t.assignEmail}`;
+      } else if (t.creatorEmail) {
+        return `✉️ ${translations[currentLang].syncAssignBy} ${t.creatorEmail}`;
+      }
+      return "";
+    }
+
+    function triggerAlarm(taskTitle, taskId = null, syncInfo = "") {
       currentActiveAlertTaskId = taskId;
-      playWindChime();
+      playWindChime(); // 3 hồi chuông gió ngân vang
 
-      // 1. Hiện Pop-up cảnh báo nổi bật giữa màn hình
-      triggerAlertModal(taskTitle);
+      // 1. Pop-up toàn màn hình
+      triggerAlertModal(taskTitle, syncInfo);
 
-      // 2. Banner Marquee chạy trên đầu
+      // 2. Banner chạy trên đầu
       const banner = document.getElementById('topBanner');
       const t = translations[currentLang];
       document.getElementById('marqueeMsg').innerText = `${t.dueMsg} ${taskTitle} - ${t.dueSub}`;
@@ -1510,14 +1571,15 @@
       // 3. Thông báo đẩy hệ thống
       if ("Notification" in window && Notification.permission === "granted") {
         new Notification(translations[currentLang].appTitle, {
-          body: `${taskTitle}`,
+          body: `${taskTitle} ${syncInfo}`,
           icon: "https://raw.githubusercontent.com/shopkazoku/chiechopnhacviec/main/logo.png"
         });
       }
     }
 
-    function triggerAlertModal(taskName) {
+    function triggerAlertModal(taskName, syncInfo = "") {
       document.getElementById('modalTaskName').innerText = taskName;
+      document.getElementById('modalTaskSyncInfo').innerText = syncInfo;
       document.getElementById('deadlineModal').style.display = 'flex';
     }
 
