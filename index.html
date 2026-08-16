@@ -70,7 +70,7 @@
     .brand-logo-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s; }
     .brand-logo-container:hover .brand-logo-img { transform: scale(1.1); }
     
-    .nav-controls { display: flex; align-items: center; gap: 12px; }
+    .nav-controls { display: flex; align-items: center; gap: 10px; }
     .btn-lang {
       background: var(--primary-light);
       border: 1.5px solid var(--primary);
@@ -85,6 +85,22 @@
       transition: all 0.2s;
     }
     .btn-lang:hover { background: var(--primary); color: #fff; transform: scale(1.03); }
+
+    .btn-test-sound {
+      background: #FFF0F5;
+      border: 1px dashed var(--primary-dark);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-test-sound:hover { background: var(--primary); color: #fff; }
 
     .btn-auth {
       background: linear-gradient(135deg, #F2C1D1, #DFA2B6);
@@ -395,7 +411,7 @@
   <header>
     <div class="brand">
       <div class="brand-logo-container">
-        <!-- Logo Marki với CDN GitHub chuẩn xác -->
+        <!-- Logo Marki trực tiếp từ GitHub CDN -->
         <img 
           src="https://raw.githubusercontent.com/shopkazoku/chiechopnhacviec/main/logo.png" 
           onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" 
@@ -407,6 +423,10 @@
       <span id="txtAppTitle">Chiếc Hộp Nhắc Việc</span>
     </div>
     <div class="nav-controls">
+      <!-- Nút Thử Chuông Gió 2 Hồi Trực Tiếp -->
+      <button class="btn-test-sound" onclick="testAudioDirectly()">
+        <i class="fa-solid fa-volume-high"></i> <span id="txtTestChime">Thử chuông gió</span>
+      </button>
       <!-- Nút Chuyển Đổi VIE / ENG -->
       <button class="btn-lang" id="btnLang" onclick="toggleLanguage()">
         <span id="langFlag">🇻🇳</span> <span id="langLabel">VIE</span>
@@ -638,13 +658,71 @@
     }
 
     /* ==========================================================
-       2. TỪ ĐIỂN ĐA NGÔN NGỮ HOÀN CHỈNH (VIE / ENG)
+       2. HỆ THỐNG MỞ KHÓA ÂM THANH CHUÔNG GIÓ (AUDIO UNLOCKER)
+       ========================================================== */
+    let globalAudioCtx = null;
+
+    function getAudioContext() {
+      if (!globalAudioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        globalAudioCtx = new AudioContextClass();
+      }
+      if (globalAudioCtx.state === 'suspended') {
+        globalAudioCtx.resume();
+      }
+      return globalAudioCtx;
+    }
+
+    // Tự động mở khóa âm thanh ngay khi người dùng chạm/bấm bất kỳ đâu
+    document.addEventListener('click', () => { getAudioContext(); }, { once: false });
+    document.addEventListener('touchstart', () => { getAudioContext(); }, { once: false });
+
+    function playWindChime() {
+      try {
+        const ctx = getAudioContext();
+        const chimeFreqs = [1760, 2093, 2637, 3135];
+
+        function strikeChime(delayMs, freq) {
+          setTimeout(() => {
+            const nowTime = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, nowTime);
+            gain.gain.setValueAtTime(0.3, nowTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, nowTime + 1.2);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(nowTime);
+            osc.stop(nowTime + 1.2);
+          }, delayMs);
+        }
+
+        // Hồi 1
+        strikeChime(0, chimeFreqs[0]);
+        strikeChime(150, chimeFreqs[1]);
+        // Hồi 2
+        strikeChime(600, chimeFreqs[2]);
+        strikeChime(750, chimeFreqs[3]);
+      } catch (e) {
+        console.log("Audio Error:", e);
+      }
+    }
+
+    function testAudioDirectly() {
+      playWindChime();
+      triggerAlertModal(currentLang === 'VIE' ? "Kiểm tra chuông gió 2 hồi thành công! 🔔" : "Wind chime test successful! 🔔");
+    }
+
+    /* ==========================================================
+       3. TỪ ĐIỂN ĐA NGÔN NGỮ HOÀN CHỈNH (VIE / ENG)
        ========================================================== */
     let currentLang = 'VIE';
 
     const translations = {
       VIE: {
         appTitle: "Chiếc Hộp Nhắc Việc",
+        testChime: "Thử chuông gió",
         secTime: '<i class="fa-regular fa-clock"></i> Thời Gian',
         secNotes: '<i class="fa-regular fa-pen-to-square"></i> Ghi Chú',
         secTasks: '<i class="fa-solid fa-list-check"></i> Nhắc Việc',
@@ -688,6 +766,7 @@
       },
       ENG: {
         appTitle: "Task Box Reminder",
+        testChime: "Test Chime",
         secTime: '<i class="fa-regular fa-clock"></i> Time & Calendar',
         secNotes: '<i class="fa-regular fa-pen-to-square"></i> Quick Notes',
         secTasks: '<i class="fa-solid fa-list-check"></i> Task Manager',
@@ -734,6 +813,7 @@
     function applyLanguage(lang) {
       const t = translations[lang];
       document.getElementById('txtAppTitle').innerText = t.appTitle;
+      document.getElementById('txtTestChime').innerText = t.testChime;
       document.getElementById('txtSecTime').innerHTML = t.secTime;
       document.getElementById('txtSecNotes').innerHTML = t.secNotes;
       document.getElementById('txtSecTasks').innerHTML = t.secTasks;
@@ -789,7 +869,7 @@
     }
 
     /* ==========================================================
-       3. THUẬT TOÁN ÂM - DƯƠNG LỊCH HỒ NGỌC ĐỨC CHUẨN XÁC
+       4. THUẬT TOÁN ÂM - DƯƠNG LỊCH HỒ NGỌC ĐỨC CHUẨN XÁC
        ========================================================== */
     function INT(d) { return Math.floor(d); }
     function jdFromDate(dd, mm, yy) {
@@ -862,7 +942,7 @@
     }
 
     /* ==========================================================
-       4. BẢNG MÀU PASTEL & THEME
+       5. BẢNG MÀU PASTEL & THEME
        ========================================================== */
     const pastelColors = [
       "#F2C1D1", "#F6A6B2", "#FFAAA6", "#FFD3B6", "#D4F0F0",
@@ -887,39 +967,6 @@
       });
     }
     renderColorPalette();
-
-    /* ==========================================================
-       5. ÂM THANH CHUÔNG GIÓ 2 HỒI (WEB AUDIO SYNTHESIS)
-       ========================================================== */
-    function playWindChime() {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        const ctx = new AudioCtx();
-        const chimeFreqs = [1760, 2093, 2637, 3135];
-
-        function strikeChime(delay, freq) {
-          setTimeout(() => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, ctx.currentTime);
-            gain.gain.setValueAtTime(0.25, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.2);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 1.2);
-          }, delay);
-        }
-
-        strikeChime(0, chimeFreqs[0]);
-        strikeChime(150, chimeFreqs[1]);
-        strikeChime(600, chimeFreqs[2]);
-        strikeChime(750, chimeFreqs[3]);
-      } catch (e) {
-        console.log("Audio Error:", e);
-      }
-    }
 
     /* ==========================================================
        6. ĐỒNG HỒ & LỊCH HIỂN THỊ
@@ -1012,6 +1059,7 @@
       const isChecked = document.getElementById('togglePomodoro').checked;
       document.getElementById('pomoControlArea').style.display = isChecked ? 'flex' : 'none';
       if (isChecked) {
+        getAudioContext(); // Mở khóa âm thanh
         const now = new Date();
         document.getElementById('pomoStartTime').value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
       } else {
@@ -1020,6 +1068,7 @@
     }
 
     function startPomodoro() {
+      getAudioContext();
       if (isPomoRunning) {
         clearInterval(pomoInterval);
         isPomoRunning = false;
@@ -1041,11 +1090,11 @@
           if (pomoMode === 'work') {
             pomoMode = 'rest';
             pomoSecondsLeft = 5 * 60;
-            triggerAlertModal("Pomodoro: Hết 25 phút tập trung! Hãy nghỉ ngơi 5 phút.");
+            triggerAlertModal("Pomodoro: Hết 25 phút tập trung! Hãy nghỉ ngơi 5 phút ☕");
           } else {
             pomoMode = 'work';
             pomoSecondsLeft = 25 * 60;
-            triggerAlertModal("Pomodoro: Hết 5 phút nghỉ! Bắt đầu phiên làm việc mới.");
+            triggerAlertModal("Pomodoro: Hết 5 phút nghỉ! Bắt đầu phiên làm việc mới 🎯");
           }
         }
       }, 1000);
@@ -1068,6 +1117,7 @@
     let anniversaries = JSON.parse(localStorage.getItem('anniversaries') || '[]');
     let currentAnnivCalType = 'solar';
     let currentActiveAlertTaskId = null;
+    let lastAlertMinute = "";
 
     function setAnnivCalType(type) {
       currentAnnivCalType = type;
@@ -1103,6 +1153,7 @@
     }
 
     function addPeriodicTask() {
+      getAudioContext();
       const title = document.getElementById('pTaskTitle').value;
       const time = document.getElementById('pTaskTime').value;
       const repeat = document.getElementById('pTaskRepeat').value;
@@ -1114,6 +1165,7 @@
     }
 
     function addOnetimeTask() {
+      getAudioContext();
       const title = document.getElementById('oTaskTitle').value;
       const datetime = document.getElementById('oTaskDateTime').value;
       if (!title || !datetime) return alert(translations[currentLang].alertInputOnetime);
@@ -1129,6 +1181,7 @@
     }
 
     function addAnniversary() {
+      getAudioContext();
       const title = document.getElementById('annivTitle').value;
       const icon = document.getElementById('annivIcon').value;
       const time = document.getElementById('annivTime').value;
@@ -1241,34 +1294,48 @@
     }
 
     /* ==========================================================
-       10. CƠ CHẾ POP-UP CẢNH BÁO TOÀN MÀN HÌNH & CHUÔNG GIÓ
+       10. CƠ CHẾ POP-UP CẢNH BÁO TOÀN MÀN HÌNH & CHUÔNG GIÓ CHUẨN XÁC
        ========================================================== */
     function checkDeadlines() {
       const now = new Date();
       const curHourMin = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-      const curISO = now.toISOString().slice(0, 16);
+      const curISO = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${curHourMin}`;
       const curMonthDay = `${String(now.getMonth() + 1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
       const [curLunarDay, curLunarMonth] = convertSolar2Lunar(now.getDate(), now.getMonth() + 1, now.getFullYear());
 
-      // Check Periodic
+      // Tránh lặp lại cảnh báo liên tục trong cùng 1 phút
+      const alertKey = `${curISO}`;
+      if (lastAlertMinute === alertKey) return;
+
+      // 1. Kiểm tra việc định kỳ
       periodicTasks.forEach(t => {
-        if (t.time === curHourMin && now.getSeconds() === 0) triggerAlarm(t.title);
+        if (t.time === curHourMin) {
+          lastAlertMinute = alertKey;
+          triggerAlarm(t.title);
+        }
       });
 
-      // Check Onetime
+      // 2. Kiểm tra việc phát sinh
       onetimeTasks.forEach(t => {
-        if (!t.done && t.datetime === curISO && now.getSeconds() === 0) triggerAlarm(t.title, t.id);
+        if (!t.done && t.datetime === curISO) {
+          lastAlertMinute = alertKey;
+          triggerAlarm(t.title, t.id);
+        }
       });
 
-      // Check Anniversaries (Hỗ trợ lặp lại hàng năm cả Âm & Dương)
+      // 3. Kiểm tra ngày kỷ niệm
       anniversaries.forEach(a => {
-        if (a.time === curHourMin && now.getSeconds() === 0) {
+        if (a.time === curHourMin) {
           if (a.calType === 'solar') {
             const solarMD = a.solarDate ? a.solarDate.slice(5) : '';
-            const isMatch = (a.repeat === 'yearly') ? (solarMD === curMonthDay) : (a.solarDate === now.toISOString().slice(0, 10));
-            if (isMatch) triggerAlarm(`Kỷ niệm: ${a.title}`);
+            const isMatch = (a.repeat === 'yearly') ? (solarMD === curMonthDay) : (a.solarDate === curISO.slice(0,10));
+            if (isMatch) {
+              lastAlertMinute = alertKey;
+              triggerAlarm(`Kỷ niệm: ${a.title}`);
+            }
           } else if (a.calType === 'lunar') {
             if (a.lunarDay === curLunarDay && a.lunarMonth === curLunarMonth) {
+              lastAlertMinute = alertKey;
               triggerAlarm(`Kỷ niệm (Âm lịch): ${a.title}`);
             }
           }
@@ -1281,7 +1348,7 @@
       currentActiveAlertTaskId = taskId;
       playWindChime();
 
-      // 1. Hiện Pop-up cảnh báo nổi bật giữa màn hình (PC & Mobile)
+      // 1. Hiện Pop-up cảnh báo nổi bật giữa màn hình
       triggerAlertModal(taskTitle);
 
       // 2. Banner Marquee chạy trên đầu
@@ -1321,6 +1388,7 @@
        11. AUTHENTICATION TRỰC TIẾP
        ========================================================== */
     function handleAuth() {
+      getAudioContext();
       if (!auth) {
         alert(currentLang === 'VIE' ? "Vui lòng kết nối mạng để đăng nhập Google." : "Please connect to internet to sign in.");
         return;
@@ -1335,7 +1403,7 @@
       });
     }
 
-    // Khởi tạo ngôn ngữ ban đầu
+    // Khởi tạo ban đầu
     applyLanguage('VIE');
 
     if ('serviceWorker' in navigator) {
