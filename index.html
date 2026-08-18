@@ -563,7 +563,7 @@
           <!-- Form Định Kì Nâng Cao -->
           <div id="formPeriodic">
             <div class="form-group">
-              <input type="text" class="input-box" id="pTaskTitle" />
+              <input type="text" class="input-box" id="pTaskTitle" placeholder="Tên công việc (vd: Học tiếng Anh)..." />
               <input type="time" class="input-box" id="pTaskTime" />
               <select class="input-box" id="pTaskRepeat" style="max-width: 140px;" onchange="handleRepeatChange()">
                 <option value="daily" id="optDaily">Hàng ngày</option>
@@ -876,44 +876,39 @@
         return i - 1;
     }
 
-    function convertSolar2LunarFull(dd, mm, yy, timeZone = 7) {
-        var jd = jdFromDate(dd, mm, yy);
-        var k = INT((jd - 2415021.076998695) / 29.530588853);
-        var monthStart = getNewMoonDay(k + 1, timeZone);
-        if (monthStart > jd) {
+    function convertSolar2LunarFull(dd, mm, yy, timeZone) {
+        var k, dayNumber, monthStart, a11, lunarYear, lunarDay, lunarMonth, lunarLeap, leapMonthDiff;
+        dayNumber = jdFromDate(dd, mm, yy);
+        k = INT((dayNumber - 2415021.076998695) / 29.530588853);
+        monthStart = getNewMoonDay(k + 1, timeZone);
+        if (monthStart > dayNumber) {
             monthStart = getNewMoonDay(k, timeZone);
         }
-        var a11 = getLunarMonth11(yy, timeZone);
-        var b11 = a11;
-        var lunarYear = yy;
+        a11 = getLunarMonth11(yy, timeZone);
+        lunarYear = yy;
         if (a11 >= monthStart) {
             lunarYear = yy - 1;
             a11 = getLunarMonth11(yy - 1, timeZone);
         }
-        var lunarDay = jd - monthStart + 1;
+        lunarDay = dayNumber - monthStart + 1;
         var diff = INT((monthStart - a11) / 29);
-        var lunarLeap = 0;
-        var lunarMonth = diff + 11;
-        var leapMonthDiff = getLeapMonthOffset(a11, timeZone);
+        lunarLeap = 0;
+        lunarMonth = diff + 11;
+        leapMonthDiff = getLeapMonthOffset(a11, timeZone);
         if (diff >= leapMonthDiff) {
             lunarMonth = diff + 10;
             if (diff == leapMonthDiff) {
                 lunarLeap = 1;
             }
         }
-        if (lunarMonth > 12) {
-            lunarMonth = lunarMonth - 12;
-        }
-        if (lunarMonth >= 11 && diff < 4) {
-            lunarYear -= 1;
-        }
+        if (lunarMonth > 12) { lunarMonth = lunarMonth - 12; }
+        if (lunarMonth >= 11 && diff < 4) { lunarYear -= 1; }
         return [lunarDay, lunarMonth, lunarYear, lunarLeap];
     }
 
     function convertLunar2Solar(lunarDay, lunarMonth, lunarYear, lunarLeap = 0, timeZone = 7) {
         if (lunarMonth < 1) return [0, 0, 0];
         var a11 = getLunarMonth11(lunarYear, timeZone);
-        var b11 = a11;
         if (lunarMonth >= 11) {
             a11 = getLunarMonth11(lunarYear - 1, timeZone);
         }
@@ -1027,7 +1022,7 @@
         pomoStartLbl: "Giờ bắt đầu:",
         btnPomoStart: "Bắt đầu",
         btnPomoPause: "Tạm dừng",
-        pTaskTitlePlace: "Tên công việc (vd: Tập thể dục, Học tiếng Anh...)",
+        pTaskTitlePlace: "Tên công việc (vd: Ôn tập chứng chỉ Viện Thịnh Vượng...)",
         oTaskTitlePlace: "Tên việc phát sinh (vd: Mua tài liệu, Gặp gỡ...)",
         assignEmailPlace: "Nhập Gmail người nhận (để đồng bộ nhắc việc)...",
         annivTitlePlace: "Kỷ niệm ngày cưới, Giỗ cụ, Tết...",
@@ -1079,7 +1074,7 @@
         pomoStartLbl: "Start Time:",
         btnPomoStart: "Start",
         btnPomoPause: "Pause",
-        pTaskTitlePlace: "Task name (e.g. Exercise, English lesson...)",
+        pTaskTitlePlace: "Task name (e.g. Study for certificate...)",
         oTaskTitlePlace: "Ad-hoc task name (e.g. Buy books, Meeting...)",
         assignEmailPlace: "Enter receiver's Gmail (for sync reminder)...",
         annivTitlePlace: "Wedding anniversary, Ancestor day, Tet...",
