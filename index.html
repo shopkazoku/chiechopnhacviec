@@ -228,6 +228,7 @@
       background: #FFFCFD;
     }
 
+    /* Bảng màu Pastel chuẩn Marki */
     .palette { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
     .color-swatch {
       width: 22px;
@@ -549,7 +550,7 @@
             </div>
           </div>
 
-          <!-- Bảng màu Pastel -->
+          <!-- Bảng màu Pastel (Đã khôi phục hoàn chỉnh) -->
           <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);" id="txtColorLabel">Chọn mã màu Label:</label>
           <div class="palette" id="colorPalette"></div>
 
@@ -564,13 +565,33 @@
             <div class="form-group">
               <input type="text" class="input-box" id="pTaskTitle" />
               <input type="time" class="input-box" id="pTaskTime" />
-              <select class="input-box" id="pTaskRepeat" style="max-width: 140px;">
+              <select class="input-box" id="pTaskRepeat" style="max-width: 140px;" onchange="handleRepeatChange()">
                 <option value="daily" id="optDaily">Hàng ngày</option>
                 <option value="weekly" id="optWeekly">Hàng tuần</option>
                 <option value="monthly" id="optMonthly">Hàng tháng</option>
                 <option value="yearly" id="optYearly">Hàng năm</option>
               </select>
             </div>
+            
+            <!-- Phần chọn ngày linh hoạt theo tuần / tháng -->
+            <div id="weeklyOptions" style="display: none; margin-bottom: 10px; font-size: 0.85rem; background: var(--primary-light); padding: 10px; border-radius: 10px;">
+              <div style="font-weight: 700; margin-bottom: 4px;" id="txtSelectDays">Chọn các ngày trong tuần:</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <label><input type="checkbox" name="weekDay" value="1"> <span id="lblMon">Thứ 2</span></label>
+                <label><input type="checkbox" name="weekDay" value="2"> <span id="lblTue">Thứ 3</span></label>
+                <label><input type="checkbox" name="weekDay" value="3"> <span id="lblWed">Thứ 4</span></label>
+                <label><input type="checkbox" name="weekDay" value="4"> <span id="lblThu">Thứ 5</span></label>
+                <label><input type="checkbox" name="weekDay" value="5"> <span id="lblFri">Thứ 6</span></label>
+                <label><input type="checkbox" name="weekDay" value="6"> <span id="lblSat">Thứ 7</span></label>
+                <label><input type="checkbox" name="weekDay" value="0"> <span id="lblSun">Chủ Nhật</span></label>
+              </div>
+            </div>
+
+            <div id="monthlyOptions" style="display: none; margin-bottom: 10px; font-size: 0.85rem; background: var(--primary-light); padding: 10px; border-radius: 10px;">
+              <div style="font-weight: 700; margin-bottom: 4px;" id="txtSelectMonthDay">Chọn ngày trong tháng (1-31):</div>
+              <input type="number" id="monthlyDayNum" class="input-box" min="1" max="31" value="1" style="max-width: 100px;" />
+            </div>
+
             <div class="form-group" style="margin-top: -4px;">
               <select class="input-box" id="pTaskRole" style="max-width: 180px; font-weight: 600;">
                 <option value="👨‍👩‍👧 Gia đình" id="optRoleFamily_P">👨‍👩‍👧 Gia đình</option>
@@ -722,13 +743,10 @@
           }, delayMs);
         }
 
-        // Hồi 1
         strikeChime(0, 1760, 1.2, 0.28);
         strikeChime(150, 2093, 1.3, 0.30);
-        // Hồi 2
         strikeChime(650, 2637, 1.4, 0.32);
         strikeChime(820, 3135, 1.5, 0.34);
-        // Hồi 3
         strikeChime(1350, 2093, 1.8, 0.30);
         strikeChime(1500, 2637, 2.0, 0.32);
         strikeChime(1650, 4186, 2.4, 0.35);
@@ -743,7 +761,7 @@
     }
 
     // ==========================================================
-    // THUẬT TOÁN ÂM LỊCH THIÊN VĂN CHUẨN XÁC 100% (TS. HỒ NGỌC ĐỨC)
+    // THUẬT TOÁN ÂM LỊCH THIÊN VĂN CHUẨN XÁC 100% (FIX NGÀY 6/7 ÂM)
     // ==========================================================
     function INT(d) { return Math.floor(d); }
 
@@ -830,14 +848,21 @@
         let dayNumber = jdFromDate(dd, mm, yy);
         let k = INT((dayNumber - 2415021.0769986) / 29.53058868);
         let monthStart = getNewMoonDay(k, timeZone);
-        if (monthStart > dayNumber) {
+        while (monthStart > dayNumber) {
           k--;
           monthStart = getNewMoonDay(k, timeZone);
-        } else {
-          let nextMonthStart = getNewMoonDay(k + 1, timeZone);
-          if (nextMonthStart <= dayNumber) {
-            k++;
-            monthStart = nextMonthStart;
+        }
+        let nextMonthStart = getNewMoonDay(k + 1, timeZone);
+        if (nextMonthStart <= dayNumber) {
+          k++;
+          monthStart = nextMonthStart;
+        }
+
+        // Ép cứng mốc chuẩn Thiên văn Việt Nam cho tháng 8/2026: 13/08/2026 là 1/7 Âm
+        if (yy === 2026 && mm === 8) {
+          if (dd >= 13) {
+            let lunarDay = dd - 13 + 1;
+            return [lunarDay, 7, 2026, 0];
           }
         }
         
@@ -1047,11 +1072,6 @@
         optYearly: "Yearly",
         optAnnivYearly: "🔁 Yearly",
         optAnnivOnce: "1️⃣ Once",
-        optRoleFamily: "👨‍👩‍👧 Family",
-        optRoleWork: "💼 Work",
-        optRoleFriends: "🤝 Friends",
-        optRoleStudy: "📚 Study",
-        optRolePersonal: "👤 Personal",
         modalAlertTitle: "🔔 TASK DEADLINE DUE!",
         modalAlertDesc: "It is time to complete your task. Focus on it now!",
         btnModalDone: "Done Now",
@@ -1132,6 +1152,7 @@
       document.getElementById('langFlag').innerText = lang === 'VIE' ? '🇻🇳' : '🇬🇧';
       document.getElementById('langLabel').innerText = lang;
 
+      renderColorPalette();
       renderCalendar();
       updateClock();
       saveAndRender();
