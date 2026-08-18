@@ -117,7 +117,7 @@
     .btn-auth:hover { transform: translateY(-2px); }
 
     .container { max-width: 1280px; margin: 25px auto; padding: 0 20px; }
-    .grid-layout { display: grid; grid-template-columns: 380px 1fr; gap: 24px; }
+    .grid-layout { display: grid; grid-template-columns: 370px 1fr; gap: 24px; }
     @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
 
     .card {
@@ -139,7 +139,7 @@
     .card-header h2 { font-size: 1.15rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
     .card-header h2 i { color: var(--primary-dark); }
 
-    /* Lịch Âm Dương & Lịch Tháng */
+    /* Lịch Âm Dương chuẩn XemLichAm.com */
     .clock-display {
       text-align: center;
       background: linear-gradient(135deg, #FDF2F5, #FFF9FA);
@@ -433,7 +433,7 @@
     <div class="brand">
       <div class="brand-logo-container">
         <img 
-          src="./logo.png" 
+          src="https://raw.githubusercontent.com/shopkazoku/chiechopnhacviec/main/logo.png" 
           onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" 
           alt="Marki Logo" 
           class="brand-logo-img" 
@@ -550,7 +550,7 @@
             </div>
           </div>
 
-          <!-- Bảng màu Pastel -->
+          <!-- Bảng màu Pastel (Khôi phục hiển thị đầy đủ) -->
           <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);" id="txtColorLabel">Chọn mã màu Label:</label>
           <div class="palette" id="colorPalette"></div>
 
@@ -792,7 +792,7 @@
     }
 
     // ==========================================================
-    // THUẬT TOÁN ÂM LỊCH THIÊN VĂN CHUẨN XÁC 100% (FIX NGÀY 6/7 ÂM)
+    // THUẬT TOÁN ÂM LỊCH THIÊN VĂN CHUẨN XÁC 100% (NGUYÊN BẢN HND)
     // ==========================================================
     function INT(d) { return Math.floor(d); }
 
@@ -878,38 +878,30 @@
       try {
         let dayNumber = jdFromDate(dd, mm, yy);
         let k = INT((dayNumber - 2415021.0769986) / 29.53058868);
-        let monthStart = getNewMoonDay(k, timeZone);
-        while (monthStart > dayNumber) {
-          k--;
+        let monthStart = getNewMoonDay(k + 1, timeZone);
+        if (monthStart > dayNumber) {
           monthStart = getNewMoonDay(k, timeZone);
-        }
-        let nextMonthStart = getNewMoonDay(k + 1, timeZone);
-        if (nextMonthStart <= dayNumber) {
+        } else {
           k++;
-          monthStart = nextMonthStart;
         }
-
-        // Ép cứng mốc chuẩn Thiên văn Việt Nam cho tháng 8/2026: 13/08/2026 là 1/7 Âm
-        if (yy === 2026 && mm === 8) {
-          if (dd >= 13) {
-            let lunarDay = dd - 13 + 1;
-            return [lunarDay, 7, 2026, 0];
+        
+        let a11 = getLunarMonth11(yy, timeZone);
+        let b11 = a11;
+        let lunarYear = yy;
+        
+        if (a11 >= monthStart) {
+          lunarYear = yy - 1;
+          a11 = getLunarMonth11(yy - 1, timeZone);
+        } else {
+          let nextA11 = getLunarMonth11(yy + 1, timeZone);
+          if (nextA11 <= monthStart) {
+            lunarYear = yy + 1;
+            a11 = nextA11;
           }
         }
         
-        let a11 = getLunarMonth11(yy - 1, timeZone);
-        let nextA11 = getLunarMonth11(yy, timeZone);
-        let lunarYear = yy;
-
-        if (monthStart >= nextA11) {
-          a11 = nextA11;
-          lunarYear = yy;
-        } else if (monthStart < a11) {
-          lunarYear = yy - 1;
-        }
-
         let lunarDay = dayNumber - monthStart + 1;
-        let diff = INT((monthStart - a11) / 29.53);
+        let diff = INT((monthStart - a11) / 29);
         let lunarLeap = 0;
         let lunarMonth = diff + 11;
         let leapMonthDiff = getLeapMonthOffset(a11, timeZone);
@@ -918,7 +910,8 @@
           if (diff == leapMonthDiff) lunarLeap = 1;
         }
         if (lunarMonth > 12) lunarMonth = lunarMonth - 12;
-        if (lunarMonth <= 0) lunarMonth += 12;
+        if (lunarMonth >= 11 && diff < 4) lunarYear -= 1;
+        
         return [lunarDay, lunarMonth, lunarYear, lunarLeap];
       } catch (err) {
         console.warn("Lunar Calc Error:", err);
@@ -927,7 +920,7 @@
     }
 
     function convertLunar2Solar(lunarDay, lunarMonth, lunarYear, lunarLeap = 0, timeZone = 7) {
-      let a11 = getLunarMonth11(lunarYear - 1, timeZone);
+      let a11 = getLunarMonth11(lunarYear, timeZone);
       let leapMonthDiff = getLeapMonthOffset(a11, timeZone);
       let off = lunarMonth - 11;
       if (lunarMonth < 11) off += 12;
@@ -1103,6 +1096,11 @@
         optYearly: "Yearly",
         optAnnivYearly: "🔁 Yearly",
         optAnnivOnce: "1️⃣ Once",
+        optRoleFamily: "👨‍👩‍👧 Family",
+        optRoleWork: "💼 Work",
+        optRoleFriends: "🤝 Friends",
+        optRoleStudy: "📚 Study",
+        optRolePersonal: "👤 Personal",
         modalAlertTitle: "🔔 TASK DEADLINE DUE!",
         modalAlertDesc: "It is time to complete your task. Focus on it now!",
         btnModalDone: "Done Now",
@@ -1223,7 +1221,7 @@
       const val = document.getElementById('pTaskRepeat').value;
       document.getElementById('weeklyOptions').style.display = (val === 'weekly') ? 'block' : 'none';
       document.getElementById('advancedOptions').style.display = (val === 'monthly' || val === 'yearly') ? 'block' : 'none';
-      document.getElementById('yearlyMonthWrap').style.display = (val === 'yearly') ? 'block' : 'none';
+      document.getElementById('yearlyMonthWrap').style.display = (val === 'yearly') ? 'flex' : 'none';
     }
 
     function toggleAdvMode(mode) {
@@ -1461,7 +1459,7 @@
       let repeatDetail = "";
       if (repeat === 'weekly') {
         const checkedDays = Array.from(document.querySelectorAll('input[name="weekDay"]:checked')).map(cb => cb.value);
-        repeatDetail = ` (${checkedDays.join(', ')})`;
+        repeatDetail = ` (Thứ: ${checkedDays.join(', ')})`;
       } else if (repeat === 'monthly' || repeat === 'yearly') {
         const mode = document.querySelector('input[name="advMode"]:checked').value;
         if (mode === 'date') {
