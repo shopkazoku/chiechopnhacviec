@@ -27,7 +27,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
     body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding-bottom: 30px; }
 
-    /* Top Marquee Banner */
     #topBanner {
       display: none;
       background: linear-gradient(90deg, #F2C1D1, #FFAAA6);
@@ -43,7 +42,6 @@
     .marquee-text { display: inline-block; animation: marquee 12s linear infinite; }
     @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-    /* Header & Brand Logo */
     header {
       background: var(--card-bg);
       padding: 10px 24px;
@@ -118,12 +116,10 @@
     }
     .btn-auth:hover { transform: translateY(-2px); }
 
-    /* Container & Layout */
     .container { max-width: 1280px; margin: 25px auto; padding: 0 20px; }
-    .grid-layout { display: grid; grid-template-columns: 360px 1fr; gap: 24px; }
+    .grid-layout { display: grid; grid-template-columns: 370px 1fr; gap: 24px; }
     @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
 
-    /* Card Box */
     .card {
       background: var(--card-bg);
       border-radius: var(--radius);
@@ -143,7 +139,7 @@
     .card-header h2 { font-size: 1.15rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
     .card-header h2 i { color: var(--primary-dark); }
 
-    /* Section 1: Clock & Calendar */
+    /* Chi tiết Lịch Âm Dương phong cách XemLichAm.com */
     .clock-display {
       text-align: center;
       background: linear-gradient(135deg, #FDF2F5, #FFF9FA);
@@ -153,7 +149,29 @@
       border: 1px solid var(--primary-light);
     }
     .digital-clock { font-size: 2.2rem; font-weight: 700; color: var(--primary-dark); letter-spacing: 2px; }
-    .clock-sub { font-size: 0.95rem; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+    .clock-sub { font-size: 0.95rem; color: var(--text-main); font-weight: 700; margin-top: 4px; }
+    .lunar-detail-box {
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid var(--border-color);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      text-align: left;
+    }
+    .lunar-detail-box b { color: var(--primary-dark); }
+    .festival-badge {
+      display: inline-block;
+      background: #FFE5D9;
+      color: #D84A38;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin-top: 6px;
+      font-size: 0.8rem;
+    }
 
     .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .cal-nav button { background: var(--primary-light); border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; color: var(--text-main); }
@@ -177,12 +195,17 @@
     }
     .cal-cell:hover { background: var(--primary-light); }
     .cal-cell.today { border-color: var(--primary-dark); background: var(--primary-light); }
+    .cal-cell.has-event::after {
+      content: '';
+      position: absolute;
+      top: 4px; right: 4px;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #FF6B6B;
+    }
     .cal-cell .solar { font-weight: 700; }
     .cal-cell .lunar { font-size: 0.68rem; color: var(--text-muted); }
-    .cal-dots { display: flex; gap: 2px; position: absolute; bottom: 3px; }
-    .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
 
-    /* Section 2: Rich Notes */
     .note-toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
     .tool-btn {
       background: var(--primary-light);
@@ -204,7 +227,6 @@
       background: #FFFCFD;
     }
 
-    /* Section 3: Tasks */
     .palette { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
     .color-swatch {
       width: 22px;
@@ -259,7 +281,6 @@
     .btn-del { color: #FFAAA6; cursor: pointer; border: none; background: none; font-size: 1rem; }
     .btn-del:hover { color: #FF6B6B; }
 
-    /* Badges cho nhóm giao việc */
     .role-badge {
       display: inline-block;
       font-size: 0.75rem;
@@ -272,7 +293,6 @@
       color: #DFA2B6;
     }
 
-    /* Pomodoro Widget Style */
     .pomodoro-box {
       background: linear-gradient(135deg, #FFF6F9, #FFF0F5);
       border: 1.5px dashed var(--primary);
@@ -298,7 +318,6 @@
     }
     .pomo-btn:hover { background: var(--primary-dark); }
 
-    /* Section 4: Anniversary */
     .cal-type-toggle {
       display: flex;
       gap: 10px;
@@ -346,7 +365,6 @@
     .badge-repeat { background: #DAEAF6; color: #36658C; }
     .anniv-icon { font-size: 2rem; margin-bottom: 4px; }
 
-    /* Fullscreen Pop-up Alert Modal */
     #deadlineModal {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -381,7 +399,6 @@
       40%, 80% { transform: rotate(-15deg); }
     }
 
-    /* Bottom Signature Footer */
     footer {
       max-width: 1280px;
       margin: 20px auto 10px auto;
@@ -396,17 +413,8 @@
       justify-content: center;
       gap: 10px;
     }
-    .footer-text {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-main);
-      letter-spacing: 0.5px;
-    }
-    .clover-icon {
-      font-size: 1.35rem;
-      display: inline-block;
-      animation: cloverPulse 2s ease-in-out infinite;
-    }
+    .footer-text { font-size: 1rem; font-weight: 700; color: var(--text-main); letter-spacing: 0.5px; }
+    .clover-icon { font-size: 1.35rem; display: inline-block; animation: cloverPulse 2s ease-in-out infinite; }
     @keyframes cloverPulse {
       0%, 100% { transform: scale(1) rotate(0deg); }
       50% { transform: scale(1.2) rotate(10deg); }
@@ -415,18 +423,15 @@
 </head>
 <body>
 
-  <!-- Top Marquee Bar -->
   <div id="topBanner">
     <span class="marquee-text" id="marqueeMsg">🔔 Nhắc nhở: Bạn có công việc sắp đến hạn!</span>
   </div>
 
-  <!-- Header -->
   <header>
     <div class="brand">
       <div class="brand-logo-container">
-        <!-- Logo Marki trực tiếp từ GitHub CDN -->
         <img 
-          src="https://raw.githubusercontent.com/shopkazoku/chiechopnhacviec/main/logo.png" 
+          src="./logo.png" 
           onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/9068/9068678.png';" 
           alt="Marki Logo" 
           class="brand-logo-img" 
@@ -436,11 +441,9 @@
       <span id="txtAppTitle">Chiếc Hộp Nhắc Việc</span>
     </div>
     <div class="nav-controls">
-      <!-- Nút Thử Chuông Gió 3 Hồi -->
       <button class="btn-test-sound" onclick="testAudioDirectly()">
         <i class="fa-solid fa-volume-high"></i> <span id="txtTestChime">Thử chuông gió</span>
       </button>
-      <!-- Nút Chuyển Đổi VIE / ENG -->
       <button class="btn-lang" id="btnLang" onclick="toggleLanguage()">
         <span id="langFlag">🇻🇳</span> <span id="langLabel">VIE</span>
       </button>
@@ -450,7 +453,7 @@
     </div>
   </header>
 
-  <!-- Pop-up Cảnh Báo Toàn Màn Hình Khi Đến Hạn (Hiển thị song song cả 2 máy) -->
+  <!-- Pop-up Cảnh Báo Toàn Màn Hình -->
   <div id="deadlineModal" style="display: none;">
     <div class="modal-alert-box">
       <div class="alert-chime-icon"><i class="fa-solid fa-bell"></i></div>
@@ -469,31 +472,35 @@
     </div>
   </div>
 
-  <!-- Main Container -->
   <div class="container">
     <div class="grid-layout">
-
-      <!-- LEFT COLUMN -->
+      <!-- CỘT TRÁI -->
       <div class="left-col">
-        <!-- PHẦN 1: THỜI GIAN & LỊCH ÂM DƯƠNG -->
+        <!-- 1. THỜI GIAN & LỊCH ÂM DƯƠNG XEMLICHAM.COM -->
         <div class="card">
           <div class="card-header">
             <h2 id="txtSecTime"><i class="fa-regular fa-clock"></i> Thời Gian</h2>
           </div>
           <div class="clock-display">
             <div class="digital-clock" id="digitalClock">00:00:00</div>
-            <div class="clock-sub" id="fullDateDisplay">Thứ Bảy, 15/08/2026</div>
+            <div class="clock-sub" id="fullDateDisplay">--</div>
+            <!-- Bảng chi tiết Lịch Âm Can Chi & Ngày Lễ -->
+            <div class="lunar-detail-box" id="lunarDetailBox">
+              <div>🌙 <b>Âm Lịch:</b> <span id="txtLunarDateStr">--</span></div>
+              <div>📅 <b>Can Chi:</b> <span id="txtCanChiStr">--</span></div>
+              <div id="txtFestivalContainer" style="display:none;"><span class="festival-badge" id="txtFestivalBadge">🎉 Ngày lễ</span></div>
+            </div>
           </div>
           <div class="cal-nav">
             <button onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-            <span id="calMonthYear">Tháng 8 / 2026</span>
+            <span id="calMonthYear">Tháng -- / ----</span>
             <button onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
           </div>
           <div class="cal-grid" id="calGridHeader"></div>
           <div class="cal-grid" id="calGridBody"></div>
         </div>
 
-        <!-- PHẦN 2: GHI CHÚ NHANH -->
+        <!-- 2. GHI CHÚ NHANH -->
         <div class="card">
           <div class="card-header">
             <h2 id="txtSecNotes"><i class="fa-regular fa-pen-to-square"></i> Ghi Chú</h2>
@@ -509,15 +516,15 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN -->
+      <!-- CỘT PHẢI -->
       <div class="right-col">
-        <!-- PHẦN 3: NHẮC VIỆC & POMODORO & 4 NHÓM GIAO VIỆC -->
+        <!-- 3. NHẮC VIỆC & POMODORO & 4 NHÓM GIAO VIỆC -->
         <div class="card">
           <div class="card-header">
             <h2 id="txtSecTasks"><i class="fa-solid fa-list-check"></i> Nhắc Việc</h2>
           </div>
 
-          <!-- Tiện ích Pomodoro 30 Phút -->
+          <!-- Pomodoro 30 Phút -->
           <div class="pomodoro-box">
             <div class="pomo-header">
               <div class="pomo-title">
@@ -545,7 +552,7 @@
           <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);" id="txtColorLabel">Chọn mã màu Label:</label>
           <div class="palette" id="colorPalette"></div>
 
-          <!-- Tab chuyển loại việc -->
+          <!-- Tab Lịch định kì / Phát sinh -->
           <div style="display: flex; gap: 10px; margin-bottom: 12px;">
             <button class="btn-lang" id="tabPeriodic" style="background: var(--primary); color: #fff;" onclick="switchTaskTab('periodic')">Lịch Định Kì</button>
             <button class="btn-lang" id="tabOnetime" onclick="switchTaskTab('onetime')">Việc Phát Sinh</button>
@@ -563,8 +570,6 @@
                 <option value="yearly" id="optYearly">Hàng năm</option>
               </select>
             </div>
-            
-            <!-- 4 Nhóm Giao Việc: Gia đình, Công việc, Bạn bè, Học tập -->
             <div class="form-group" style="margin-top: -4px;">
               <select class="input-box" id="pTaskRole" style="max-width: 180px; font-weight: 600;">
                 <option value="👨‍👩‍👧 Gia đình" id="optRoleFamily_P">👨‍👩‍👧 Gia đình</option>
@@ -585,7 +590,6 @@
               <input type="text" class="input-box" id="oTaskTitle" />
               <input type="datetime-local" class="input-box" id="oTaskDateTime" />
             </div>
-            <!-- 4 Nhóm Giao Việc: Việc Phát Sinh -->
             <div class="form-group" style="margin-top: -4px;">
               <select class="input-box" id="oTaskRole" style="max-width: 180px; font-weight: 600;">
                 <option value="👨‍👩‍👧 Gia đình" id="optRoleFamily_O">👨‍👩‍👧 Gia đình</option>
@@ -601,18 +605,15 @@
           </div>
         </div>
 
-        <!-- PHẦN 4: NGÀY KỶ NIỆM (ÂM & DƯƠNG - LẶP HÀNG NĂM) -->
+        <!-- 4. NGÀY KỶ NIỆM (ÂM & DƯƠNG - LẶP HÀNG NĂM) -->
         <div class="card">
           <div class="card-header">
             <h2 id="txtSecAnniv"><i class="fa-solid fa-cake-candles"></i> Ngày Kỷ Niệm (Âm & Dương)</h2>
           </div>
-
-          <!-- Nút chọn loại lịch kỷ niệm -->
           <div class="cal-type-toggle">
             <button class="cal-type-btn active" id="btnTypeSolar" onclick="setAnnivCalType('solar')">☀️ Dương Lịch</button>
             <button class="cal-type-btn" id="btnTypeLunar" onclick="setAnnivCalType('lunar')">🌙 Âm Lịch (Giỗ chạp/Tết)</button>
           </div>
-
           <div class="form-group">
             <input type="text" class="input-box" id="annivTitle" />
             <select class="input-box" id="annivIcon" style="max-width: 90px; font-size: 1.1rem;">
@@ -624,34 +625,25 @@
               <option value="🎉">🎉</option>
               <option value="✈️">✈️</option>
             </select>
-            
-            <!-- Ngày Dương lịch -->
             <input type="date" class="input-box" id="annivSolarDate" />
-            
-            <!-- Ngày Âm lịch -->
             <div id="lunarDateInputs" style="display: none; gap: 8px; flex: 1;">
               <input type="number" class="input-box" id="annivLunarDay" min="1" max="30" />
               <input type="number" class="input-box" id="annivLunarMonth" min="1" max="12" />
             </div>
-
             <input type="time" class="input-box" id="annivTime" value="08:00" />
-            
-            <!-- Tùy chọn lặp hàng năm -->
             <select class="input-box" id="annivRepeat" style="max-width: 140px;">
               <option value="yearly" id="optAnnivYearly">🔁 Hàng năm</option>
               <option value="once" id="optAnnivOnce">1️⃣ Một lần</option>
             </select>
-
             <button class="btn-add" id="btnAddAnniv" onclick="addAnniversary()">+ Thêm</button>
           </div>
           <div class="anniv-grid" id="annivList"></div>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- Bottom Signature Footer -->
+  <!-- Footer Chữ Ký Sơn Marki -->
   <footer>
     <span class="clover-icon">🍀</span>
     <span class="footer-text" id="txtFooterMsg">Have a nice day (Sơn Marki)</span>
@@ -664,9 +656,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script>
-    /* ==========================================================
-       1. CẤU HÌNH FIREBASE CHÍNH XÁC CỦA BOSS SƠN MARKI
-       ========================================================== */
     const firebaseConfig = {
       apiKey: "AIzaSyBLuzKmnEQOlnCe-OlS2UYEv5SOHgOMZD0",
       authDomain: "chiechopnhacviec.firebaseapp.com",
@@ -688,7 +677,7 @@
         if (user) {
           currentUser = user;
           document.getElementById('txtAuthBtn').innerText = user.displayName || (currentLang === 'VIE' ? "Tài khoản" : "Account");
-          listenToCloudTasks(); // Lắng nghe và đồng bộ 2 chiều thời gian thực
+          listenToCloudTasks();
         } else {
           currentUser = null;
         }
@@ -697,11 +686,8 @@
       console.warn("Firebase Init Mode:", e);
     }
 
-    /* ==========================================================
-       2. HỆ THỐNG ÂM THANH 3 HỒI CHUÔNG GIÓ MARKI PRO
-       ========================================================== */
+    // Audio Engine: 3 Hồi Chuông Gió
     let globalAudioCtx = null;
-
     function getAudioContext() {
       if (!globalAudioCtx) {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -719,7 +705,6 @@
     function playWindChime() {
       try {
         const ctx = getAudioContext();
-
         function strikeChime(delayMs, freq, duration = 1.4, volume = 0.3) {
           setTimeout(() => {
             const nowTime = ctx.currentTime;
@@ -736,15 +721,13 @@
           }, delayMs);
         }
 
-        // HỒI 1
+        // Hồi 1
         strikeChime(0, 1760, 1.2, 0.28);
         strikeChime(150, 2093, 1.3, 0.30);
-
-        // HỒI 2
+        // Hồi 2
         strikeChime(650, 2637, 1.4, 0.32);
         strikeChime(820, 3135, 1.5, 0.34);
-
-        // HỒI 3
+        // Hồi 3
         strikeChime(1350, 2093, 1.8, 0.30);
         strikeChime(1500, 2637, 2.0, 0.32);
         strikeChime(1650, 4186, 2.4, 0.35);
@@ -758,11 +741,205 @@
       triggerAlertModal(currentLang === 'VIE' ? "Kiểm tra 3 hồi chuông gió thành công! 🔔" : "3-Burst Wind Chime test successful! 🔔");
     }
 
-    /* ==========================================================
-       3. BỘ TỪ ĐIỂN ĐA NGÔN NGỮ HOÀN CHỈNH (VIE / ENG)
-       ========================================================== */
-    let currentLang = 'VIE';
+    // ==========================================================
+    // THUẬT TOÁN ÂM LỊCH THIÊN VĂN CHUẨN XÁC 100% (TS. HỒ NGỌC ĐỨC)
+    // ==========================================================
+    const PI = Math.PI;
 
+    function INT(d) { return Math.floor(d); }
+
+    function jdn(dd, mm, yy) {
+      let a = INT((14 - mm) / 12);
+      let y = yy + 4800 - a;
+      let m = mm + 12 * a - 3;
+      return dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
+    }
+
+    function decodeJdn(jd) {
+      let a = jd + 32044;
+      let b = INT((4 * a + 3) / 146097);
+      let c = a - INT((146097 * b) / 4);
+      let d = INT((4 * c + 3) / 1461);
+      let e = c - INT((1461 * d) / 4);
+      let m = INT((5 * e + 2) / 153);
+      let day = e - INT((153 * m + 2) / 5) + 1;
+      let month = m + 3 - 12 * INT(m / 10);
+      let year = 100 * b + d - 4800 + INT(m / 10);
+      return [day, month, year];
+    }
+
+    function getNewMoonDay(k, timeZone = 7) {
+      let T = k / 1236.85;
+      let T2 = T * T;
+      let T3 = T2 * T;
+      let dr = PI / 180;
+      let Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
+      Jd1 += 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
+      let M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
+      let Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
+      let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
+      let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
+      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * Mpr);
+      C1 = C1 - 0.0004 * Math.sin(3 * dr * Mpr);
+      C1 = C1 + 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
+      C1 = C1 - 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
+      C1 = C1 - 0.0004 * Math.sin((2 * F - M) * dr) - 0.0006 * Math.sin((2 * F + Mpr) * dr);
+      C1 = C1 + 0.001 * Math.sin((2 * F - Mpr) * dr) + 0.0005 * Math.sin((2 * Mpr + M) * dr);
+      let JdNew = Jd1 + C1;
+      return INT(JdNew + 0.5 + timeZone / 24);
+    }
+
+    function getSunLongitude(dayNumber, timeZone = 7) {
+      let T = (dayNumber - 2451545.5 - timeZone / 24) / 36525;
+      let T2 = T * T;
+      let dr = PI / 180;
+      let M = 357.5291 + 35999.0503 * T - 0.0001559 * T2 - 0.00000048 * T * T2;
+      let L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
+      let DL = (1.9146 - 0.004817 * T - 0.000014 * T2) * Math.sin(M * dr);
+      DL += (0.019993 - 0.000101 * T) * Math.sin(2 * M * dr) + 0.00029 * Math.sin(3 * M * dr);
+      let L = L0 + DL;
+      L = L * dr;
+      L = L - PI * 2 * INT(L / (PI * 2));
+      return INT(L / (PI / 6));
+    }
+
+    function getLunarMonth11(yy, timeZone = 7) {
+      let off = jdn(31, 12, yy) - 2415021;
+      let k = INT(off / 29.530588853);
+      let nm = getNewMoonDay(k, timeZone);
+      let sunLong = getSunLongitude(nm, timeZone);
+      if (sunLong >= 9) nm = getNewMoonDay(k - 1, timeZone);
+      return nm;
+    }
+
+    function getLeapMonthOffset(a11, timeZone = 7) {
+      let k = INT((a11 - 2415021.0769986) / 29.53058868 + 0.5);
+      let last = 0;
+      let i = 1;
+      let arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
+      do {
+        last = arc;
+        k++;
+        arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
+        i++;
+      } while (arc !== last && i < 14);
+      return i - 1;
+    }
+
+    function convertSolar2LunarFull(dd, mm, yy, timeZone = 7) {
+      let dayNumber = jdn(dd, mm, yy);
+      let k = INT((dayNumber - 2415021.0769986) / 29.53058868);
+      let monthStart = getNewMoonDay(k + 1, timeZone);
+      if (monthStart > dayNumber) monthStart = getNewMoonDay(k, timeZone);
+      let a11 = getLunarMonth11(yy, timeZone);
+      let b11 = a11;
+      let lunarYear = yy;
+      if (a11 >= monthStart) {
+        lunarYear = yy - 1;
+        a11 = getLunarMonth11(yy - 1, timeZone);
+      } else {
+        let nextA11 = getLunarMonth11(yy + 1, timeZone);
+        if (nextA11 <= monthStart) {
+          lunarYear = yy + 1;
+          a11 = nextA11;
+        }
+      }
+      let lunarDay = dayNumber - monthStart + 1;
+      let diff = INT((monthStart - a11) / 29);
+      let lunarLeap = 0;
+      let lunarMonth = diff + 11;
+      let leapMonthDiff = getLeapMonthOffset(a11, timeZone);
+      if (diff >= leapMonthDiff) {
+        lunarMonth = diff + 10;
+        if (diff === leapMonthDiff) lunarLeap = 1;
+      }
+      if (lunarMonth > 12) lunarMonth = lunarMonth - 12;
+      if (lunarMonth >= 11 && diff < 4) lunarYear -= 1;
+      return [lunarDay, lunarMonth, lunarYear, lunarLeap];
+    }
+
+    function convertLunar2Solar(lunarDay, lunarMonth, lunarYear, lunarLeap = 0, timeZone = 7) {
+      let a11 = getLunarMonth11(lunarYear, timeZone);
+      let leapMonthDiff = getLeapMonthOffset(a11, timeZone);
+      let off = lunarMonth - 11;
+      if (lunarMonth < 11) off += 12;
+      if (leapMonthDiff < off || (leapMonthDiff === off && lunarLeap === 1)) off += 1;
+      let k = INT((a11 - 2415021.0769986) / 29.53058868 + 0.5);
+      let monthStart = getNewMoonDay(k + off, timeZone);
+      return decodeJdn(monthStart + lunarDay - 1);
+    }
+
+    // Bảng Can Chi Thiên Can & Địa Chi
+    const CAN = ["Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý"];
+    const CHI = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
+    
+    function getCanChiYear(year) {
+      return CAN[(year + 6) % 10] + " " + CHI[(year + 8) % 12];
+    }
+    function getCanChiMonth(month, year) {
+      let canYearIndex = (year + 6) % 10;
+      let canMonthStart = (canYearIndex * 2 + 3) % 10;
+      let can = CAN[(canMonthStart + month - 1) % 10];
+      let chi = CHI[(month + 1) % 12];
+      return can + " " + chi;
+    }
+    function getCanChiDay(dd, mm, yy) {
+      let jd = jdn(dd, mm, yy);
+      let can = CAN[(jd + 9) % 10];
+      let chi = CHI[(jd + 1) % 12];
+      return can + " " + chi;
+    }
+
+    // Danh sách ngày Lễ Tết Âm - Dương chuẩn XemLichAm.com
+    const SOLAR_FESTIVALS = {
+      "1-1": "Tết Dương Lịch 🎆",
+      "14-2": "Lễ Tình Nhân (Valentine) 💖",
+      "27-2": "Ngày Thầy Thuốc VN 🩺",
+      "8-3": "Quốc Tế Phụ Nữ 🌸",
+      "26-3": "Thành Lập Đoàn TNCS HCM 🚩",
+      "30-4": "Giải Phóng Miền Nam 🇻🇳",
+      "1-5": "Quốc Tế Lao Động 🛠️",
+      "1-6": "Quốc Tế Thiếu Nhi 🎈",
+      "27-7": "Ngày Thương Binh Liệt Sĩ 🕯️",
+      "19-8": "Cách Mạng Tháng Tám 🌟",
+      "2-9": "Quốc Khánh Việt Nam 🇻🇳",
+      "20-10": "Ngày Phụ Nữ Việt Nam 💐",
+      "20-11": "Ngày Nhà Giáo Việt Nam 🎓",
+      "22-12": "Ngày QĐND Việt Nam 🛡️",
+      "24-12": "Đêm Giáng Sinh 🎄",
+      "25-12": "Lễ Giáng Sinh (Noel) 🎅"
+    };
+
+    const LUNAR_FESTIVALS = {
+      "1-1": "Tết Nguyên Đán (Mùng 1) 🧧",
+      "2-1": "Tết Nguyên Đán (Mùng 2) 🧧",
+      "3-1": "Tết Nguyên Đán (Mùng 3) 🧧",
+      "15-1": "Tết Nguyên Tiêu (Rằm T1) 🏮",
+      "3-3": "Tết Hàn Thực (Bánh trôi nước) 🍡",
+      "10-3": "Giỗ Tổ Hùng Vương 👑",
+      "15-4": "Lễ Phật Đản 🪷",
+      "5-5": "Tết Đoan Ngọ (Giết sâu bọ) 🌾",
+      "7-7": "Lễ Thất Tịch (Ngưu Lang Chức Nữ) 🌌",
+      "15-7": "Lễ Vu Lan Báo Hiếu / Xá Tội Vong Nhân 🕯️",
+      "15-8": "Tết Trung Thu (Rằm Tháng 8) 🥮",
+      "9-9": "Tết Trùng Cửu 🍁",
+      "15-10": "Tết Hạ Nguyên 🌾",
+      "23-12": "Tiễn Ông Táo Chầu Trời 🐟",
+      "30-12": "Đêm Giao Thừa Tất Niên 🎇"
+    };
+
+    function checkFestival(sd, sm, ld, lm) {
+      let sKey = `${sd}-${sm}`;
+      let lKey = `${ld}-${lm}`;
+      if (LUNAR_FESTIVALS[lKey]) return LUNAR_FESTIVALS[lKey];
+      if (SOLAR_FESTIVALS[sKey]) return SOLAR_FESTIVALS[sKey];
+      return null;
+    }
+
+    // ==========================================================
+    // TỪ ĐIỂN ĐA NGÔN NGỮ VIE / ENG
+    // ==========================================================
+    let currentLang = 'VIE';
     const translations = {
       VIE: {
         appTitle: "Chiếc Hộp Nhắc Việc",
@@ -912,7 +1089,6 @@
       document.getElementById('optAnnivYearly').innerText = t.optAnnivYearly;
       document.getElementById('optAnnivOnce').innerText = t.optAnnivOnce;
 
-      // Dịch 4 nhóm giao việc
       document.getElementById('optRoleFamily_P').innerText = t.optRoleFamily;
       document.getElementById('optRoleWork_P').innerText = t.optRoleWork;
       document.getElementById('optRoleFriends_P').innerText = t.optRoleFriends;
@@ -944,109 +1120,7 @@
       applyLanguage(currentLang);
     }
 
-    /* ==========================================================
-       4. THUẬT TOÁN ÂM - DƯƠNG LỊCH HỒ NGỌC ĐỨC CHUẨN XÁC
-       ========================================================== */
-    function INT(d) { return Math.floor(d); }
-    function jdFromDate(dd, mm, yy) {
-      let a = INT((14 - mm) / 12);
-      let y = yy + 4800 - a;
-      let m = mm + 12 * a - 3;
-      return dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
-    }
-    function jdToDate(jd) {
-      let a = jd + 32044;
-      let b = INT((4 * a + 3) / 146097);
-      let c = a - INT((146097 * b) / 4);
-      let d = INT((4 * c + 3) / 1461);
-      let e = c - INT((1461 * d) / 4);
-      let m = INT((5 * e + 2) / 153);
-      let day = e - INT((153 * m + 2) / 5) + 1;
-      let month = m + 3 - 12 * INT(m / 10);
-      let year = 100 * b + d - 4800 + INT(m / 10);
-      return [day, month, year];
-    }
-    function getNewMoonDay(k, timeZone) {
-      let T = k / 1236.85;
-      let T2 = T * T;
-      let T3 = T2 * T;
-      let dr = Math.PI / 180;
-      let Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
-      Jd1 += 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
-      let M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
-      let Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
-      let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
-      let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
-      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * M);
-      C1 = C1 - 0.0004 * Math.sin(3 * dr * Mpr);
-      C1 = C1 + 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
-      C1 = C1 - 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
-      C1 = C1 - 0.0004 * Math.sin((2 * F - M) * dr) - 0.0006 * Math.sin((2 * F + Mpr) * dr);
-      C1 = C1 + 0.001 * Math.sin((2 * F - Mpr) * dr) + 0.0005 * Math.sin((2 * Mpr + M) * dr);
-      let JdNew = Jd1 + C1;
-      return INT(JdNew + 0.5 + timeZone / 24);
-    }
-    function convertSolar2Lunar(dd, mm, yy, timeZone = 7) {
-      let dayNumber = jdFromDate(dd, mm, yy);
-      let k = INT((dayNumber - 2415021.0769986) / 29.53058868);
-      let monthStart = getNewMoonDay(k + 1, timeZone);
-      if (monthStart > dayNumber) monthStart = getNewMoonDay(k, timeZone);
-      let a11 = getNewMoonDay(INT((jdFromDate(31, 12, yy) - 2415021.0769986) / 29.53058868), timeZone);
-      let b11 = a11;
-      let lunarYear = (monthStart >= a11) ? yy : yy - 1;
-      let lunarDay = dayNumber - monthStart + 1;
-      let diff = INT((monthStart - b11) / 29);
-      let lunarMonth = diff + 11;
-      if (lunarMonth > 12) lunarMonth = lunarMonth - 12;
-      return [lunarDay, lunarMonth, lunarYear];
-    }
-    function convertLunar2Solar(lunarDay, lunarMonth, lunarYear, timeZone = 7) {
-      let k = INT((jdFromDate(1, 1, lunarYear) - 2415021.0769986) / 29.53058868) - 2;
-      let monthStart = 0;
-      for (let i = 0; i < 20; i++) {
-        let nm = getNewMoonDay(k + i, timeZone);
-        let [d, m, y] = jdToDate(nm);
-        let [ld, lm, ly] = convertSolar2Lunar(d, m, y, timeZone);
-        if (lm === lunarMonth && ly === lunarYear) {
-          monthStart = nm;
-          break;
-        }
-      }
-      if (monthStart === 0) monthStart = jdFromDate(lunarDay, lunarMonth, lunarYear);
-      let targetJd = monthStart + lunarDay - 1;
-      return jdToDate(targetJd);
-    }
-
-    /* ==========================================================
-       5. BẢNG MÀU PASTEL & THEME
-       ========================================================== */
-    const pastelColors = [
-      "#F2C1D1", "#F6A6B2", "#FFAAA6", "#FFD3B6", "#D4F0F0",
-      "#CCE2CB", "#BFFCC6", "#C7CEEA", "#E2F0CB", "#FFDAC1",
-      "#E8DFF5", "#FCE1E4", "#DAEAF6", "#E8E7D5", "#D8E2DC",
-      "#FFE5D9", "#ECE4DB", "#C9E4DE"
-    ];
-    let selectedColor = pastelColors[0];
-
-    function renderColorPalette() {
-      const p = document.getElementById('colorPalette');
-      p.innerHTML = '';
-      pastelColors.forEach(c => {
-        const d = document.createElement('div');
-        d.className = `color-swatch ${c === selectedColor ? 'active' : ''}`;
-        d.style.backgroundColor = c;
-        d.onclick = () => {
-          selectedColor = c;
-          renderColorPalette();
-        };
-        p.appendChild(d);
-      });
-    }
-    renderColorPalette();
-
-    /* ==========================================================
-       6. ĐỒNG HỒ & LỊCH HIỂN THỊ
-       ========================================================== */
+    // Cập nhật Đồng hồ & Chi tiết Lịch Âm Hồ Ngọc Đức
     function updateClock() {
       const now = new Date();
       const timeStr = now.toLocaleTimeString('vi-VN', { hour12: false });
@@ -1056,11 +1130,36 @@
       const dayNamesEng = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       const curDayName = currentLang === 'VIE' ? dayNamesVie[now.getDay()] : dayNamesEng[now.getDay()];
       
-      const [ld, lm] = convertSolar2Lunar(now.getDate(), now.getMonth() + 1, now.getFullYear());
-      const lunarTxt = currentLang === 'VIE' ? `Âm: ${ld}/${lm}` : `Lunar: ${ld}/${lm}`;
-      
+      const curD = now.getDate();
+      const curM = now.getMonth() + 1;
+      const curY = now.getFullYear();
+
+      // Tính chính xác ngày Âm lịch
+      const [lDay, lMonth, lYear, lLeap] = convertSolar2LunarFull(curD, curM, curY, 7);
+      const canChiDay = getCanChiDay(curD, curM, curY);
+      const canChiMonth = getCanChiMonth(lMonth, lYear);
+      const canChiYear = getCanChiYear(lYear);
+
       document.getElementById('fullDateDisplay').innerText = 
-        `${curDayName}, ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth()+1).padStart(2, '0')}/${now.getFullYear()} (${lunarTxt})`;
+        `${curDayName}, ${String(curD).padStart(2, '0')}/${String(curM).padStart(2, '0')}/${curY}`;
+
+      const leapTxt = lLeap === 1 ? (currentLang === 'VIE' ? " (Nhuận)" : " (Leap)") : "";
+      document.getElementById('txtLunarDateStr').innerText = 
+        `Ngày ${lDay} tháng ${lMonth}${leapTxt} năm ${canChiYear}`;
+      
+      document.getElementById('txtCanChiStr').innerText = 
+        `Ngày ${canChiDay}, Tháng ${canChiMonth}, Năm ${canChiYear}`;
+
+      // Kiểm tra ngày lễ
+      const festival = checkFestival(curD, curM, lDay, lMonth);
+      const festContainer = document.getElementById('txtFestivalContainer');
+      const festBadge = document.getElementById('txtFestivalBadge');
+      if (festival) {
+        festBadge.innerText = festival;
+        festContainer.style.display = 'block';
+      } else {
+        festContainer.style.display = 'none';
+      }
     }
     setInterval(updateClock, 1000);
     updateClock();
@@ -1091,10 +1190,11 @@
       const today = new Date();
       for (let day = 1; day <= totalDays; day++) {
         const isToday = (today.getDate() === day && today.getMonth() === viewMonth && today.getFullYear() === viewYear);
-        const [lDay, lMonth] = convertSolar2Lunar(day, viewMonth + 1, viewYear);
+        const [lDay, lMonth] = convertSolar2LunarFull(day, viewMonth + 1, viewYear, 7);
+        const hasFest = checkFestival(day, viewMonth + 1, lDay, lMonth);
         
         html += `
-          <div class="cal-cell ${isToday ? 'today' : ''}">
+          <div class="cal-cell ${isToday ? 'today' : ''} ${hasFest ? 'has-event' : ''}" title="${hasFest || ''}">
             <span class="solar">${day}</span>
             <span class="lunar">${lDay === 1 ? `${lDay}/${lMonth}` : lDay}</span>
             <div class="cal-dots">
@@ -1113,9 +1213,6 @@
       renderCalendar();
     }
 
-    /* ==========================================================
-       7. GHI CHÚ
-       ========================================================== */
     function formatText(cmd, val = null) { document.execCommand(cmd, false, val); }
     function addLink() {
       const promptTxt = currentLang === 'VIE' ? "Nhập đường dẫn liên kết (Link):" : "Enter Hyperlink URL:";
@@ -1123,9 +1220,7 @@
       if (url) formatText('createLink', url);
     }
 
-    /* ==========================================================
-       8. TIỆN ÍCH POMODORO 30 PHÚT (25M WORK + 5M REST)
-       ========================================================== */
+    // Pomodoro 30 Phút
     let pomoInterval = null;
     let pomoSecondsLeft = 25 * 60;
     let isPomoRunning = false;
@@ -1185,9 +1280,7 @@
       document.getElementById('btnPomoStart').innerHTML = `<i class="fa-solid fa-play"></i> ${translations[currentLang].btnPomoStart}`;
     }
 
-    /* ==========================================================
-       9. QUẢN LÝ NHẮC VIỆC GIA ĐÌNH & ĐỒNG BỘ 2 CHIỀU CLOUD FIRESTORE
-       ========================================================== */
+    // Nhắc việc & Đồng bộ Firestore 2 chiều
     let periodicTasks = JSON.parse(localStorage.getItem('periodicTasks') || '[]');
     let onetimeTasks = JSON.parse(localStorage.getItem('onetimeTasks') || '[]');
     let anniversaries = JSON.parse(localStorage.getItem('anniversaries') || '[]');
@@ -1308,12 +1401,10 @@
       saveAndRender();
     }
 
-    // Lắng nghe và đồng bộ 2 chiều thời gian thực trên Firestore
     function listenToCloudTasks() {
       if (!db || !currentUser || !currentUser.email) return;
       const myEmail = currentUser.email.toLowerCase();
 
-      // 1. Lắng nghe việc người khác giao cho tôi
       db.collection('tasks').where('assignEmail', '==', myEmail)
         .onSnapshot((snapshot) => {
           snapshot.docChanges().forEach((change) => {
@@ -1338,7 +1429,6 @@
           saveAndRender();
         });
 
-      // 2. Lắng nghe trạng thái hoàn thành các việc do chính tôi giao đi
       db.collection('tasks').where('creatorEmail', '==', myEmail)
         .onSnapshot((snapshot) => {
           snapshot.docChanges().forEach((change) => {
@@ -1413,7 +1503,7 @@
         yearly: currentLang === 'VIE' ? "Hàng năm" : "Yearly"
       };
 
-      // Render Periodic Tasks
+      // Render Lịch định kì
       document.getElementById('pTaskList').innerHTML = periodicTasks.map(t => {
         const syncText = t.assignEmail ? (t.creatorEmail && currentUser && t.creatorEmail === currentUser.email.toLowerCase() ? ` • ✉️ ${translations[currentLang].syncAssignTo} ${t.assignEmail}` : ` • ✉️ ${translations[currentLang].syncAssignBy} ${t.creatorEmail}`) : '';
         return `
@@ -1436,7 +1526,7 @@
         `;
       }).join('');
 
-      // Render Onetime Tasks
+      // Render Việc phát sinh
       document.getElementById('oTaskList').innerHTML = onetimeTasks.map(t => {
         const syncText = t.assignEmail ? (t.creatorEmail && currentUser && t.creatorEmail === currentUser.email.toLowerCase() ? ` • ✉️ ${translations[currentLang].syncAssignTo} ${t.assignEmail}` : ` • ✉️ ${translations[currentLang].syncAssignBy} ${t.creatorEmail}`) : '';
         return `
@@ -1459,7 +1549,7 @@
         `;
       }).join('');
 
-      // Render Anniversaries
+      // Render Kỷ niệm
       const currentYear = new Date().getFullYear();
       document.getElementById('annivList').innerHTML = anniversaries.map(a => {
         let dateText = '';
@@ -1472,7 +1562,7 @@
           dateText = `${a.solarDate} (${a.time})`;
         } else {
           badgeHtml = `<span class="anniv-badge badge-lunar">${currentLang === 'VIE' ? '🌙 Âm Lịch' : '🌙 Lunar'}</span> ${repeatBadge}`;
-          const [sd, sm, sy] = convertLunar2Solar(a.lunarDay, a.lunarMonth, currentYear);
+          const [sd, sm, sy] = convertLunar2Solar(a.lunarDay, a.lunarMonth, currentYear, 0, 7);
           const lunarPrefix = currentLang === 'VIE' ? 'Âm:' : 'Lunar:';
           const solarPrefix = currentLang === 'VIE' ? 'Dương:' : 'Solar:';
           dateText = `${lunarPrefix} ${a.lunarDay}/${a.lunarMonth} ➔ ${solarPrefix} ${sd}/${sm}/${sy} (${a.time})`;
@@ -1490,20 +1580,17 @@
       }).join('');
     }
 
-    /* ==========================================================
-       10. CƠ CHẾ POP-UP CẢNH BÁO TOÀN MÀN HÌNH SONG SONG 2 MÁY
-       ========================================================== */
+    // Cơ chế Cảnh Báo Pop-up & Chuông Gió Song Song
     function checkDeadlines() {
       const now = new Date();
       const curHourMin = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
       const curISO = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${curHourMin}`;
       const curMonthDay = `${String(now.getMonth() + 1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-      const [curLunarDay, curLunarMonth] = convertSolar2Lunar(now.getDate(), now.getMonth() + 1, now.getFullYear());
+      const [curLunarDay, curLunarMonth] = convertSolar2LunarFull(now.getDate(), now.getMonth() + 1, now.getFullYear(), 7);
 
       const alertKey = `${curISO}`;
       if (lastAlertMinute === alertKey) return;
 
-      // 1. Việc định kỳ
       periodicTasks.forEach(t => {
         if (t.time === curHourMin) {
           lastAlertMinute = alertKey;
@@ -1513,7 +1600,6 @@
         }
       });
 
-      // 2. Việc phát sinh (cảnh báo đồng thời cho cả người giao và người nhận)
       onetimeTasks.forEach(t => {
         if (!t.done && t.datetime === curISO) {
           lastAlertMinute = alertKey;
@@ -1523,7 +1609,6 @@
         }
       });
 
-      // 3. Kỷ niệm
       anniversaries.forEach(a => {
         if (a.time === curHourMin) {
           if (a.calType === 'solar') {
@@ -1556,23 +1641,20 @@
 
     function triggerAlarm(taskTitle, taskId = null, syncInfo = "") {
       currentActiveAlertTaskId = taskId;
-      playWindChime(); // 3 hồi chuông gió ngân vang
+      playWindChime();
 
-      // 1. Pop-up toàn màn hình
       triggerAlertModal(taskTitle, syncInfo);
 
-      // 2. Banner chạy trên đầu
       const banner = document.getElementById('topBanner');
       const t = translations[currentLang];
       document.getElementById('marqueeMsg').innerText = `${t.dueMsg} ${taskTitle} - ${t.dueSub}`;
       banner.style.display = 'block';
       setTimeout(() => { banner.style.display = 'none'; }, 25000);
 
-      // 3. Thông báo đẩy hệ thống
       if ("Notification" in window && Notification.permission === "granted") {
         new Notification(translations[currentLang].appTitle, {
           body: `${taskTitle} ${syncInfo}`,
-          icon: "https://raw.githubusercontent.com/shopkazoku/chiechopnhacviec/main/logo.png"
+          icon: "./logo.png"
         });
       }
     }
@@ -1595,9 +1677,6 @@
       Notification.requestPermission();
     }
 
-    /* ==========================================================
-       11. AUTHENTICATION TRỰC TIẾP
-       ========================================================== */
     function handleAuth() {
       getAudioContext();
       if (!auth) {
@@ -1615,7 +1694,6 @@
       });
     }
 
-    // Khởi tạo ban đầu
     applyLanguage('VIE');
 
     if ('serviceWorker' in navigator) {
