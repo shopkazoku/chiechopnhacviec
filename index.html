@@ -139,7 +139,7 @@
     .card-header h2 { font-size: 1.15rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
     .card-header h2 i { color: var(--primary-dark); }
 
-    /* Lịch Âm Dương phong cách XemLichAm.com */
+    /* Bảng hiển thị Lịch Âm Dương chuẩn XemLichAm.com */
     .clock-display {
       text-align: center;
       background: linear-gradient(135deg, #FDF2F5, #FFF9FA);
@@ -830,7 +830,10 @@
         let dayNumber = jdFromDate(dd, mm, yy);
         let k = INT((dayNumber - 2415021.0769986) / 29.53058868);
         let monthStart = getNewMoonDay(k + 1, timeZone);
-        if (monthStart > dayNumber) monthStart = getNewMoonDay(k, timeZone);
+        while (monthStart > dayNumber) {
+          monthStart = getNewMoonDay(k, timeZone);
+          k--;
+        }
         
         let a11 = getLunarMonth11(yy - 1, timeZone);
         let nextA11 = getLunarMonth11(yy, timeZone);
