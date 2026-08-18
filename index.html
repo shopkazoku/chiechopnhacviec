@@ -550,7 +550,7 @@
             </div>
           </div>
 
-          <!-- Bảng màu Pastel (Khôi phục hiển thị đầy đủ) -->
+          <!-- Bảng màu Pastel -->
           <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);" id="txtColorLabel">Chọn mã màu Label:</label>
           <div class="palette" id="colorPalette"></div>
 
@@ -577,17 +577,17 @@
             <div id="weeklyOptions" style="display: none; background: var(--primary-light); padding: 10px; border-radius: 12px; margin-bottom: 12px; font-size: 0.85rem;">
               <div style="font-weight: 700; margin-bottom: 6px;">Chọn các thứ trong tuần:</div>
               <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                <label><input type="checkbox" name="weekDay" value="2"> Thứ 2</label>
-                <label><input type="checkbox" name="weekDay" value="3"> Thứ 3</label>
-                <label><input type="checkbox" name="weekDay" value="4"> Thứ 4</label>
-                <label><input type="checkbox" name="weekDay" value="5"> Thứ 5</label>
-                <label><input type="checkbox" name="weekDay" value="6"> Thứ 6</label>
-                <label><input type="checkbox" name="weekDay" value="7"> Thứ 7</label>
-                <label><input type="checkbox" name="weekDay" value="1"> Chủ Nhật</label>
+                <label><input type="checkbox" name="weekDay" value="Thứ 2"> Thứ 2</label>
+                <label><input type="checkbox" name="weekDay" value="Thứ 3"> Thứ 3</label>
+                <label><input type="checkbox" name="weekDay" value="Thứ 4"> Thứ 4</label>
+                <label><input type="checkbox" name="weekDay" value="Thứ 5"> Thứ 5</label>
+                <label><input type="checkbox" name="weekDay" value="Thứ 6"> Thứ 6</label>
+                <label><input type="checkbox" name="weekDay" value="Thứ 7"> Thứ 7</label>
+                <label><input type="checkbox" name="weekDay" value="Chủ Nhật"> Chủ Nhật</label>
               </div>
             </div>
 
-            <!-- Tùy chọn Hàng tháng / Hàng năm (Cách 1: Chọn ngày, Cách 2: Chọn thứ/tuần/tháng) -->
+            <!-- Tùy chọn Hàng tháng / Hàng năm -->
             <div id="advancedOptions" style="display: none; background: var(--primary-light); padding: 10px; border-radius: 12px; margin-bottom: 12px; font-size: 0.85rem;">
               <div style="font-weight: 700; margin-bottom: 6px;">Lựa chọn nâng cao:</div>
               <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 6px;">
@@ -596,29 +596,29 @@
               </div>
               <div style="display: flex; gap: 10px; align-items: center;">
                 <label><input type="radio" name="advMode" value="rule" onclick="toggleAdvMode('rule')"> Chọn Thứ & Tuần</label>
-                <select id="advWhichWeek" class="input-box" style="max-width: 110px; padding: 4px;">
-                  <option value="1">Đầu tiên</option>
-                  <option value="2">Thứ 2</option>
-                  <option value="3">Thứ 3</option>
-                  <option value="4">Thứ 4</option>
-                  <option value="-1">Cuối cùng</option>
+                <select id="advWhichWeek" class="input-box" style="max-width: 110px; padding: 4px;" disabled>
+                  <option value="Đầu tiên">Đầu tiên</option>
+                  <option value="Thứ 2">Thứ 2</option>
+                  <option value="Thứ 3">Thứ 3</option>
+                  <option value="Thứ 4">Thứ 4</option>
+                  <option value="Cuối cùng">Cuối cùng</option>
                 </select>
-                <select id="advDayOfWeek" class="input-box" style="max-width: 110px; padding: 4px;">
-                  <option value="1">Thứ 2</option>
-                  <option value="2">Thứ 3</option>
-                  <option value="3">Thứ 4</option>
-                  <option value="4">Thứ 5</option>
-                  <option value="5">Thứ 6</option>
-                  <option value="6">Thứ 7</option>
-                  <option value="0">Chủ Nhật</option>
+                <select id="advDayOfWeek" class="input-box" style="max-width: 110px; padding: 4px;" disabled>
+                  <option value="Thứ 2">Thứ 2</option>
+                  <option value="Thứ 3">Thứ 3</option>
+                  <option value="Thứ 4">Thứ 4</option>
+                  <option value="Thứ 5">Thứ 5</option>
+                  <option value="Thứ 6">Thứ 6</option>
+                  <option value="Thứ 7">Thứ 7</option>
+                  <option value="Chủ Nhật">Chủ Nhật</option>
                 </select>
               </div>
               <div id="yearlyMonthWrap" style="margin-top: 6px; display: none;">
                 <span>Trong tháng: </span>
                 <select id="advMonth" class="input-box" style="max-width: 120px; padding: 4px;">
-                  <option value="1">Tháng 1</option><option value="2">Tháng 2</option><option value="3">Tháng 3</option><option value="4">Tháng 4</option>
-                  <option value="5">Tháng 5</option><option value="6">Tháng 6</option><option value="7">Tháng 7</option><option value="8">Tháng 8</option>
-                  <option value="9">Tháng 9</option><option value="10">Tháng 10</option><option value="11">Tháng 11</option><option value="12">Tháng 12</option>
+                  <option value="Tháng 1">Tháng 1</option><option value="Tháng 2">Tháng 2</option><option value="Tháng 3">Tháng 3</option><option value="Tháng 4">Tháng 4</option>
+                  <option value="Tháng 5">Tháng 5</option><option value="Tháng 6">Tháng 6</option><option value="Tháng 7">Tháng 7</option><option value="Tháng 8">Tháng 8</option>
+                  <option value="Tháng 9">Tháng 9</option><option value="Tháng 10">Tháng 10</option><option value="11">Tháng 11</option><option value="12">Tháng 12</option>
                 </select>
               </div>
             </div>
@@ -631,7 +631,7 @@
                 <option value="📚 Học tập" id="optRoleStudy_P">📚 Học tập</option>
                 <option value="👤 Cá nhân" id="optRolePersonal_P" selected>👤 Cá nhân</option>
               </select>
-              <input type="email" class="input-box" id="pTaskAssignEmail" />
+              <input type="email" class="input-box" id="pTaskAssignEmail" placeholder="Nhập Gmail người nhận (để đồng bộ)..." />
               <button class="btn-add" id="btnAddPeriodic" onclick="addPeriodicTask()">+ Thêm</button>
             </div>
             <div class="task-list" id="pTaskList"></div>
@@ -640,7 +640,7 @@
           <!-- Form Phát Sinh -->
           <div id="formOnetime" style="display: none;">
             <div class="form-group">
-              <input type="text" class="input-box" id="oTaskTitle" />
+              <input type="text" class="input-box" id="oTaskTitle" placeholder="Tên việc phát sinh..." />
               <input type="datetime-local" class="input-box" id="oTaskDateTime" />
             </div>
             <div class="form-group" style="margin-top: -4px;">
@@ -651,7 +651,7 @@
                 <option value="📚 Học tập" id="optRoleStudy_O">📚 Học tập</option>
                 <option value="👤 Cá nhân" id="optRolePersonal_O" selected>👤 Cá nhân</option>
               </select>
-              <input type="email" class="input-box" id="oTaskAssignEmail" />
+              <input type="email" class="input-box" id="oTaskAssignEmail" placeholder="Nhập Gmail người nhận..." />
               <button class="btn-add" id="btnAddOnetime" onclick="addOnetimeTask()">+ Thêm</button>
             </div>
             <div class="task-list" id="oTaskList"></div>
@@ -668,7 +668,7 @@
             <button class="cal-type-btn" id="btnTypeLunar" onclick="setAnnivCalType('lunar')">🌙 Âm Lịch (Giỗ chạp/Tết)</button>
           </div>
           <div class="form-group">
-            <input type="text" class="input-box" id="annivTitle" />
+            <input type="text" class="input-box" id="annivTitle" placeholder="Tiêu đề kỷ niệm..." />
             <select class="input-box" id="annivIcon" style="max-width: 90px; font-size: 1.1rem;">
               <option value="🎂">🎂</option>
               <option value="💐">💐</option>
@@ -680,8 +680,8 @@
             </select>
             <input type="date" class="input-box" id="annivSolarDate" />
             <div id="lunarDateInputs" style="display: none; gap: 8px; flex: 1;">
-              <input type="number" class="input-box" id="annivLunarDay" min="1" max="30" />
-              <input type="number" class="input-box" id="annivLunarMonth" min="1" max="12" />
+              <input type="number" class="input-box" id="annivLunarDay" min="1" max="30" placeholder="Ngày Âm" />
+              <input type="number" class="input-box" id="annivLunarMonth" min="1" max="12" placeholder="Tháng Âm" />
             </div>
             <input type="time" class="input-box" id="annivTime" value="08:00" />
             <select class="input-box" id="annivRepeat" style="max-width: 140px;">
@@ -1194,7 +1194,7 @@
       applyLanguage(currentLang);
     }
 
-    // Bảng màu Pastel
+    // Bảng màu Pastel chuẩn Marki
     const pastelColors = [
       "#F2C1D1", "#F6A6B2", "#FFAAA6", "#FFD3B6", "#D4F0F0",
       "#CCE2CB", "#BFFCC6", "#C7CEEA", "#E2F0CB", "#FFDAC1",
@@ -1461,13 +1461,16 @@
       let repeatDetail = "";
       if (repeat === 'weekly') {
         const checkedDays = Array.from(document.querySelectorAll('input[name="weekDay"]:checked')).map(cb => cb.value);
-        repeatDetail = ` (Thứ: ${checkedDays.join(', ')})`;
+        repeatDetail = ` (${checkedDays.join(', ')})`;
       } else if (repeat === 'monthly' || repeat === 'yearly') {
         const mode = document.querySelector('input[name="advMode"]:checked').value;
         if (mode === 'date') {
           repeatDetail = ` (Ngày ${document.getElementById('advDay').value})`;
         } else {
-          repeatDetail = ` (Tuần ${document.getElementById('advWhichWeek').value}, Thứ ${document.getElementById('advDayOfWeek').value})`;
+          repeatDetail = ` (${document.getElementById('advWhichWeek').value} ${document.getElementById('advDayOfWeek').value})`;
+        }
+        if (repeat === 'yearly') {
+          repeatDetail += ` (${document.getElementById('advMonth').value})`;
         }
       }
 
