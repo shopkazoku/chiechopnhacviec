@@ -455,7 +455,7 @@
     </div>
   </header>
 
-  <!-- Pop-up Cảnh Báo Toàn Màn Hình Song Song 2 Máy -->
+  <!-- Pop-up Cảnh Báo Toàn Màn Hình -->
   <div id="deadlineModal" style="display: none;">
     <div class="modal-alert-box">
       <div class="alert-chime-icon"><i class="fa-solid fa-bell"></i></div>
@@ -514,7 +514,7 @@
             <input type="color" onchange="formatText('foreColor', this.value)" style="border:none; width:30px; height:30px; cursor:pointer;" />
             <button class="tool-btn" onclick="addLink()"><i class="fa-solid fa-link"></i></button>
           </div>
-          <div class="note-editor" id="noteEditor" contenteditable="true"></div>
+          <div class="note-editor" id="noteEditor" contenteditable="true" onblur="saveNotesToCloud()"></div>
         </div>
       </div>
 
@@ -560,7 +560,7 @@
             <button class="btn-lang" id="tabOnetime" onclick="switchTaskTab('onetime')">Việc Phát Sinh</button>
           </div>
 
-          <!-- Form Định Kì -->
+          <!-- Form Định Kì Nâng Cao -->
           <div id="formPeriodic">
             <div class="form-group">
               <input type="text" class="input-box" id="pTaskTitle" />
@@ -631,7 +631,7 @@
                 <option value="📚 Học tập" id="optRoleStudy_P">📚 Học tập</option>
                 <option value="👤 Cá nhân" id="optRolePersonal_P" selected>👤 Cá nhân</option>
               </select>
-              <input type="email" class="input-box" id="pTaskAssignEmail" placeholder="Nhập Gmail người nhận (để đồng bộ)..." />
+              <input type="email" class="input-box" id="pTaskAssignEmail" placeholder="Nhập Gmail người nhận (nếu có)..." />
               <button class="btn-add" id="btnAddPeriodic" onclick="addPeriodicTask()">+ Thêm</button>
             </div>
             <div class="task-list" id="pTaskList"></div>
@@ -651,7 +651,7 @@
                 <option value="📚 Học tập" id="optRoleStudy_O">📚 Học tập</option>
                 <option value="👤 Cá nhân" id="optRolePersonal_O" selected>👤 Cá nhân</option>
               </select>
-              <input type="email" class="input-box" id="oTaskAssignEmail" />
+              <input type="email" class="input-box" id="oTaskAssignEmail" placeholder="Nhập Gmail người nhận (nếu có)..." />
               <button class="btn-add" id="btnAddOnetime" onclick="addOnetimeTask()">+ Thêm</button>
             </div>
             <div class="task-list" id="oTaskList"></div>
@@ -680,8 +680,8 @@
             </select>
             <input type="date" class="input-box" id="annivSolarDate" />
             <div id="lunarDateInputs" style="display: none; gap: 8px; flex: 1;">
-              <input type="number" class="input-box" id="annivLunarDay" min="1" max="30" />
-              <input type="number" class="input-box" id="annivLunarMonth" min="1" max="12" />
+              <input type="number" class="input-box" id="annivLunarDay" min="1" max="30" placeholder="Ngày Âm" />
+              <input type="number" class="input-box" id="annivLunarMonth" min="1" max="12" placeholder="Tháng Âm" />
             </div>
             <input type="time" class="input-box" id="annivTime" value="08:00" />
             <select class="input-box" id="annivRepeat" style="max-width: 140px;">
@@ -730,7 +730,7 @@
         if (user) {
           currentUser = user;
           document.getElementById('txtAuthBtn').innerText = user.displayName || (currentLang === 'VIE' ? "Tài khoản" : "Account");
-          listenToCloudTasks(); // Kích hoạt lắng nghe Firestore Sync
+          listenToCloudTasks(); // Lắng nghe và đồng bộ 100% dữ liệu
         } else {
           currentUser = null;
         }
@@ -793,9 +793,9 @@
 
     // ==========================================================
     // THUẬT TOÁN ÂM LỊCH THIÊN VĂN CHUẨN XÁC 100% (TS. HỒ NGỌC ĐỨC)
-    // Tự động lùi 1 ngày theo tuỳ biến cá nhân (LUNAR_DAY_OFFSET)
+    // Tự động lùi 1 ngày theo LUNAR_OFFSET để khớp đúng 18/08 = 6/7 Âm Lịch
     // ==========================================================
-    const LUNAR_DAY_OFFSET = -1; // Fix chuẩn theo lịch tay in: 18/08/2026 => 6/7 Âm Lịch
+    const LUNAR_OFFSET = -1; // Biến hằng số quyết định: -1 ngày so với thiên văn
 
     function INT(d) { return Math.floor(d); }
 
@@ -879,14 +879,16 @@
 
     function convertSolar2LunarFull(dd, mm, yy, timeZone = 7) {
       try {
-        // Áp dụng LUNAR_DAY_OFFSET bằng cách tịnh tiến lùi biến đếm Julian Day
-        let dayNumber = jdFromDate(dd, mm, yy) + LUNAR_DAY_OFFSET;
+        // Tịnh tiến Julian Day theo LUNAR_OFFSET (-1 ngày)
+        let dayNumber = jdFromDate(dd, mm, yy) + LUNAR_OFFSET;
         
         let k = INT((dayNumber - 2415021.0769986) / 29.53058868);
         let monthStart = getNewMoonDay(k + 1, timeZone);
         if (monthStart > dayNumber) monthStart = getNewMoonDay(k, timeZone);
+        
         let a11 = getLunarMonth11(yy, timeZone);
         let lunarYear = yy;
+        
         if (a11 >= monthStart) {
           lunarYear = yy - 1;
           a11 = getLunarMonth11(yy - 1, timeZone);
@@ -897,6 +899,7 @@
             a11 = nextA11;
           }
         }
+        
         let lunarDay = dayNumber - monthStart + 1;
         let diff = INT((monthStart - a11) / 29);
         let lunarLeap = 0;
@@ -924,8 +927,9 @@
       if (leapMonthDiff < off || (leapMonthDiff === off && lunarLeap === 1)) off += 1;
       let k = INT((a11 - 2415021.0769986) / 29.53058868 + 0.5);
       let monthStart = getNewMoonDay(k + off, timeZone);
-      // Khi convert ngược từ Âm ra Dương, ta bù lại LUNAR_DAY_OFFSET
-      return jdToDate(monthStart + lunarDay - 1 - LUNAR_DAY_OFFSET);
+      
+      // Bù lại LUNAR_OFFSET khi quy đổi ngược ra Dương Lịch
+      return jdToDate(monthStart + lunarDay - 1 - LUNAR_OFFSET);
     }
 
     // Bảng Can Chi Song Ngữ
@@ -952,7 +956,7 @@
     function getCanChiDay(dd, mm, yy, isEng = false) {
       const c = isEng ? CAN_ENG : CAN_VIE;
       const ch = isEng ? CHI_ENG : CHI_VIE;
-      let jd = jdFromDate(dd, mm, yy) + LUNAR_DAY_OFFSET;
+      let jd = jdFromDate(dd, mm, yy) + LUNAR_OFFSET;
       let can = c[(jd + 9) % 10];
       let chi = ch[(jd + 1) % 12];
       return can + " " + chi;
@@ -1027,7 +1031,7 @@
         btnPomoPause: "Tạm dừng",
         pTaskTitlePlace: "Tên công việc (vd: Tập thể dục, Học tiếng Anh...)",
         oTaskTitlePlace: "Tên việc phát sinh (vd: Mua tài liệu, Gặp gỡ...)",
-        assignEmailPlace: "Nhập Gmail người nhận (để đồng bộ nhắc việc)...",
+        assignEmailPlace: "Nhập Gmail người nhận (nếu có)...",
         annivTitlePlace: "Kỷ niệm ngày cưới, Giỗ cụ, Tết...",
         annivLunarDayPlace: "Ngày Âm (1-30)",
         annivLunarMonthPlace: "Tháng Âm (1-12)",
@@ -1079,7 +1083,7 @@
         btnPomoPause: "Pause",
         pTaskTitlePlace: "Task name (e.g. Exercise, English lesson...)",
         oTaskTitlePlace: "Ad-hoc task name (e.g. Buy books, Meeting...)",
-        assignEmailPlace: "Enter receiver's Gmail (for sync reminder)...",
+        assignEmailPlace: "Enter receiver's Gmail (if any)...",
         annivTitlePlace: "Wedding anniversary, Ancestor day, Tet...",
         annivLunarDayPlace: "Lunar Day (1-30)",
         annivLunarMonthPlace: "Lunar Month (1-12)",
@@ -1182,7 +1186,7 @@
       renderColorPalette();
       renderCalendar();
       updateClock();
-      saveAndRender();
+      saveAndRenderLocal();
     }
 
     function toggleLanguage() {
@@ -1404,7 +1408,7 @@
       document.getElementById('btnPomoStart').innerHTML = `<i class="fa-solid fa-play"></i> ${translations[currentLang].btnPomoStart}`;
     }
 
-    // Nhắc việc & Đồng bộ Firestore 2 chiều lưu trữ qua Cloud Firebase
+    // NHẮC VIỆC & ĐỒNG BỘ ĐÁM MÂY (CLOUD FIRESTORE SYNC 2 CHIỀU)
     let periodicTasks = [];
     let onetimeTasks = [];
     let anniversaries = [];
@@ -1533,18 +1537,31 @@
       saveAndRenderCloud();
     }
 
+    function saveNotesToCloud() {
+      const noteHtml = document.getElementById('noteEditor').innerHTML;
+      if (currentUser && db) {
+        db.collection('marki_profiles').doc(currentUser.email.toLowerCase()).set({
+          noteContent: noteHtml
+        }, { merge: true }).catch(e => console.warn(e));
+      }
+    }
+
     function listenToCloudTasks() {
       if (!db || !currentUser || !currentUser.email) return;
       const myEmail = currentUser.email.toLowerCase();
 
-      // Cloud Sync Firestore: Tải toàn bộ dữ liệu khi đăng nhập
+      // Cloud Sync Firestore: Tải toàn bộ dữ liệu khi đăng nhập để đồng bộ PC & Mobile
       db.collection('marki_profiles').doc(myEmail).onSnapshot((doc) => {
         if (doc.exists) {
           const data = doc.data();
           if (data.periodicTasks) periodicTasks = JSON.parse(data.periodicTasks);
           if (data.onetimeTasks) onetimeTasks = JSON.parse(data.onetimeTasks);
           if (data.anniversaries) anniversaries = JSON.parse(data.anniversaries);
+          if (data.noteContent) document.getElementById('noteEditor').innerHTML = data.noteContent;
           saveAndRenderLocal();
+        } else {
+          // Lần đầu đăng nhập, đẩy dữ liệu hiện có dưới máy lên Cloud
+          saveAndRenderCloud();
         }
       });
     }
@@ -1598,7 +1615,7 @@
 
     function saveAndRenderCloud() {
         autoCleanup7Days();
-        // Đẩy lên Firestore nếu đăng nhập
+        // Đẩy lên Firestore để đồng bộ các máy
         if (currentUser && db) {
             db.collection('marki_profiles').doc(currentUser.email.toLowerCase()).set({
                 periodicTasks: JSON.stringify(periodicTasks),
