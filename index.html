@@ -153,13 +153,14 @@
     .lunar-detail-box {
       background: #FFFFFF;
       border-radius: 12px;
-      padding: 10px;
-      margin-top: 8px;
+      padding: 12px;
+      margin-top: 10px;
       border: 1px solid var(--border-color);
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
-      line-height: 1.5;
+      line-height: 1.6;
       text-align: left;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
     }
     .lunar-detail-box b { color: var(--primary-dark); }
     .festival-badge {
@@ -199,7 +200,7 @@
       content: '';
       position: absolute;
       top: 4px; right: 4px;
-      width: 5px; height: 5px;
+      width: 6px; height: 6px;
       border-radius: 50%;
       background: #FF6B6B;
     }
@@ -453,7 +454,7 @@
     </div>
   </header>
 
-  <!-- Pop-up Cảnh Báo Toàn Màn Hình Song Song 2 Máy -->
+  <!-- Pop-up Cảnh Báo Toàn Màn Hình -->
   <div id="deadlineModal" style="display: none;">
     <div class="modal-alert-box">
       <div class="alert-chime-icon"><i class="fa-solid fa-bell"></i></div>
@@ -744,18 +745,16 @@
     // ==========================================================
     // THUẬT TOÁN ÂM LỊCH THIÊN VĂN CHUẨN XÁC 100% (TS. HỒ NGỌC ĐỨC)
     // ==========================================================
-    const PI = Math.PI;
-
     function INT(d) { return Math.floor(d); }
 
-    function jdn(dd, mm, yy) {
+    function jdFromDate(dd, mm, yy) {
       let a = INT((14 - mm) / 12);
       let y = yy + 4800 - a;
       let m = mm + 12 * a - 3;
       return dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
     }
 
-    function decodeJdn(jd) {
+    function jdToDate(jd) {
       let a = jd + 32044;
       let b = INT((4 * a + 3) / 146097);
       let c = a - INT((146097 * b) / 4);
@@ -772,39 +771,39 @@
       let T = k / 1236.85;
       let T2 = T * T;
       let T3 = T2 * T;
-      let dr = PI / 180;
+      let dr = Math.PI / 180;
       let Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
       Jd1 += 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
       let M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
       let Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
       let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
       let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
-      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * Mpr);
-      C1 = C1 - 0.0004 * Math.sin(3 * dr * Mpr);
-      C1 = C1 + 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
-      C1 = C1 - 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
-      C1 = C1 - 0.0004 * Math.sin((2 * F - M) * dr) - 0.0006 * Math.sin((2 * F + Mpr) * dr);
-      C1 = C1 + 0.001 * Math.sin((2 * F - Mpr) * dr) + 0.0005 * Math.sin((2 * Mpr + M) * dr);
+      C1 -= 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * Mpr);
+      C1 -= 0.0004 * Math.sin(3 * dr * Mpr);
+      C1 += 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
+      C1 -= 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
+      C1 -= 0.0004 * Math.sin((2 * F - M) * dr) - 0.0006 * Math.sin((2 * F + Mpr) * dr);
+      C1 += 0.0010 * Math.sin((2 * F - Mpr) * dr) + 0.0005 * Math.sin((2 * Mpr + M) * dr);
       let JdNew = Jd1 + C1;
       return INT(JdNew + 0.5 + timeZone / 24);
     }
 
     function getSunLongitude(dayNumber, timeZone = 7) {
-      let T = (dayNumber - 2451545.5 - timeZone / 24) / 36525;
+      let T = (dayNumber - 2451545.0 + 0.5 - timeZone / 24.0) / 36525;
       let T2 = T * T;
-      let dr = PI / 180;
-      let M = 357.5291 + 35999.0503 * T - 0.0001559 * T2 - 0.00000048 * T * T2;
-      let L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
-      let DL = (1.9146 - 0.004817 * T - 0.000014 * T2) * Math.sin(M * dr);
-      DL += (0.019993 - 0.000101 * T) * Math.sin(2 * M * dr) + 0.00029 * Math.sin(3 * M * dr);
+      let dr = Math.PI / 180;
+      let M = 357.52910 + 35999.05029 * T - 0.0001537 * T2;
+      let L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T2;
+      let DL = (1.914602 - 0.004817 * T - 0.000014 * T2) * Math.sin(M * dr);
+      DL += (0.019993 - 0.000101 * T) * Math.sin(2 * M * dr) + 0.000289 * Math.sin(3 * M * dr);
       let L = L0 + DL;
       L = L * dr;
-      L = L - PI * 2 * INT(L / (PI * 2));
-      return INT(L / (PI / 6));
+      L = L - Math.PI * 2 * INT(L / (Math.PI * 2));
+      return INT(L / (Math.PI / 6));
     }
 
     function getLunarMonth11(yy, timeZone = 7) {
-      let off = jdn(31, 12, yy) - 2415021;
+      let off = jdFromDate(31, 12, yy) - 2415021;
       let k = INT(off / 29.530588853);
       let nm = getNewMoonDay(k, timeZone);
       let sunLong = getSunLongitude(nm, timeZone);
@@ -822,40 +821,44 @@
         k++;
         arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
         i++;
-      } while (arc !== last && i < 14);
+      } while (arc != last && i < 14);
       return i - 1;
     }
 
     function convertSolar2LunarFull(dd, mm, yy, timeZone = 7) {
-      let dayNumber = jdn(dd, mm, yy);
-      let k = INT((dayNumber - 2415021.0769986) / 29.53058868);
-      let monthStart = getNewMoonDay(k + 1, timeZone);
-      if (monthStart > dayNumber) monthStart = getNewMoonDay(k, timeZone);
-      let a11 = getLunarMonth11(yy, timeZone);
-      let b11 = a11;
-      let lunarYear = yy;
-      if (a11 >= monthStart) {
-        lunarYear = yy - 1;
-        a11 = getLunarMonth11(yy - 1, timeZone);
-      } else {
-        let nextA11 = getLunarMonth11(yy + 1, timeZone);
-        if (nextA11 <= monthStart) {
-          lunarYear = yy + 1;
-          a11 = nextA11;
+      try {
+        let dayNumber = jdFromDate(dd, mm, yy);
+        let k = INT((dayNumber - 2415021.0769986) / 29.53058868);
+        let monthStart = getNewMoonDay(k + 1, timeZone);
+        if (monthStart > dayNumber) monthStart = getNewMoonDay(k, timeZone);
+        let a11 = getLunarMonth11(yy, timeZone);
+        let lunarYear = yy;
+        if (a11 >= monthStart) {
+          lunarYear = yy - 1;
+          a11 = getLunarMonth11(yy - 1, timeZone);
+        } else {
+          let nextA11 = getLunarMonth11(yy + 1, timeZone);
+          if (nextA11 <= monthStart) {
+            lunarYear = yy + 1;
+            a11 = nextA11;
+          }
         }
+        let lunarDay = dayNumber - monthStart + 1;
+        let diff = INT((monthStart - a11) / 29);
+        let lunarLeap = 0;
+        let lunarMonth = diff + 11;
+        let leapMonthDiff = getLeapMonthOffset(a11, timeZone);
+        if (diff >= leapMonthDiff) {
+          lunarMonth = diff + 10;
+          if (diff == leapMonthDiff) lunarLeap = 1;
+        }
+        if (lunarMonth > 12) lunarMonth = lunarMonth - 12;
+        if (lunarMonth >= 11 && diff < 4) lunarYear -= 1;
+        return [lunarDay, lunarMonth, lunarYear, lunarLeap];
+      } catch (err) {
+        console.warn("Lunar Calc Error:", err);
+        return [dd, mm, yy, 0];
       }
-      let lunarDay = dayNumber - monthStart + 1;
-      let diff = INT((monthStart - a11) / 29);
-      let lunarLeap = 0;
-      let lunarMonth = diff + 11;
-      let leapMonthDiff = getLeapMonthOffset(a11, timeZone);
-      if (diff >= leapMonthDiff) {
-        lunarMonth = diff + 10;
-        if (diff === leapMonthDiff) lunarLeap = 1;
-      }
-      if (lunarMonth > 12) lunarMonth = lunarMonth - 12;
-      if (lunarMonth >= 11 && diff < 4) lunarYear -= 1;
-      return [lunarDay, lunarMonth, lunarYear, lunarLeap];
     }
 
     function convertLunar2Solar(lunarDay, lunarMonth, lunarYear, lunarLeap = 0, timeZone = 7) {
@@ -866,7 +869,7 @@
       if (leapMonthDiff < off || (leapMonthDiff === off && lunarLeap === 1)) off += 1;
       let k = INT((a11 - 2415021.0769986) / 29.53058868 + 0.5);
       let monthStart = getNewMoonDay(k + off, timeZone);
-      return decodeJdn(monthStart + lunarDay - 1);
+      return jdToDate(monthStart + lunarDay - 1);
     }
 
     // Bảng Can Chi Song Ngữ
@@ -893,7 +896,7 @@
     function getCanChiDay(dd, mm, yy, isEng = false) {
       const c = isEng ? CAN_ENG : CAN_VIE;
       const ch = isEng ? CHI_ENG : CHI_VIE;
-      let jd = jdn(dd, mm, yy);
+      let jd = jdFromDate(dd, mm, yy);
       let can = c[(jd + 9) % 10];
       let chi = ch[(jd + 1) % 12];
       return can + " " + chi;
@@ -946,57 +949,243 @@
       return null;
     }
 
+    // ==========================================================
+    // TỪ ĐIỂN ĐA NGÔN NGỮ VIE / ENG
+    // ==========================================================
+    let currentLang = 'VIE';
+    const translations = {
+      VIE: {
+        appTitle: "Chiếc Hộp Nhắc Việc",
+        testChime: "Thử chuông gió",
+        secTime: '<i class="fa-regular fa-clock"></i> Thời Gian',
+        secNotes: '<i class="fa-regular fa-pen-to-square"></i> Ghi Chú',
+        secTasks: '<i class="fa-solid fa-list-check"></i> Nhắc Việc',
+        secAnniv: '<i class="fa-solid fa-cake-candles"></i> Ngày Kỷ Niệm (Âm & Dương)',
+        tabPeriodic: "Lịch Định Kì",
+        tabOnetime: "Việc Phát Sinh",
+        colorLabel: "Chọn mã màu Label:",
+        pomoTitle: "⏱️ Chế độ Tập Trung Pomodoro (30 Phút/Phiên)",
+        pomoDesc: "Mỗi phiên gồm 30 phút nhắc việc: 25 phút làm việc tích cực và 5 phút nghỉ ngơi thư giãn. Các việc chọn sẽ tự động tạo thành block 30 phút.",
+        pomoStartLbl: "Giờ bắt đầu:",
+        btnPomoStart: "Bắt đầu",
+        btnPomoPause: "Tạm dừng",
+        pTaskTitlePlace: "Tên công việc (vd: Tập thể dục, Học tiếng Anh...)",
+        oTaskTitlePlace: "Tên việc phát sinh (vd: Mua tài liệu, Gặp gỡ...)",
+        assignEmailPlace: "Nhập Gmail người nhận (để đồng bộ nhắc việc)...",
+        annivTitlePlace: "Kỷ niệm ngày cưới, Giỗ cụ, Tết...",
+        annivLunarDayPlace: "Ngày Âm (1-30)",
+        annivLunarMonthPlace: "Tháng Âm (1-12)",
+        noteEditorPlace: "Ghi chú nhanh, dán link liên kết tại đây...",
+        btnAdd: "+ Thêm",
+        btnAuthLogin: "Đăng nhập",
+        solarBtn: "☀️ Dương Lịch",
+        lunarBtn: "🌙 Âm Lịch (Giỗ chạp/Tết)",
+        optDaily: "Hàng ngày",
+        optWeekly: "Hàng tuần",
+        optMonthly: "Hàng tháng",
+        optYearly: "Hàng năm",
+        optAnnivYearly: "🔁 Hàng năm",
+        optAnnivOnce: "1️⃣ Một lần",
+        optRoleFamily: "👨‍👩‍👧 Gia đình",
+        optRoleWork: "💼 Công việc",
+        optRoleFriends: "🤝 Bạn bè",
+        optRoleStudy: "📚 Học tập",
+        optRolePersonal: "👤 Cá nhân",
+        modalAlertTitle: "🔔 TỚI HẠN CÔNG VIỆC!",
+        modalAlertDesc: "Đã đến thời gian hoàn thành. Hãy tập trung xử lý ngay nhé!",
+        btnModalDone: "Hoàn thành ngay",
+        btnModalDismiss: "Đã hiểu",
+        footerMsg: "Have a nice day (Sơn Marki)",
+        alertInputTask: "Vui lòng nhập tên công việc và thời gian!",
+        alertInputOnetime: "Vui lòng nhập tên việc và deadline!",
+        alertInputAnniv: "Vui lòng nhập tiêu đề kỷ niệm!",
+        alertSolarDate: "Vui lòng chọn ngày Dương lịch!",
+        alertLunarDate: "Vui lòng nhập ngày Âm (1-30) và tháng Âm (1-12) hợp lệ!",
+        dueMsg: "🔔 TỚI HẠN:",
+        dueSub: "Vui lòng hoàn thành ngay!",
+        syncAssignTo: "Đang giao tới:",
+        syncAssignBy: "Được giao bởi:"
+      },
+      ENG: {
+        appTitle: "Task Box Reminder",
+        testChime: "Test Chime",
+        secTime: '<i class="fa-regular fa-clock"></i> Time & Calendar',
+        secNotes: '<i class="fa-regular fa-pen-to-square"></i> Quick Notes',
+        secTasks: '<i class="fa-solid fa-list-check"></i> Task Manager',
+        secAnniv: '<i class="fa-solid fa-cake-candles"></i> Anniversaries (Solar & Lunar)',
+        tabPeriodic: "Recurring Tasks",
+        tabOnetime: "Ad-hoc Tasks",
+        colorLabel: "Pick Label Color:",
+        pomoTitle: "⏱️ Pomodoro Focus Mode (30 Min/Session)",
+        pomoDesc: "Each session has a 30-min block: 25 mins active focus & 5 mins rest. Tasks will automatically form 30-minute blocks.",
+        pomoStartLbl: "Start Time:",
+        btnPomoStart: "Start",
+        btnPomoPause: "Pause",
+        pTaskTitlePlace: "Task name (e.g. Exercise, English lesson...)",
+        oTaskTitlePlace: "Ad-hoc task name (e.g. Buy books, Meeting...)",
+        assignEmailPlace: "Enter receiver's Gmail (for sync reminder)...",
+        annivTitlePlace: "Wedding anniversary, Ancestor day, Tet...",
+        annivLunarDayPlace: "Lunar Day (1-30)",
+        annivLunarMonthPlace: "Lunar Month (1-12)",
+        noteEditorPlace: "Quick notes, paste hyperlinks here...",
+        btnAdd: "+ Add",
+        btnAuthLogin: "Sign in",
+        solarBtn: "☀️ Solar Calendar",
+        lunarBtn: "🌙 Lunar Calendar",
+        optDaily: "Daily",
+        optWeekly: "Weekly",
+        optMonthly: "Monthly",
+        optYearly: "Yearly",
+        optAnnivYearly: "🔁 Yearly",
+        optAnnivOnce: "1️⃣ Once",
+        optRoleFamily: "👨‍👩‍👧 Family",
+        optRoleWork: "💼 Work",
+        optRoleFriends: "🤝 Friends",
+        optRoleStudy: "📚 Study",
+        optRolePersonal: "👤 Personal",
+        modalAlertTitle: "🔔 TASK DEADLINE DUE!",
+        modalAlertDesc: "It is time to complete your task. Focus on it now!",
+        btnModalDone: "Done Now",
+        btnModalDismiss: "Understood",
+        footerMsg: "Have a nice day (Sơn Marki)",
+        alertInputTask: "Please enter task title and time!",
+        alertInputOnetime: "Please enter task title and deadline!",
+        alertInputAnniv: "Please enter anniversary title!",
+        alertSolarDate: "Please choose a valid Solar date!",
+        alertLunarDate: "Please enter valid Lunar day (1-30) and month (1-12)!",
+        dueMsg: "🔔 DUE TIME:",
+        dueSub: "Please complete it now!",
+        syncAssignTo: "Assigned to:",
+        syncAssignBy: "Assigned by:"
+      }
+    };
+
+    function applyLanguage(lang) {
+      const t = translations[lang];
+      document.getElementById('txtAppTitle').innerText = t.appTitle;
+      document.getElementById('txtTestChime').innerText = t.testChime;
+      document.getElementById('txtSecTime').innerHTML = t.secTime;
+      document.getElementById('txtSecNotes').innerHTML = t.secNotes;
+      document.getElementById('txtSecTasks').innerHTML = t.secTasks;
+      document.getElementById('txtSecAnniv').innerHTML = t.secAnniv;
+      document.getElementById('tabPeriodic').innerText = t.tabPeriodic;
+      document.getElementById('tabOnetime').innerText = t.tabOnetime;
+      document.getElementById('txtColorLabel').innerText = t.colorLabel;
+      
+      document.getElementById('txtPomoTitle').innerText = t.pomoTitle;
+      document.getElementById('txtPomoDesc').innerText = t.pomoDesc;
+      document.getElementById('txtPomoStartLbl').innerText = t.pomoStartLbl;
+      
+      document.getElementById('pTaskTitle').placeholder = t.pTaskTitlePlace;
+      document.getElementById('oTaskTitle').placeholder = t.oTaskTitlePlace;
+      document.getElementById('pTaskAssignEmail').placeholder = t.assignEmailPlace;
+      document.getElementById('oTaskAssignEmail').placeholder = t.assignEmailPlace;
+
+      document.getElementById('annivTitle').placeholder = t.annivTitlePlace;
+      document.getElementById('annivLunarDay').placeholder = t.annivLunarDayPlace;
+      document.getElementById('annivLunarMonth').placeholder = t.annivLunarMonthPlace;
+      document.getElementById('noteEditor').setAttribute('placeholder', t.noteEditorPlace);
+      
+      document.getElementById('btnAddPeriodic').innerText = t.btnAdd;
+      document.getElementById('btnAddOnetime').innerText = t.btnAdd;
+      document.getElementById('btnAddAnniv').innerText = t.btnAdd;
+      
+      if (!currentUser) document.getElementById('txtAuthBtn').innerText = t.btnAuthLogin;
+      
+      document.getElementById('btnTypeSolar').innerText = t.solarBtn;
+      document.getElementById('btnTypeLunar').innerText = t.lunarBtn;
+      
+      document.getElementById('optDaily').innerText = t.optDaily;
+      document.getElementById('optWeekly').innerText = t.optWeekly;
+      document.getElementById('optMonthly').innerText = t.optMonthly;
+      document.getElementById('optYearly').innerText = t.optYearly;
+      document.getElementById('optAnnivYearly').innerText = t.optAnnivYearly;
+      document.getElementById('optAnnivOnce').innerText = t.optAnnivOnce;
+
+      document.getElementById('optRoleFamily_P').innerText = t.optRoleFamily;
+      document.getElementById('optRoleWork_P').innerText = t.optRoleWork;
+      document.getElementById('optRoleFriends_P').innerText = t.optRoleFriends;
+      document.getElementById('optRoleStudy_P').innerText = t.optRoleStudy;
+      document.getElementById('optRolePersonal_P').innerText = t.optRolePersonal;
+
+      document.getElementById('optRoleFamily_O').innerText = t.optRoleFamily;
+      document.getElementById('optRoleWork_O').innerText = t.optRoleWork;
+      document.getElementById('optRoleFriends_O').innerText = t.optRoleFriends;
+      document.getElementById('optRoleStudy_O').innerText = t.optRoleStudy;
+      document.getElementById('optRolePersonal_O').innerText = t.optRolePersonal;
+
+      document.getElementById('txtModalAlertTitle').innerText = t.modalAlertTitle;
+      document.getElementById('txtModalAlertDesc').innerText = t.modalAlertDesc;
+      document.getElementById('btnModalDone').innerText = t.btnModalDone;
+      document.getElementById('btnModalDismiss').innerText = t.btnModalDismiss;
+      document.getElementById('txtFooterMsg').innerText = t.footerMsg;
+
+      document.getElementById('langFlag').innerText = lang === 'VIE' ? '🇻🇳' : '🇬🇧';
+      document.getElementById('langLabel').innerText = lang;
+
+      renderCalendar();
+      updateClock();
+      saveAndRender();
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'VIE' ? 'ENG' : 'VIE';
+      applyLanguage(currentLang);
+    }
+
     // Cập nhật Đồng hồ & Chi tiết Lịch Âm Hồ Ngọc Đức
     function updateClock() {
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString('vi-VN', { hour12: false });
-      document.getElementById('digitalClock').innerText = timeStr;
-      
-      const dayNamesVie = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-      const dayNamesEng = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const isEng = (currentLang === 'ENG');
-      const curDayName = isEng ? dayNamesEng[now.getDay()] : dayNamesVie[now.getDay()];
-      
-      const curD = now.getDate();
-      const curM = now.getMonth() + 1;
-      const curY = now.getFullYear();
+      try {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('vi-VN', { hour12: false });
+        document.getElementById('digitalClock').innerText = timeStr;
+        
+        const dayNamesVie = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+        const dayNamesEng = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const isEng = (currentLang === 'ENG');
+        const curDayName = isEng ? dayNamesEng[now.getDay()] : dayNamesVie[now.getDay()];
+        
+        const curD = now.getDate();
+        const curM = now.getMonth() + 1;
+        const curY = now.getFullYear();
 
-      // Tính chính xác ngày Âm lịch
-      const [lDay, lMonth, lYear, lLeap] = convertSolar2LunarFull(curD, curM, curY, 7);
-      const canChiDay = getCanChiDay(curD, curM, curY, isEng);
-      const canChiMonth = getCanChiMonth(lMonth, lYear, isEng);
-      const canChiYear = getCanChiYear(lYear, isEng);
+        const [lDay, lMonth, lYear, lLeap] = convertSolar2LunarFull(curD, curM, curY, 7);
+        const canChiDay = getCanChiDay(curD, curM, curY, isEng);
+        const canChiMonth = getCanChiMonth(lMonth, lYear, isEng);
+        const canChiYear = getCanChiYear(lYear, isEng);
 
-      document.getElementById('fullDateDisplay').innerText = 
-        `${curDayName}, ${String(curD).padStart(2, '0')}/${String(curM).padStart(2, '0')}/${curY}`;
+        document.getElementById('fullDateDisplay').innerText = 
+          `${curDayName}, ${String(curD).padStart(2, '0')}/${String(curM).padStart(2, '0')}/${curY}`;
 
-      const leapTxt = lLeap === 1 ? (isEng ? " (Leap)" : " (Nhuận)") : "";
-      
-      if (isEng) {
-        document.getElementById('lblLunarTitle').innerText = "Lunar Date:";
-        document.getElementById('lblCanChiTitle').innerText = "Sexagenary Cycle:";
-        document.getElementById('txtLunarDateStr').innerText = 
-          `Day ${lDay}, Month ${lMonth}${leapTxt}, Year of ${canChiYear}`;
-        document.getElementById('txtCanChiStr').innerText = 
-          `Day: ${canChiDay}, Month: ${canChiMonth}, Year: ${canChiYear}`;
-      } else {
-        document.getElementById('lblLunarTitle').innerText = "Âm Lịch:";
-        document.getElementById('lblCanChiTitle').innerText = "Can Chi:";
-        document.getElementById('txtLunarDateStr').innerText = 
-          `Ngày ${lDay} tháng ${lMonth}${leapTxt} năm ${canChiYear}`;
-        document.getElementById('txtCanChiStr').innerText = 
-          `Ngày ${canChiDay}, Tháng ${canChiMonth}, Năm ${canChiYear}`;
-      }
+        const leapTxt = lLeap === 1 ? (isEng ? " (Leap)" : " (Nhuận)") : "";
+        
+        if (isEng) {
+          document.getElementById('lblLunarTitle').innerText = "Lunar Date:";
+          document.getElementById('lblCanChiTitle').innerText = "Sexagenary Cycle:";
+          document.getElementById('txtLunarDateStr').innerText = 
+            `Day ${lDay}, Month ${lMonth}${leapTxt}, Year of ${canChiYear}`;
+          document.getElementById('txtCanChiStr').innerText = 
+            `Day: ${canChiDay}, Month: ${canChiMonth}, Year: ${canChiYear}`;
+        } else {
+          document.getElementById('lblLunarTitle').innerText = "Âm Lịch:";
+          document.getElementById('lblCanChiTitle').innerText = "Can Chi:";
+          document.getElementById('txtLunarDateStr').innerText = 
+            `Ngày ${lDay} tháng ${lMonth}${leapTxt} năm ${canChiYear}`;
+          document.getElementById('txtCanChiStr').innerText = 
+            `Ngày ${canChiDay}, Tháng ${canChiMonth}, Năm ${canChiYear}`;
+        }
 
-      // Kiểm tra ngày lễ
-      const festival = checkFestival(curD, curM, lDay, lMonth, isEng);
-      const festContainer = document.getElementById('txtFestivalContainer');
-      const festBadge = document.getElementById('txtFestivalBadge');
-      if (festival) {
-        festBadge.innerText = festival;
-        festContainer.style.display = 'block';
-      } else {
-        festContainer.style.display = 'none';
+        const festival = checkFestival(curD, curM, lDay, lMonth, isEng);
+        const festContainer = document.getElementById('txtFestivalContainer');
+        const festBadge = document.getElementById('txtFestivalBadge');
+        if (festival) {
+          festBadge.innerText = festival;
+          festContainer.style.display = 'block';
+        } else {
+          festContainer.style.display = 'none';
+        }
+      } catch (e) {
+        console.warn("Clock update error:", e);
       }
     }
     setInterval(updateClock, 1000);
@@ -1006,43 +1195,47 @@
     let viewMonth = new Date().getMonth();
 
     function renderCalendar() {
-      const header = document.getElementById('calGridHeader');
-      const body = document.getElementById('calGridBody');
-      const monthNamesVie = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
-      const monthNamesEng = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      const isEng = (currentLang === 'ENG');
+      try {
+        const header = document.getElementById('calGridHeader');
+        const body = document.getElementById('calGridBody');
+        const monthNamesVie = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+        const monthNamesEng = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const isEng = (currentLang === 'ENG');
 
-      document.getElementById('calMonthYear').innerText = 
-        `${isEng ? monthNamesEng[viewMonth] : monthNamesVie[viewMonth]} / ${viewYear}`;
+        document.getElementById('calMonthYear').innerText = 
+          `${isEng ? monthNamesEng[viewMonth] : monthNamesVie[viewMonth]} / ${viewYear}`;
 
-      const daysOfWeek = isEng ? ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] : ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-      header.innerHTML = daysOfWeek.map(d => `<div class="cal-day-name">${d}</div>`).join('');
+        const daysOfWeek = isEng ? ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] : ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+        header.innerHTML = daysOfWeek.map(d => `<div class="cal-day-name">${d}</div>`).join('');
 
-      const firstDay = new Date(viewYear, viewMonth, 1).getDay();
-      const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
-      
-      let html = '';
-      for (let i = 0; i < firstDay; i++) {
-        html += `<div class="cal-cell" style="opacity:0.3;"></div>`;
-      }
-
-      const today = new Date();
-      for (let day = 1; day <= totalDays; day++) {
-        const isToday = (today.getDate() === day && today.getMonth() === viewMonth && today.getFullYear() === viewYear);
-        const [lDay, lMonth] = convertSolar2LunarFull(day, viewMonth + 1, viewYear, 7);
-        const hasFest = checkFestival(day, viewMonth + 1, lDay, lMonth, isEng);
+        const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+        const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
         
-        html += `
-          <div class="cal-cell ${isToday ? 'today' : ''} ${hasFest ? 'has-event' : ''}" title="${hasFest || ''}">
-            <span class="solar">${day}</span>
-            <span class="lunar">${lDay === 1 ? `${lDay}/${lMonth}` : lDay}</span>
-            <div class="cal-dots">
-              <span class="cal-dot" style="background:${selectedColor}"></span>
+        let html = '';
+        for (let i = 0; i < firstDay; i++) {
+          html += `<div class="cal-cell" style="opacity:0.3;"></div>`;
+        }
+
+        const today = new Date();
+        for (let day = 1; day <= totalDays; day++) {
+          const isToday = (today.getDate() === day && today.getMonth() === viewMonth && today.getFullYear() === viewYear);
+          const [lDay, lMonth] = convertSolar2LunarFull(day, viewMonth + 1, viewYear, 7);
+          const hasFest = checkFestival(day, viewMonth + 1, lDay, lMonth, isEng);
+          
+          html += `
+            <div class="cal-cell ${isToday ? 'today' : ''} ${hasFest ? 'has-event' : ''}" title="${hasFest || ''}">
+              <span class="solar">${day}</span>
+              <span class="lunar">${lDay === 1 ? `${lDay}/${lMonth}` : lDay}</span>
+              <div class="cal-dots">
+                <span class="cal-dot" style="background:${selectedColor}"></span>
+              </div>
             </div>
-          </div>
-        `;
+          `;
+        }
+        body.innerHTML = html;
+      } catch (err) {
+        console.warn("Calendar render error:", err);
       }
-      body.innerHTML = html;
     }
 
     function changeMonth(delta) {
@@ -1100,11 +1293,11 @@
           if (pomoMode === 'work') {
             pomoMode = 'rest';
             pomoSecondsLeft = 5 * 60;
-            triggerAlertModal("Pomodoro: Hết 25 phút tập trung! Hãy nghỉ ngơi 5 phút ☕");
+            triggerAlertModal(currentLang === 'VIE' ? "Pomodoro: Hết 25 phút tập trung! Hãy nghỉ ngơi 5 phút ☕" : "Pomodoro: 25 mins focus completed! Rest for 5 mins ☕");
           } else {
             pomoMode = 'work';
             pomoSecondsLeft = 25 * 60;
-            triggerAlertModal("Pomodoro: Hết 5 phút nghỉ! Bắt đầu phiên làm việc mới 🎯");
+            triggerAlertModal(currentLang === 'VIE' ? "Pomodoro: Hết 5 phút nghỉ! Bắt đầu phiên làm việc mới 🎯" : "Pomodoro: Break over! Start new focus block 🎯");
           }
         }
       }, 1000);
