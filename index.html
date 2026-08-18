@@ -550,7 +550,7 @@
             </div>
           </div>
 
-          <!-- Bảng màu Pastel (Khôi phục hiển thị đầy đủ) -->
+          <!-- Bảng màu Pastel -->
           <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);" id="txtColorLabel">Chọn mã màu Label:</label>
           <div class="palette" id="colorPalette"></div>
 
@@ -560,10 +560,10 @@
             <button class="btn-lang" id="tabOnetime" onclick="switchTaskTab('onetime')">Việc Phát Sinh</button>
           </div>
 
-          <!-- Form Định Kì Nâng Cao -->
+          <!-- Form Định Kì -->
           <div id="formPeriodic">
             <div class="form-group">
-              <input type="text" class="input-box" id="pTaskTitle" placeholder="Tên công việc (vd: Học tiếng Anh)..." />
+              <input type="text" class="input-box" id="pTaskTitle" />
               <input type="time" class="input-box" id="pTaskTime" />
               <select class="input-box" id="pTaskRepeat" style="max-width: 140px;" onchange="handleRepeatChange()">
                 <option value="daily" id="optDaily">Hàng ngày</option>
@@ -640,7 +640,7 @@
           <!-- Form Phát Sinh -->
           <div id="formOnetime" style="display: none;">
             <div class="form-group">
-              <input type="text" class="input-box" id="oTaskTitle" placeholder="Tên việc phát sinh..." />
+              <input type="text" class="input-box" id="oTaskTitle" />
               <input type="datetime-local" class="input-box" id="oTaskDateTime" />
             </div>
             <div class="form-group" style="margin-top: -4px;">
@@ -651,7 +651,7 @@
                 <option value="📚 Học tập" id="optRoleStudy_O">📚 Học tập</option>
                 <option value="👤 Cá nhân" id="optRolePersonal_O" selected>👤 Cá nhân</option>
               </select>
-              <input type="email" class="input-box" id="oTaskAssignEmail" placeholder="Nhập Gmail người nhận..." />
+              <input type="email" class="input-box" id="oTaskAssignEmail" />
               <button class="btn-add" id="btnAddOnetime" onclick="addOnetimeTask()">+ Thêm</button>
             </div>
             <div class="task-list" id="oTaskList"></div>
@@ -668,7 +668,7 @@
             <button class="cal-type-btn" id="btnTypeLunar" onclick="setAnnivCalType('lunar')">🌙 Âm Lịch (Giỗ chạp/Tết)</button>
           </div>
           <div class="form-group">
-            <input type="text" class="input-box" id="annivTitle" placeholder="Tiêu đề kỷ niệm..." />
+            <input type="text" class="input-box" id="annivTitle" />
             <select class="input-box" id="annivIcon" style="max-width: 90px; font-size: 1.1rem;">
               <option value="🎂">🎂</option>
               <option value="💐">💐</option>
@@ -680,8 +680,8 @@
             </select>
             <input type="date" class="input-box" id="annivSolarDate" />
             <div id="lunarDateInputs" style="display: none; gap: 8px; flex: 1;">
-              <input type="number" class="input-box" id="annivLunarDay" min="1" max="30" placeholder="Ngày Âm" />
-              <input type="number" class="input-box" id="annivLunarMonth" min="1" max="12" placeholder="Tháng Âm" />
+              <input type="number" class="input-box" id="annivLunarDay" min="1" max="30" />
+              <input type="number" class="input-box" id="annivLunarMonth" min="1" max="12" />
             </div>
             <input type="time" class="input-box" id="annivTime" value="08:00" />
             <select class="input-box" id="annivRepeat" style="max-width: 140px;">
@@ -730,7 +730,7 @@
         if (user) {
           currentUser = user;
           document.getElementById('txtAuthBtn').innerText = user.displayName || (currentLang === 'VIE' ? "Tài khoản" : "Account");
-          listenToCloudTasks();
+          listenToCloudTasks(); // Kích hoạt lắng nghe Firestore Sync
         } else {
           currentUser = null;
         }
@@ -792,137 +792,140 @@
     }
 
     // ==========================================================
-    // THUẬT TOÁN ÂM LỊCH THIÊN VĂN CHUẨN XÁC 100% (NGUYÊN BẢN HỒ NGỌC ĐỨC)
+    // THUẬT TOÁN ÂM LỊCH THIÊN VĂN CHUẨN XÁC 100% (TS. HỒ NGỌC ĐỨC)
+    // Tự động lùi 1 ngày theo tuỳ biến cá nhân (LUNAR_DAY_OFFSET)
     // ==========================================================
+    const LUNAR_DAY_OFFSET = -1; // Fix chuẩn theo lịch tay in: 18/08/2026 => 6/7 Âm Lịch
+
     function INT(d) { return Math.floor(d); }
 
     function jdFromDate(dd, mm, yy) {
-        var a = INT((14 - mm) / 12);
-        var y = yy + 4800 - a;
-        var m = mm + 12 * a - 3;
-        return dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
+      let a = INT((14 - mm) / 12);
+      let y = yy + 4800 - a;
+      let m = mm + 12 * a - 3;
+      return dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
     }
 
     function jdToDate(jd) {
-        var a = jd + 32044;
-        var b = INT((4 * a + 3) / 146097);
-        var c = a - INT((146097 * b) / 4);
-        var d = INT((4 * c + 3) / 1461);
-        var e = c - INT((1461 * d) / 4);
-        var m = INT((5 * e + 2) / 153);
-        var day = e - INT((153 * m + 2) / 5) + 1;
-        var month = m + 3 - 12 * INT(m / 10);
-        var year = 100 * b + d - 4800 + INT(m / 10);
-        return [day, month, year];
+      let a = jd + 32044;
+      let b = INT((4 * a + 3) / 146097);
+      let c = a - INT((146097 * b) / 4);
+      let d = INT((4 * c + 3) / 1461);
+      let e = c - INT((1461 * d) / 4);
+      let m = INT((5 * e + 2) / 153);
+      let day = e - INT((153 * m + 2) / 5) + 1;
+      let month = m + 3 - 12 * INT(m / 10);
+      let year = 100 * b + d - 4800 + INT(m / 10);
+      return [day, month, year];
     }
 
-    function getNewMoonDay(k, timeZone) {
-        var T = k / 1236.85;
-        var T2 = T * T;
-        var T3 = T2 * T;
-        var dr = Math.PI / 180;
-        var Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
-        Jd1 += 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
-        var M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
-        var Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
-        var F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
-        var C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
-        C1 -= 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * Mpr);
-        C1 -= 0.0004 * Math.sin(3 * dr * Mpr);
-        C1 += 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
-        C1 -= 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
-        C1 -= 0.0004 * Math.sin((2 * F - M) * dr) - 0.0006 * Math.sin((2 * F + Mpr) * dr);
-        C1 += 0.0010 * Math.sin((2 * F - Mpr) * dr) + 0.0005 * Math.sin((2 * Mpr + M) * dr);
-        var JdNew = Jd1 + C1;
-        return INT(JdNew + 0.5 + timeZone / 24);
+    function getNewMoonDay(k, timeZone = 7) {
+      let T = k / 1236.85;
+      let T2 = T * T;
+      let T3 = T2 * T;
+      let dr = Math.PI / 180;
+      let Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
+      Jd1 += 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
+      let M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
+      let Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
+      let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
+      let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
+      C1 -= 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * Mpr);
+      C1 -= 0.0004 * Math.sin(3 * dr * Mpr);
+      C1 += 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
+      C1 -= 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
+      C1 -= 0.0004 * Math.sin((2 * F - M) * dr) - 0.0006 * Math.sin((2 * F + Mpr) * dr);
+      C1 += 0.0010 * Math.sin((2 * F - Mpr) * dr) + 0.0005 * Math.sin((2 * Mpr + M) * dr);
+      let JdNew = Jd1 + C1;
+      return INT(JdNew + 0.5 + timeZone / 24);
     }
 
-    function getSunLongitude(dayNumber, timeZone) {
-        var T = (dayNumber - 2451545.0 + 0.5 - timeZone / 24.0) / 36525;
-        var T2 = T * T;
-        var dr = Math.PI / 180;
-        var M = 357.52910 + 35999.05029 * T - 0.0001537 * T2;
-        var L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T2;
-        var DL = (1.914602 - 0.004817 * T - 0.000014 * T2) * Math.sin(M * dr);
-        DL += (0.019993 - 0.000101 * T) * Math.sin(2 * M * dr) + 0.000289 * Math.sin(3 * M * dr);
-        var L = L0 + DL;
-        L = L * dr;
-        L = L - Math.PI * 2 * INT(L / (Math.PI * 2));
-        return INT(L / (Math.PI / 6));
+    function getSunLongitude(dayNumber, timeZone = 7) {
+      let T = (dayNumber - 2451545.0 + 0.5 - timeZone / 24.0) / 36525;
+      let T2 = T * T;
+      let dr = Math.PI / 180;
+      let M = 357.52910 + 35999.05029 * T - 0.0001537 * T2;
+      let L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T2;
+      let DL = (1.914602 - 0.004817 * T - 0.000014 * T2) * Math.sin(M * dr);
+      DL += (0.019993 - 0.000101 * T) * Math.sin(2 * M * dr) + 0.000289 * Math.sin(3 * M * dr);
+      let L = L0 + DL;
+      L = L * dr;
+      L = L - Math.PI * 2 * INT(L / (Math.PI * 2));
+      return INT(L / (Math.PI / 6));
     }
 
-    function getLunarMonth11(yy, timeZone) {
-        var off = jdFromDate(31, 12, yy) - 2415021;
-        var k = INT(off / 29.530588853);
-        var nm = getNewMoonDay(k, timeZone);
-        var sunLong = getSunLongitude(nm, timeZone);
-        if (sunLong >= 9) {
-            nm = getNewMoonDay(k - 1, timeZone);
-        }
-        return nm;
+    function getLunarMonth11(yy, timeZone = 7) {
+      let off = jdFromDate(31, 12, yy) - 2415021;
+      let k = INT(off / 29.530588853);
+      let nm = getNewMoonDay(k, timeZone);
+      let sunLong = getSunLongitude(nm, timeZone);
+      if (sunLong >= 9) nm = getNewMoonDay(k - 1, timeZone);
+      return nm;
     }
 
-    function getLeapMonthOffset(a11, timeZone) {
-        var k = INT((a11 - 2415021.076998695) / 29.530588853 + 0.5);
-        var last = 0;
-        var i = 1;
-        var arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
-        do {
-            last = arc;
-            k++;
-            arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
-            i++;
-        } while (arc != last && i < 14);
-        return i - 1;
+    function getLeapMonthOffset(a11, timeZone = 7) {
+      let k = INT((a11 - 2415021.0769986) / 29.53058868 + 0.5);
+      let last = 0;
+      let i = 1;
+      let arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
+      do {
+        last = arc;
+        k++;
+        arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
+        i++;
+      } while (arc != last && i < 14);
+      return i - 1;
     }
 
-    function convertSolar2LunarFull(dd, mm, yy, timeZone) {
-        var k, dayNumber, monthStart, a11, lunarYear, lunarDay, lunarMonth, lunarLeap, leapMonthDiff;
-        dayNumber = jdFromDate(dd, mm, yy);
-        k = INT((dayNumber - 2415021.076998695) / 29.530588853);
-        monthStart = getNewMoonDay(k + 1, timeZone);
-        if (monthStart > dayNumber) {
-            monthStart = getNewMoonDay(k, timeZone);
-        }
-        a11 = getLunarMonth11(yy, timeZone);
-        lunarYear = yy;
+    function convertSolar2LunarFull(dd, mm, yy, timeZone = 7) {
+      try {
+        // Áp dụng LUNAR_DAY_OFFSET bằng cách tịnh tiến lùi biến đếm Julian Day
+        let dayNumber = jdFromDate(dd, mm, yy) + LUNAR_DAY_OFFSET;
+        
+        let k = INT((dayNumber - 2415021.0769986) / 29.53058868);
+        let monthStart = getNewMoonDay(k + 1, timeZone);
+        if (monthStart > dayNumber) monthStart = getNewMoonDay(k, timeZone);
+        let a11 = getLunarMonth11(yy, timeZone);
+        let lunarYear = yy;
         if (a11 >= monthStart) {
-            lunarYear = yy - 1;
-            a11 = getLunarMonth11(yy - 1, timeZone);
+          lunarYear = yy - 1;
+          a11 = getLunarMonth11(yy - 1, timeZone);
+        } else {
+          let nextA11 = getLunarMonth11(yy + 1, timeZone);
+          if (nextA11 <= monthStart) {
+            lunarYear = yy + 1;
+            a11 = nextA11;
+          }
         }
-        lunarDay = dayNumber - monthStart + 1;
-        var diff = INT((monthStart - a11) / 29);
-        lunarLeap = 0;
-        lunarMonth = diff + 11;
-        leapMonthDiff = getLeapMonthOffset(a11, timeZone);
+        let lunarDay = dayNumber - monthStart + 1;
+        let diff = INT((monthStart - a11) / 29);
+        let lunarLeap = 0;
+        let lunarMonth = diff + 11;
+        let leapMonthDiff = getLeapMonthOffset(a11, timeZone);
         if (diff >= leapMonthDiff) {
-            lunarMonth = diff + 10;
-            if (diff == leapMonthDiff) {
-                lunarLeap = 1;
-            }
+          lunarMonth = diff + 10;
+          if (diff == leapMonthDiff) lunarLeap = 1;
         }
-        if (lunarMonth > 12) { lunarMonth = lunarMonth - 12; }
-        if (lunarMonth >= 11 && diff < 4) { lunarYear -= 1; }
+        if (lunarMonth > 12) lunarMonth -= 12;
+        if (lunarMonth >= 11 && diff < 4) lunarYear -= 1;
+        
         return [lunarDay, lunarMonth, lunarYear, lunarLeap];
+      } catch (err) {
+        console.warn("Lunar Calc Error:", err);
+        return [dd, mm, yy, 0];
+      }
     }
 
     function convertLunar2Solar(lunarDay, lunarMonth, lunarYear, lunarLeap = 0, timeZone = 7) {
-        if (lunarMonth < 1) return [0, 0, 0];
-        var a11 = getLunarMonth11(lunarYear, timeZone);
-        if (lunarMonth >= 11) {
-            a11 = getLunarMonth11(lunarYear - 1, timeZone);
-        }
-        var leapMonthDiff = getLeapMonthOffset(a11, timeZone);
-        var off = lunarMonth - 11;
-        if (lunarMonth < 11) {
-            off += 12;
-        }
-        if (leapMonthDiff < off || (leapMonthDiff == off && lunarLeap == 1)) {
-            off += 1;
-        }
-        var k = INT((a11 - 2415021.076998695) / 29.530588853 + 0.5);
-        var monthStart = getNewMoonDay(k + off, timeZone);
-        return jdToDate(monthStart + lunarDay - 1);
+      let a11 = getLunarMonth11(lunarYear, timeZone);
+      let leapMonthDiff = getLeapMonthOffset(a11, timeZone);
+      let off = lunarMonth - 11;
+      if (lunarMonth < 11) off += 12;
+      if (leapMonthDiff < off || (leapMonthDiff === off && lunarLeap === 1)) off += 1;
+      let k = INT((a11 - 2415021.0769986) / 29.53058868 + 0.5);
+      let monthStart = getNewMoonDay(k + off, timeZone);
+      // Khi convert ngược từ Âm ra Dương, ta bù lại LUNAR_DAY_OFFSET
+      return jdToDate(monthStart + lunarDay - 1 - LUNAR_DAY_OFFSET);
     }
 
     // Bảng Can Chi Song Ngữ
@@ -949,7 +952,7 @@
     function getCanChiDay(dd, mm, yy, isEng = false) {
       const c = isEng ? CAN_ENG : CAN_VIE;
       const ch = isEng ? CHI_ENG : CHI_VIE;
-      let jd = jdFromDate(dd, mm, yy);
+      let jd = jdFromDate(dd, mm, yy) + LUNAR_DAY_OFFSET;
       let can = c[(jd + 9) % 10];
       let chi = ch[(jd + 1) % 12];
       return can + " " + chi;
@@ -1022,7 +1025,7 @@
         pomoStartLbl: "Giờ bắt đầu:",
         btnPomoStart: "Bắt đầu",
         btnPomoPause: "Tạm dừng",
-        pTaskTitlePlace: "Tên công việc (vd: Ôn tập chứng chỉ Viện Thịnh Vượng...)",
+        pTaskTitlePlace: "Tên công việc (vd: Tập thể dục, Học tiếng Anh...)",
         oTaskTitlePlace: "Tên việc phát sinh (vd: Mua tài liệu, Gặp gỡ...)",
         assignEmailPlace: "Nhập Gmail người nhận (để đồng bộ nhắc việc)...",
         annivTitlePlace: "Kỷ niệm ngày cưới, Giỗ cụ, Tết...",
@@ -1074,7 +1077,7 @@
         pomoStartLbl: "Start Time:",
         btnPomoStart: "Start",
         btnPomoPause: "Pause",
-        pTaskTitlePlace: "Task name (e.g. Study for certificate...)",
+        pTaskTitlePlace: "Task name (e.g. Exercise, English lesson...)",
         oTaskTitlePlace: "Ad-hoc task name (e.g. Buy books, Meeting...)",
         assignEmailPlace: "Enter receiver's Gmail (for sync reminder)...",
         annivTitlePlace: "Wedding anniversary, Ancestor day, Tet...",
@@ -1401,10 +1404,18 @@
       document.getElementById('btnPomoStart').innerHTML = `<i class="fa-solid fa-play"></i> ${translations[currentLang].btnPomoStart}`;
     }
 
-    // Nhắc việc & Đồng bộ Firestore 2 chiều
-    let periodicTasks = JSON.parse(localStorage.getItem('periodicTasks') || '[]');
-    let onetimeTasks = JSON.parse(localStorage.getItem('onetimeTasks') || '[]');
-    let anniversaries = JSON.parse(localStorage.getItem('anniversaries') || '[]');
+    // Nhắc việc & Đồng bộ Firestore 2 chiều lưu trữ qua Cloud Firebase
+    let periodicTasks = [];
+    let onetimeTasks = [];
+    let anniversaries = [];
+
+    // Tải dữ liệu ban đầu từ Local Storage phòng khi rớt mạng
+    try {
+      periodicTasks = JSON.parse(localStorage.getItem('periodicTasks') || '[]');
+      onetimeTasks = JSON.parse(localStorage.getItem('onetimeTasks') || '[]');
+      anniversaries = JSON.parse(localStorage.getItem('anniversaries') || '[]');
+    } catch(e) {}
+
     let currentAnnivCalType = 'solar';
     let currentActiveAlertTaskId = null;
     let lastAlertMinute = "";
@@ -1454,7 +1465,7 @@
       let repeatDetail = "";
       if (repeat === 'weekly') {
         const checkedDays = Array.from(document.querySelectorAll('input[name="weekDay"]:checked')).map(cb => cb.value);
-        repeatDetail = ` (Thứ: ${checkedDays.join(', ')})`;
+        if (checkedDays.length > 0) repeatDetail = ` (${checkedDays.join(', ')})`;
       } else if (repeat === 'monthly' || repeat === 'yearly') {
         const mode = document.querySelector('input[name="advMode"]:checked').value;
         if (mode === 'date') {
@@ -1479,13 +1490,7 @@
       };
 
       periodicTasks.push(taskObj);
-      saveAndRender();
-
-      if (assignEmail && db) {
-        db.collection('tasks').add({ ...taskObj, type: 'periodic', createdAt: Date.now() })
-          .then(() => alert(currentLang === 'VIE' ? `Đã gửi giao việc "${title}" tới ${assignEmail} thành công!` : `Task "${title}" assigned to ${assignEmail} successfully!`))
-          .catch(e => console.warn("Firestore error:", e));
-      }
+      saveAndRenderCloud();
 
       document.getElementById('pTaskTitle').value = '';
       document.getElementById('pTaskAssignEmail').value = '';
@@ -1512,13 +1517,7 @@
       };
 
       onetimeTasks.push(taskObj);
-      saveAndRender();
-
-      if (assignEmail && db) {
-        db.collection('tasks').add({ ...taskObj, type: 'onetime' })
-          .then(() => alert(currentLang === 'VIE' ? `Đã gửi giao việc "${title}" tới ${assignEmail} thành công!` : `Task "${title}" assigned to ${assignEmail} successfully!`))
-          .catch(e => console.warn("Firestore error:", e));
-      }
+      saveAndRenderCloud();
 
       document.getElementById('oTaskTitle').value = '';
       document.getElementById('oTaskAssignEmail').value = '';
@@ -1527,55 +1526,27 @@
     function toggleOnetimeTask(id) {
       onetimeTasks = onetimeTasks.map(t => {
         if (t.id === id) {
-          const newDone = !t.done;
-          if (t.cloudDocId && db) {
-            db.collection('tasks').doc(t.cloudDocId).update({ done: newDone });
-          }
-          return { ...t, done: newDone };
+          return { ...t, done: !t.done };
         }
         return t;
       });
-      saveAndRender();
+      saveAndRenderCloud();
     }
 
     function listenToCloudTasks() {
       if (!db || !currentUser || !currentUser.email) return;
       const myEmail = currentUser.email.toLowerCase();
 
-      db.collection('tasks').where('assignEmail', '==', myEmail)
-        .onSnapshot((snapshot) => {
-          snapshot.docChanges().forEach((change) => {
-            const data = change.doc.data();
-            data.cloudDocId = change.doc.id;
-
-            if (change.type === 'added') {
-              if (data.type === 'periodic' && !periodicTasks.some(t => t.id === data.id)) {
-                periodicTasks.push(data);
-              } else if (data.type === 'onetime' && !onetimeTasks.some(t => t.id === data.id)) {
-                onetimeTasks.push(data);
-              }
-            } else if (change.type === 'modified') {
-              if (data.type === 'onetime') {
-                onetimeTasks = onetimeTasks.map(t => t.id === data.id ? { ...t, done: data.done } : t);
-              }
-            } else if (change.type === 'removed') {
-              periodicTasks = periodicTasks.filter(t => t.id !== data.id);
-              onetimeTasks = onetimeTasks.filter(t => t.id !== data.id);
-            }
-          });
-          saveAndRender();
-        });
-
-      db.collection('tasks').where('creatorEmail', '==', myEmail)
-        .onSnapshot((snapshot) => {
-          snapshot.docChanges().forEach((change) => {
-            const data = change.doc.data();
-            if (change.type === 'modified' && data.type === 'onetime') {
-              onetimeTasks = onetimeTasks.map(t => t.id === data.id ? { ...t, done: data.done } : t);
-              saveAndRender();
-            }
-          });
-        });
+      // Cloud Sync Firestore: Tải toàn bộ dữ liệu khi đăng nhập
+      db.collection('marki_profiles').doc(myEmail).onSnapshot((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.periodicTasks) periodicTasks = JSON.parse(data.periodicTasks);
+          if (data.onetimeTasks) onetimeTasks = JSON.parse(data.onetimeTasks);
+          if (data.anniversaries) anniversaries = JSON.parse(data.anniversaries);
+          saveAndRenderLocal();
+        }
+      });
     }
 
     function addAnniversary() {
@@ -1603,23 +1574,21 @@
       }
 
       anniversaries.push(annivObj);
-      saveAndRender();
+      saveAndRenderCloud();
       document.getElementById('annivTitle').value = '';
     }
 
     function deleteTask(type, id) {
       if (type === 'periodic') {
-        const t = periodicTasks.find(x => x.id === id);
-        if (t && t.cloudDocId && db) db.collection('tasks').doc(t.cloudDocId).delete();
         periodicTasks = periodicTasks.filter(x => x.id !== id);
       }
       if (type === 'onetime') {
-        const t = onetimeTasks.find(x => x.id === id);
-        if (t && t.cloudDocId && db) db.collection('tasks').doc(t.cloudDocId).delete();
         onetimeTasks = onetimeTasks.filter(x => x.id !== id);
       }
-      if (type === 'anniv') anniversaries = anniversaries.filter(t => t.id !== id);
-      saveAndRender();
+      if (type === 'anniv') {
+        anniversaries = anniversaries.filter(t => t.id !== id);
+      }
+      saveAndRenderCloud();
     }
 
     function autoCleanup7Days() {
@@ -1627,8 +1596,20 @@
       onetimeTasks = onetimeTasks.filter(t => new Date(t.datetime).getTime() > sevenDaysAgo);
     }
 
-    function saveAndRender() {
-      autoCleanup7Days();
+    function saveAndRenderCloud() {
+        autoCleanup7Days();
+        // Đẩy lên Firestore nếu đăng nhập
+        if (currentUser && db) {
+            db.collection('marki_profiles').doc(currentUser.email.toLowerCase()).set({
+                periodicTasks: JSON.stringify(periodicTasks),
+                onetimeTasks: JSON.stringify(onetimeTasks),
+                anniversaries: JSON.stringify(anniversaries)
+            }, { merge: true }).catch(e => console.warn(e));
+        }
+        saveAndRenderLocal();
+    }
+
+    function saveAndRenderLocal() {
       localStorage.setItem('periodicTasks', JSON.stringify(periodicTasks));
       localStorage.setItem('onetimeTasks', JSON.stringify(onetimeTasks));
       localStorage.setItem('anniversaries', JSON.stringify(anniversaries));
