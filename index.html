@@ -139,7 +139,7 @@
     .card-header h2 { font-size: 1.15rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
     .card-header h2 i { color: var(--primary-dark); }
 
-    /* Lịch Âm Dương phong cách XemLichAm.com */
+    /* Bảng hiển thị Âm Dương chuẩn XemLichAm.com */
     .clock-display {
       text-align: center;
       background: linear-gradient(135deg, #FDF2F5, #FFF9FA);
@@ -454,7 +454,7 @@
     </div>
   </header>
 
-  <!-- Pop-up Cảnh Báo Toàn Màn Hình -->
+  <!-- Pop-up Cảnh Báo Toàn Màn Hình Song Song 2 Máy -->
   <div id="deadlineModal" style="display: none;">
     <div class="modal-alert-box">
       <div class="alert-chime-icon"><i class="fa-solid fa-bell"></i></div>
@@ -831,18 +831,18 @@
         let k = INT((dayNumber - 2415021.0769986) / 29.53058868);
         let monthStart = getNewMoonDay(k + 1, timeZone);
         if (monthStart > dayNumber) monthStart = getNewMoonDay(k, timeZone);
-        let a11 = getLunarMonth11(yy, timeZone);
+        
+        let a11 = getLunarMonth11(yy - 1, timeZone);
+        let nextA11 = getLunarMonth11(yy, timeZone);
         let lunarYear = yy;
-        if (a11 >= monthStart) {
+
+        if (monthStart >= nextA11) {
+          a11 = nextA11;
+          lunarYear = yy + 1;
+        } else if (monthStart < a11) {
           lunarYear = yy - 1;
-          a11 = getLunarMonth11(yy - 1, timeZone);
-        } else {
-          let nextA11 = getLunarMonth11(yy + 1, timeZone);
-          if (nextA11 <= monthStart) {
-            lunarYear = yy + 1;
-            a11 = nextA11;
-          }
         }
+
         let lunarDay = dayNumber - monthStart + 1;
         let diff = INT((monthStart - a11) / 29);
         let lunarLeap = 0;
@@ -862,7 +862,7 @@
     }
 
     function convertLunar2Solar(lunarDay, lunarMonth, lunarYear, lunarLeap = 0, timeZone = 7) {
-      let a11 = getLunarMonth11(lunarYear, timeZone);
+      let a11 = getLunarMonth11(lunarYear - 1, timeZone);
       let leapMonthDiff = getLeapMonthOffset(a11, timeZone);
       let off = lunarMonth - 11;
       if (lunarMonth < 11) off += 12;
